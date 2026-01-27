@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Clipboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Font (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+        /* Animation Utilities */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-custom { animation: spin 1s linear infinite; }
+
+        .glass-panel {
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-slate-200 min-h-screen selection:bg-indigo-500/30 overflow-x-hidden flex flex-col">
+
+    <!-- Notifications Container -->
+    <div id="notification-area" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none w-full max-w-sm px-4"></div>
+
+    <!-- Background Elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-950 via-[#0f172a] to-slate-950 opacity-100"></div>
+        <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E')"></div>
+        <div class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[100px]"></div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 z-[60] bg-slate-900 flex items-center justify-center text-white transition-opacity duration-500">
+        <div class="flex flex-col items-center gap-4">
+            <i data-lucide="refresh-cw" class="animate-spin-custom text-indigo-400 w-8 h-8"></i>
+            <p class="text-sm font-light tracking-widest uppercase">Initializing Secure Connection</p>
+        </div>
+    </div>
+
+    <!-- Main Wrapper -->
+    <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col min-h-screen">
+        
+        <!-- HEADER -->
+        <header class="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
+            <div class="flex items-center gap-4 self-center md:self-auto">
+                <div class="bg-gradient-to-tr from-indigo-500 to-purple-600 p-3.5 rounded-2xl shadow-lg shadow-indigo-500/20 border border-white/10">
+                    <i data-lucide="clipboard" class="text-white w-6 h-6"></i>
+                </div>
+                <div class="text-center md:text-left">
+                    <h1 class="text-2xl font-bold text-white tracking-tight">Online Clipboard</h1>
+                    <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Secure Transfer Protocol</p>
+                </div>
+            </div>
+
+            <nav class="flex w-full md:w-auto bg-slate-900/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 justify-center">
+                <button onclick="switchTab('send')" id="nav-send" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50">
+                    <i data-lucide="upload" class="w-4 h-4"></i> Send
+                </button>
+                <button onclick="switchTab('retrieve')" id="nav-retrieve" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
+                    <i data-lucide="download" class="w-4 h-4"></i> Retrieve
+                </button>
+                <button onclick="switchTab('about')" id="nav-about" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
+                    <i data-lucide="info" class="w-4 h-4"></i> About
+                </button>
+            </nav>
+        </header>
+
+        <!-- MAIN CONTENT GRID -->
+        <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- LEFT COLUMN (MAIN ACTION) -->
+            <div class="lg:col-span-8 w-full space-y-6">
+                
+                <!-- SEND TAB -->
+                <div id="tab-send" class="glass-panel rounded-3xl p-1 shadow-2xl animate-fade-in">
+                    <div class="bg-slate-900/50 rounded-[22px] p-6 sm:p-8 border border-white/5 relative overflow-hidden">
+                        
+                        <!-- Input View -->
+                        <div id="send-input-view">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+                                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                                    <i data-lucide="smartphone" class="text-indigo-400 w-5 h-5"></i> Send Content
+                                </h2>
+                                <span class="px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 text-xs font-medium border border-rose-500/20 whitespace-nowrap">Auto-deletes in 24h</span>
+                            </div>
+
+                            <!-- Input Type Toggle -->
+                            <div class="grid grid-cols-2 gap-3 mb-6 bg-black/20 p-1 rounded-xl">
+                                <button onclick="setInputType('text')" id="type-text-btn" class="py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm bg-indigo-600 text-white shadow-lg">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i> Text
+                                </button>
+                                <button onclick="setInputType('file')" id="type-file-btn" class="py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm text-slate-400 hover:text-white">
+                                    <i data-lucide="file" class="w-4 h-4"></i> File
+                                </button>
+                            </div>
+
+                            <!-- Text Input Area -->
+                            <div id="input-area-text" class="mb-6 relative">
+                                <textarea id="text-input" placeholder="Type or paste your content here..." class="w-full h-56 bg-black/20 border border-white/10 rounded-xl p-5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:bg-black/30 transition-all resize-none font-mono text-sm leading-relaxed"></textarea>
+                            </div>
+
+                            <!-- File Input Area -->
+                            <div id="input-area-file" class="mb-6 relative hidden">
+                                <div class="h-56 border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center bg-black/10 hover:bg-black/20 transition-colors relative group overflow-hidden">
+                                    <!-- Empty State -->
+                                    <div id="file-empty-state" class="text-center p-4">
+                                        <div class="w-16 h-16 bg-indigo-500/10 rounded-full flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
+                                            <i data-lucide="upload" class="text-indigo-400 w-7 h-7"></i>
+                                        </div>
+                                        <p class="text-slate-300 font-medium mb-1">Click to upload file</p>
+                                        <p class="text-slate-500 text-xs">Images, Documents, Audio</p>
+                                        <div class="mt-4 px-3 py-1 bg-white/5 rounded-full text-[10px] text-emerald-400 border border-white/5 inline-block">Max 1MB</div>
+                                    </div>
+
+                                    <!-- Selected State -->
+                                    <div id="file-selected-state" class="hidden absolute inset-0 w-full h-full bg-slate-900/90 flex flex-col items-center justify-center z-20">
+                                        <img id="file-preview-img" class="h-24 object-contain rounded-lg mb-3 shadow-lg hidden" />
+                                        <i id="file-preview-icon" data-lucide="file" class="text-indigo-400 w-12 h-12 mb-3 hidden"></i>
+                                        <p id="file-name" class="text-white font-medium text-sm truncate max-w-[80%] px-4">filename.txt</p>
+                                        <p id="file-size" class="text-slate-500 text-xs mt-1">0 KB</p>
+                                        <button onclick="clearFileSelection(event)" class="absolute top-3 right-3 bg-black/50 hover:bg-rose-500/80 text-white p-2 rounded-full transition-colors backdrop-blur-md">
+                                            <i data-lucide="x" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+
+                                    <input type="file" id="file-upload" class="absolute inset-0 opacity-0 cursor-pointer z-10" onchange="handleFileSelect(event)">
+                                </div>
+                            </div>
+
+                            <!-- Action Button -->
+                            <button onclick="handleSend()" id="send-btn" class="w-full py-4 bg-gradient-to-r from-indigo-600 via-indigo-600 to-purple-600 rounded-xl font-bold text-white shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/40 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2 border border-white/10">
+                                <span id="send-btn-text" class="flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4 fill-current"></i> Generate Secure Code</span>
+                                <i id="send-btn-spinner" data-lucide="refresh-cw" class="w-4 h-4 animate-spin-custom hidden"></i>
+                            </button>
+                        </div>
+
+                        <!-- Success View -->
+                        <div id="send-success-view" class="text-center py-8 hidden animate-fade-in">
+                            <div class="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                                <i data-lucide="check" class="w-10 h-10"></i>
+                            </div>
+                            <h3 class="text-3xl font-bold text-white mb-2">Upload Complete</h3>
+                            <p class="text-slate-400 mb-2 max-w-md mx-auto">Your content is securely stored.</p>
+                            <p class="text-rose-400 text-sm mb-8 font-medium bg-rose-500/10 inline-block px-3 py-1 rounded-full border border-rose-500/20">Expires in 24 hours</p>
+                            
+                            <div class="max-w-sm mx-auto bg-black/40 border border-indigo-500/30 rounded-2xl p-8 mb-8 relative overflow-hidden group">
+                                <div class="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors"></div>
+                                <span id="generated-code-display" class="relative text-6xl font-mono font-bold tracking-wider text-indigo-300 select-all drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]"></span>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                                <button onclick="copyGeneratedCode()" class="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+                                    <i data-lucide="copy" class="w-4 h-4"></i> Copy Code
+                                </button>
+                                <button onclick="resetSend()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium transition-colors shadow-lg shadow-indigo-600/20">
+                                    Start New
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- RETRIEVE TAB -->
+                <div id="tab-retrieve" class="glass-panel rounded-3xl p-1 shadow-2xl hidden animate-fade-in">
+                    <div class="bg-slate-900/50 rounded-[22px] p-6 sm:p-8 border border-white/5 min-h-[400px]">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2 mb-6">
+                            <i data-lucide="globe" class="text-purple-400 w-5 h-5"></i> Retrieve Content
+                        </h2>
+
+                        <div class="flex gap-3 mb-8">
+                            <div class="flex-1 relative group">
+                                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl opacity-0 group-focus-within:opacity-100 blur transition-opacity duration-500 -z-10"></div>
+                                <input type="text" id="retrieve-code-input" placeholder="ENTER CODE" maxlength="6" class="w-full bg-[#0B1120] border border-white/10 rounded-xl px-4 py-4 text-xl text-white placeholder-slate-700 focus:outline-none focus:bg-[#0f172a] transition-all font-mono tracking-[0.2em] text-center uppercase">
+                            </div>
+                            <button onclick="handleRetrieve()" id="retrieve-btn" class="px-6 sm:px-8 bg-white text-slate-900 rounded-xl font-bold hover:bg-indigo-50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                                <i id="retrieve-icon" data-lucide="search" class="w-6 h-6"></i>
+                                <i id="retrieve-spinner" data-lucide="refresh-cw" class="w-6 h-6 animate-spin-custom hidden"></i>
+                            </button>
+                        </div>
+
+                        <!-- Retrieved Content Area -->
+                        <div id="retrieved-content-area" class="hidden animate-fade-in">
+                            <div class="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-6"></div>
+                            
+                            <div class="flex justify-between items-end mb-4 px-2">
+                                <div>
+                                    <p class="text-slate-500 text-xs font-mono mb-1">DATA TYPE</p>
+                                    <p class="text-white font-medium capitalize flex items-center gap-2">
+                                        <i id="retrieved-type-icon" data-lucide="file" class="w-4 h-4 text-indigo-400"></i> 
+                                        <span id="retrieved-type-text">Text</span>
+                                    </p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-slate-500 text-xs font-mono mb-1">CREATED AT</p>
+                                    <p id="retrieved-date" class="text-slate-300 text-sm">--</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-[#0B1120] rounded-xl border border-white/10 overflow-hidden relative group shadow-inner min-h-[200px]">
+                                <!-- Text Content -->
+                                <div id="retrieved-text-container" class="p-6 hidden">
+                                    <pre id="retrieved-text-content" class="text-slate-200 whitespace-pre-wrap font-mono text-sm leading-relaxed max-h-96 overflow-y-auto custom-scrollbar"></pre>
+                                </div>
+
+                                <!-- File/Image Content -->
+                                <div id="retrieved-file-container" class="p-8 flex flex-col items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] hidden">
+                                    <img id="retrieved-image" class="hidden max-h-80 rounded-lg shadow-2xl object-contain border border-white/10" />
+                                    <div id="retrieved-file-info" class="hidden text-center">
+                                        <i data-lucide="file" class="text-slate-600 mx-auto mb-4 w-16 h-16"></i>
+                                        <p id="retrieved-filename" class="text-white font-medium mb-1">file.ext</p>
+                                        <p id="retrieved-filesize" class="text-slate-500 text-sm">0 KB</p>
+                                    </div>
+                                </div>
+
+                                <!-- Floating Actions -->
+                                <div class="absolute top-4 right-4 flex gap-2">
+                                    <button id="copy-retrieved-btn" onclick="copyRetrievedContent()" class="hidden px-4 py-2 bg-indigo-600/90 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg shadow-lg backdrop-blur-md flex items-center gap-2 transition-all">
+                                        <i data-lucide="copy" class="w-4 h-4"></i> Copy
+                                    </button>
+                                    <a id="download-retrieved-btn" href="#" download class="hidden px-4 py-2 bg-indigo-600/90 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg shadow-lg backdrop-blur-md flex items-center gap-2 transition-all">
+                                        <i data-lucide="download" class="w-4 h-4"></i> Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABOUT TAB -->
+                <div id="tab-about" class="glass-panel rounded-3xl p-8 shadow-2xl space-y-8 hidden animate-fade-in">
+                    <h2 class="text-2xl font-bold text-white">Platform Information</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white/5 p-6 rounded-2xl border border-white/5">
+                            <i data-lucide="shield" class="text-indigo-400 mb-4 w-6 h-6"></i>
+                            <h3 class="text-lg font-bold text-white mb-2">Secure & Private</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">All data is assigned a temporary, anonymous ID. No login required. Data persists only as long as you need it.</p>
+                        </div>
+                        <div class="bg-white/5 p-6 rounded-2xl border border-white/5">
+                            <i data-lucide="zap" class="text-purple-400 mb-4 w-6 h-6"></i>
+                            <h3 class="text-lg font-bold text-white mb-2">Instant Transfer</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">Powered by Firebase Firestore real-time database for millisecond latency between devices.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-4">Usage Limits</h3>
+                        <ul class="space-y-2 text-slate-400 text-sm">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Text: Unlimited Characters</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Files: Max 1MB</li>
+                            <li class="flex items-center gap-2"><i data-lucide="clock" class="text-rose-500 w-4 h-4"></i> Expiration: 24 Hours</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN (INFO ONLY) -->
+            <div class="lg:col-span-4 space-y-6 w-full">
+                <div class="glass-panel rounded-3xl p-6 shadow-xl h-full flex flex-col">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-6">
+                        <i data-lucide="info" class="text-indigo-400 w-5 h-5"></i> How It Works
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <!-- Feature Item 1 -->
+                        <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
+                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="upload" class="w-5 h-5"></i></div>
+                            <div><h4 class="text-white font-medium text-sm mb-1">Upload Content</h4><p class="text-slate-400 text-xs leading-relaxed">Paste text or select a file (up to 1MB) in the 'Send' tab.</p></div>
+                        </div>
+                        <!-- Feature Item 2 -->
+                        <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
+                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="shield" class="w-5 h-5"></i></div>
+                            <div><h4 class="text-white font-medium text-sm mb-1">Get Unique ID</h4><p class="text-slate-400 text-xs leading-relaxed">We generate a random 6-character code. This key is the only way to access your data.</p></div>
+                        </div>
+                        <!-- Feature Item 3 -->
+                        <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
+                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="download" class="w-5 h-5"></i></div>
+                            <div><h4 class="text-white font-medium text-sm mb-1">Retrieve Anywhere</h4><p class="text-slate-400 text-xs leading-relaxed">Enter the code to fetch content. Data expires after 24 hours.</p></div>
+                        </div>
+                    </div>
+
+                    <div class="h-px w-full bg-white/10 my-6"></div>
+
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Why use this?</h3>
+                    <div class="space-y-4">
+                        <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
+                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="wifi" class="w-5 h-5"></i></div>
+                            <div><h4 class="text-white font-medium text-sm mb-1">No Login Required</h4><p class="text-slate-400 text-xs leading-relaxed">Don't waste time signing up. Just upload and go.</p></div>
+                        </div>
+                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
+                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="share-2" class="w-5 h-5"></i></div>
+                            <div><h4 class="text-white font-medium text-sm mb-1">Cross-Device</h4><p class="text-slate-400 text-xs leading-relaxed">Easily move text from your iPhone to Windows, or Android to Mac.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        
+        <footer class="mt-8 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-sm">
+            <p>© 2024 Online Clipboard.</p>
+            <div class="flex gap-4">
+                <span class="hover:text-slate-400 cursor-pointer">Privacy Policy</span>
+                <span class="hover:text-slate-400 cursor-pointer">Terms of Service</span>
+                <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> System Operational</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MAIN LOGIC -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+        
+        // NO STORAGE IMPORTS NEEDED FOR DATABASE-ONLY VERSION
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // 1. CONFIGURATION (YOUR KEYS ARE HERE)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQm71IY7EnJm3PtiHqASn52qm1UPQWWVw",
+            authDomain: "my-online-clipboard.firebaseapp.com",
+            projectId: "my-online-clipboard",
+            storageBucket: "my-online-clipboard.firebasestorage.app",
+            messagingSenderId: "215450582617",
+            appId: "1:215450582617:web:fe40c881cda4d4eb243b48"
+        };
+        
+        const appId = 'my-clipboard-live'; 
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let selectedFile = null; 
+        let currentInputType = 'text';
+
+        // 2. AUTHENTICATION
+        const initAuth = async () => {
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Auth error:", error);
+                showNotification("Authentication failed. Please refresh.", "error");
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading-screen').remove(), 500);
+            }
+        });
+
+        initAuth();
+
+        // 3. UI STATE FUNCTIONS
+        window.switchTab = (tabName) => {
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5";
+            });
+            const activeBtn = document.getElementById(`nav-${tabName}`);
+            activeBtn.className = "nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50";
+
+            ['send', 'retrieve', 'about'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if (t === tabName) {
+                    el.classList.remove('hidden');
+                    if(tabName === 'send') resetSend();
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        };
+
+        window.setInputType = (type) => {
+            currentInputType = type;
+            const textBtn = document.getElementById('type-text-btn');
+            const fileBtn = document.getElementById('type-file-btn');
+            const textArea = document.getElementById('input-area-text');
+            const fileArea = document.getElementById('input-area-file');
+
+            if (type === 'text') {
+                textBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm bg-indigo-600 text-white shadow-lg";
+                fileBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm text-slate-400 hover:text-white";
+                textArea.classList.remove('hidden');
+                fileArea.classList.add('hidden');
+            } else {
+                fileBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm bg-indigo-600 text-white shadow-lg";
+                textBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm text-slate-400 hover:text-white";
+                textArea.classList.add('hidden');
+                fileArea.classList.remove('hidden');
+            }
+        };
+
+        window.handleFileSelect = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // 1MB Limit (Strict Database Limit)
+            if (file.size > 1000 * 1024) {
+                showNotification("File too large. Free limit is 1MB.", "error");
+                event.target.value = "";
+                return;
+            }
+
+            // Preview logic
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                selectedFile = {
+                    base64: reader.result, // Use base64 directly
+                    name: file.name,
+                    size: file.size,
+                    mimeType: file.type,
+                    preview: file.type.startsWith('image/') ? reader.result : null
+                };
+                updateFileUI();
+            };
+            reader.readAsDataURL(file);
+        };
+
+        function updateFileUI() {
+            const emptyState = document.getElementById('file-empty-state');
+            const selectedState = document.getElementById('file-selected-state');
+            
+            if (selectedFile) {
+                emptyState.classList.add('hidden');
+                selectedState.classList.remove('hidden');
+                
+                document.getElementById('file-name').textContent = selectedFile.name;
+                document.getElementById('file-size').textContent = formatBytes(selectedFile.size);
+                
+                if (selectedFile.preview) {
+                    document.getElementById('file-preview-img').src = selectedFile.preview;
+                    document.getElementById('file-preview-img').classList.remove('hidden');
+                    document.getElementById('file-preview-icon').classList.add('hidden');
+                } else {
+                    document.getElementById('file-preview-img').classList.add('hidden');
+                    document.getElementById('file-preview-icon').classList.remove('hidden');
+                }
+            } else {
+                emptyState.classList.remove('hidden');
+                selectedState.classList.add('hidden');
+                document.getElementById('file-upload').value = "";
+            }
+        }
+
+        window.clearFileSelection = (e) => {
+            if(e) e.stopPropagation();
+            selectedFile = null;
+            updateFileUI();
+        };
+
+        // 4. LOGIC: SEND
+        window.handleSend = async () => {
+            if (!currentUser) return showNotification("Connecting...", "info");
+
+            const textVal = document.getElementById('text-input').value;
+
+            if (currentInputType === 'text' && !textVal.trim()) {
+                return showNotification("Please enter some text.", "error");
+            }
+            if (currentInputType === 'file' && !selectedFile) {
+                return showNotification("Please select a file.", "error");
+            }
+
+            // UI Setup
+            const btn = document.getElementById('send-btn');
+            btn.disabled = true;
+            document.getElementById('send-btn-text').classList.add('hidden');
+            document.getElementById('send-btn-spinner').classList.remove('hidden');
+
+            const code = generateId();
+            
+            try {
+                // Save to Firestore (Database Only - No Storage Bucket)
+                const docPath = `artifacts/${appId}/public/data/clipboard_items/${code}`;
+                
+                const payload = {
+                    id: code,
+                    type: currentInputType,
+                    content: currentInputType === 'text' ? textVal : selectedFile.base64, // Store Base64 directly
+                    filename: currentInputType === 'file' ? selectedFile.name : null,
+                    mimeType: currentInputType === 'file' ? selectedFile.mimeType : 'text/plain',
+                    size: currentInputType === 'file' ? selectedFile.size : new Blob([textVal]).size,
+                    createdAt: serverTimestamp(),
+                    device: navigator.platform || 'Web Client',
+                };
+
+                await setDoc(doc(db, docPath), payload);
+
+                // Show Success
+                document.getElementById('send-input-view').classList.add('hidden');
+                document.getElementById('send-success-view').classList.remove('hidden');
+                document.getElementById('generated-code-display').textContent = code;
+                
+                showNotification("Uploaded Successfully!", "success");
+
+            } catch (error) {
+                console.error("Upload Error:", error);
+                showNotification("Upload failed. Try again.", "error");
+            } finally {
+                btn.disabled = false;
+                document.getElementById('send-btn-text').classList.remove('hidden');
+                document.getElementById('send-btn-spinner').classList.add('hidden');
+            }
+        };
+
+        window.resetSend = () => {
+            document.getElementById('send-input-view').classList.remove('hidden');
+            document.getElementById('send-success-view').classList.add('hidden');
+            document.getElementById('text-input').value = '';
+            clearFileSelection();
+        };
+
+        window.copyGeneratedCode = () => {
+            const code = document.getElementById('generated-code-display').textContent;
+            copyToClipboard(code);
+        };
+
+
+        // 5. LOGIC: RETRIEVE
+        window.handleRetrieve = async () => {
+            const codeInput = document.getElementById('retrieve-code-input').value.toUpperCase().trim();
+            if (codeInput.length < 4) return showNotification("Enter a valid code.", "error");
+
+            const btn = document.getElementById('retrieve-btn');
+            btn.disabled = true;
+            document.getElementById('retrieve-icon').classList.add('hidden');
+            document.getElementById('retrieve-spinner').classList.remove('hidden');
+            document.getElementById('retrieved-content-area').classList.add('hidden');
+
+            const docPath = `artifacts/${appId}/public/data/clipboard_items/${codeInput}`;
+
+            try {
+                const docSnap = await getDoc(doc(db, docPath));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    // --- EXPIRATION CHECK (24h) ---
+                    const createdTime = data.createdAt ? data.createdAt.toMillis() : 0;
+                    const oneDayMs = 24 * 60 * 60 * 1000;
+                    
+                    if (Date.now() - createdTime > oneDayMs) {
+                        showNotification("This code has expired (24h limit).", "error");
+                    } else {
+                        displayRetrievedContent(data, codeInput);
+                        showNotification("Content Found!", "success");
+                    }
+
+                } else {
+                    showNotification("Code not found or expired.", "error");
+                }
+            } catch (error) {
+                console.error("Retrieve Error", error);
+                showNotification("Error fetching content.", "error");
+            } finally {
+                btn.disabled = false;
+                document.getElementById('retrieve-icon').classList.remove('hidden');
+                document.getElementById('retrieve-spinner').classList.add('hidden');
+            }
+        };
+
+        let currentRetrievedContent = null; 
+
+        function displayRetrievedContent(data, code) {
+            currentRetrievedContent = data;
+            const area = document.getElementById('retrieved-content-area');
+            area.classList.remove('hidden');
+
+            document.getElementById('retrieved-type-text').textContent = data.type;
+            document.getElementById('retrieved-date').textContent = new Date(data.createdAt.seconds * 1000).toLocaleString();
+
+            const textContainer = document.getElementById('retrieved-text-container');
+            const fileContainer = document.getElementById('retrieved-file-container');
+            const copyBtn = document.getElementById('copy-retrieved-btn');
+            const dlBtn = document.getElementById('download-retrieved-btn');
+
+            if (data.type === 'text') {
+                textContainer.classList.remove('hidden');
+                fileContainer.classList.add('hidden');
+                document.getElementById('retrieved-text-content').textContent = data.content;
+                copyBtn.classList.remove('hidden');
+                dlBtn.classList.add('hidden');
+            } else {
+                textContainer.classList.add('hidden');
+                fileContainer.classList.remove('hidden');
+                
+                document.getElementById('retrieved-filename').textContent = data.filename || 'file';
+                document.getElementById('retrieved-filesize').textContent = formatBytes(data.size);
+
+                const imgEl = document.getElementById('retrieved-image');
+                const infoEl = document.getElementById('retrieved-file-info');
+
+                if (data.mimeType && data.mimeType.startsWith('image/')) {
+                    imgEl.src = data.content;
+                    imgEl.classList.remove('hidden');
+                    infoEl.classList.add('hidden');
+                } else {
+                    imgEl.classList.add('hidden');
+                    infoEl.classList.remove('hidden');
+                }
+
+                // Buttons
+                copyBtn.classList.add('hidden');
+                dlBtn.classList.remove('hidden');
+                // Use the Base64 Data URI directly
+                dlBtn.href = data.content; 
+                dlBtn.download = data.filename || `clipboard-${code}`;
+            }
+        }
+
+        window.copyRetrievedContent = () => {
+            if(currentRetrievedContent && currentRetrievedContent.type === 'text') {
+                copyToClipboard(currentRetrievedContent.content);
+            }
+        };
+
+        // 6. UTILS
+        function generateId() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showNotification("Copied to Clipboard!", "success");
+            } catch (err) {
+                console.error('Copy failed', err);
+                showNotification("Copy failed", "error");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function formatBytes(bytes, decimals = 2) {
+            if (!+bytes) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        }
+
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notification-area');
+            const el = document.createElement('div');
+            let colors = 'bg-blue-500/90 border-blue-400/50';
+            if (type === 'success') colors = 'bg-emerald-500/90 border-emerald-400/50';
+            if (type === 'error') colors = 'bg-rose-500/90 border-rose-400/50';
+
+            el.className = `flex items-center gap-3 px-6 py-3 rounded-full text-white backdrop-blur-md shadow-2xl border ${colors} animate-fade-in pointer-events-auto`;
+            el.innerHTML = `<span>${message}</span>`;
+            
+            container.appendChild(el);
+            setTimeout(() => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(-10px)';
+                el.style.transition = 'all 0.3s ease';
+                setTimeout(() => el.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
