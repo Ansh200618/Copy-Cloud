@@ -99,7 +99,7 @@ export default function SendScreen() {
 
       if (contentType === 'text') {
         data.content = text;
-      } else {
+      } else if (file) {
         // For files, we would need to read the file and convert to base64
         // This is simplified - in production, you'd handle file reading properly
         data.fileName = file.name;
