@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Clipboard</title>
+    <title>Copy Cloud</title>
     <meta name="google-site-verification" content="zUIv4rZus97oBoL6cnrCNeKngCIuHRzdncwD9e0eDRw" />
     
     <!-- FAVICON (Browser Tab Icon) - Built-in SVG -->
@@ -63,6 +63,67 @@
         </div>
     </div>
 
+    <!-- Legal/Terms Modal -->
+    <div id="legal-modal" class="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-2xl flex flex-col max-h-[85vh] shadow-2xl animate-fade-in relative overflow-hidden">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="scale" class="text-indigo-400 w-5 h-5"></i> Legal Information
+                </h3>
+                <button onclick="closeLegalModal()" class="text-slate-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-8">
+                <!-- Terms -->
+                <section id="modal-section-terms">
+                    <h4 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <i data-lucide="file-text" class="text-indigo-400 w-4 h-4"></i> Terms of Service
+                    </h4>
+                    <div class="space-y-3 text-slate-400 text-sm leading-relaxed">
+                        <p>Welcome to Copy Cloud. By using our service, you agree to these terms. This service is provided "as is" for the purpose of temporary data transfer.</p>
+                        <ul class="list-disc pl-5 space-y-1 marker:text-indigo-500">
+                            <li><strong>Temporary Storage:</strong> Content uploaded to this platform is automatically deleted after 24 hours. We do not guarantee permanent storage.</li>
+                            <li><strong>Acceptable Use:</strong> You agree not to upload illegal, malicious, or harmful content.</li>
+                            <li><strong>No Warranty:</strong> We are not responsible for data loss, corruption, or unauthorized access arising from shared codes.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <div id="modal-divider" class="h-px bg-white/10 w-full"></div>
+
+                <!-- Privacy -->
+                <section id="modal-section-privacy">
+                    <h4 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <i data-lucide="shield" class="text-emerald-400 w-4 h-4"></i> Privacy Policy
+                    </h4>
+                    <div class="space-y-3 text-slate-400 text-sm leading-relaxed">
+                        <p>We respect your privacy. Here is how we handle your data:</p>
+                        <div class="bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-xl">
+                            <p class="text-indigo-200 font-medium text-xs uppercase mb-1">Data Handling</p>
+                            <p class="text-indigo-100">Files and text are stored securely in our database and are only accessible via the unique 6-character code generated at upload.</p>
+                        </div>
+                        <ul class="list-disc pl-5 space-y-1 marker:text-emerald-500">
+                            <li><strong>Data Deletion:</strong> All user data is permanently purged from our systems automatically after the 24-hour expiration period.</li>
+                            <li><strong>Anonymity:</strong> We do not require account creation, email addresses, or personal information to use this tool.</li>
+                            <li><strong>Cookies:</strong> We use minimal local storage for functional purposes only.</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-white/10 bg-white/5 flex justify-end">
+                <button onclick="closeLegalModal()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-indigo-500/20">
+                    I Understand
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Wrapper -->
     <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col min-h-screen">
         
@@ -73,7 +134,7 @@
                     <i data-lucide="clipboard" class="text-white w-6 h-6"></i>
                 </div>
                 <div class="text-center md:text-left">
-                    <h1 class="text-2xl font-bold text-white tracking-tight">Online Clipboard</h1>
+                    <h1 class="text-2xl font-bold text-white tracking-tight">Copy Cloud</h1>
                     <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Secure Transfer Protocol</p>
                 </div>
             </div>
@@ -346,10 +407,14 @@
 
             <!-- Standard Footer Info -->
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-t border-white/5 pt-6">
-                <p>© 2024 Online Clipboard. All rights reserved.</p>
+                <!-- Copyright triggers modal -->
+                <button onclick="openLegalModal('all')" class="hover:text-indigo-400 transition-colors text-left focus:outline-none">
+                    © 2026 Copy Cloud. All rights reserved.
+                </button>
                 <div class="flex gap-4">
-                    <span class="hover:text-slate-300 cursor-pointer transition-colors">Privacy Policy</span>
-                    <span class="hover:text-slate-300 cursor-pointer transition-colors">Terms of Service</span>
+                    <!-- Links triggers modal -->
+                    <button onclick="openLegalModal('privacy')" class="hover:text-slate-300 cursor-pointer transition-colors focus:outline-none">Privacy Policy</button>
+                    <button onclick="openLegalModal('terms')" class="hover:text-slate-300 cursor-pointer transition-colors focus:outline-none">Terms of Service</button>
                     <span class="flex items-center gap-2 px-2 py-1 bg-emerald-500/10 rounded-full border border-emerald-500/20">
                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div> 
                         <span class="text-xs text-emerald-400 font-medium">System Operational</span>
@@ -724,7 +789,55 @@
                 setTimeout(() => el.remove(), 300);
             }, 3000);
         }
+
+        // --- NEW: MODAL LOGIC ---
+        window.openLegalModal = (mode = 'all') => {
+            const modal = document.getElementById('legal-modal');
+            const terms = document.getElementById('modal-section-terms');
+            const privacy = document.getElementById('modal-section-privacy');
+            const divider = document.getElementById('modal-divider');
+
+            // Reset visibilities
+            terms.classList.remove('hidden');
+            privacy.classList.remove('hidden');
+            divider.classList.remove('hidden');
+
+            // Apply logic
+            if (mode === 'terms') {
+                privacy.classList.add('hidden');
+                divider.classList.add('hidden');
+            } else if (mode === 'privacy') {
+                terms.classList.add('hidden');
+                divider.classList.add('hidden');
+            }
+            // 'all' keeps everything visible
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Trigger reflow/animation
+            // Note: simple flex display works with Tailwind transition-opacity if opacity handled
+        };
+
+        window.closeLegalModal = () => {
+            const modal = document.getElementById('legal-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        // Close modal on click outside
+        document.getElementById('legal-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'legal-modal') {
+                window.closeLegalModal();
+            }
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                window.closeLegalModal();
+            }
+        });
+
     </script>
 </body>
 </html>
-
