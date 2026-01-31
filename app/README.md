@@ -176,7 +176,7 @@ Add the following assets to an `assets/` directory:
 
 **Anshdeep Singh**
 
-- [Portfolio](http://ansh200618.github.io/Portfolio/)
+- [Portfolio](https://ansh200618.github.io/Portfolio/)
 - [LinkedIn](https://www.linkedin.com/in/anshdeep-singh-editor)
 
 ## 📄 License

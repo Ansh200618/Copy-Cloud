@@ -114,7 +114,7 @@ export default function AboutScreen() {
           <View style={styles.linkContainer}>
             <TouchableOpacity
               style={styles.linkButton}
-              onPress={() => openLink('http://ansh200618.github.io/Portfolio/')}
+              onPress={() => openLink('https://ansh200618.github.io/Portfolio/')}
             >
               <Text style={styles.linkButtonText}>🌐 Portfolio</Text>
             </TouchableOpacity>

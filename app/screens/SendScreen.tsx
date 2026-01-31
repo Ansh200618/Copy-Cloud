@@ -10,28 +10,30 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
-import { getAuth, signInAnonymously } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { signInAnonymously } from 'firebase/auth';
+import { db, auth } from '../config/firebase';
 
-// TODO: Replace with your Firebase configuration
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+interface DocumentAsset {
+  name: string;
+  size?: number;
+  uri: string;
+  mimeType?: string;
+}
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+interface ClipboardData {
+  type: 'text' | 'file';
+  createdAt: string;
+  expiresAt: string;
+  content?: string;
+  fileName?: string;
+  fileType?: string;
+  fileSize?: number;
+}
 
 export default function SendScreen() {
   const [text, setText] = useState('');
-  const [file, setFile] = useState<any>(null);
+  const [file, setFile] = useState<DocumentAsset | null>(null);
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [contentType, setContentType] = useState<'text' | 'file'>('text');
@@ -89,7 +91,7 @@ export default function SendScreen() {
       const newCode = generateCode();
       
       // Prepare data
-      const data: any = {
+      const data: ClipboardData = {
         type: contentType,
         createdAt: new Date().toISOString(),
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
