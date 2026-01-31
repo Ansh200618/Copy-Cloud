@@ -188,7 +188,7 @@ export default function SendScreen() {
             </TouchableOpacity>
             {file && (
               <Text style={styles.fileInfo}>
-                {file.name} ({Math.round(file.size / 1024)}KB)
+                {file.name} ({file.size ? Math.round(file.size / 1024) : 0}KB)
               </Text>
             )}
           </View>

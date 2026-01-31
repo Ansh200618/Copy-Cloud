@@ -37,9 +37,7 @@ A native iOS and Android mobile application for the Online Clipboard service, bu
    ```
 
 2. **Configure Firebase**
-   - Update Firebase configuration in:
-     - `screens/SendScreen.tsx`
-     - `screens/RetrieveScreen.tsx`
+   - Update Firebase configuration in `config/firebase.ts`
    - Replace the placeholder values with your Firebase project credentials:
      ```typescript
      const firebaseConfig = {
