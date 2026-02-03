@@ -8,63 +8,20 @@
     <meta name="application-name" content="Copy Cloud">
     <meta name="apple-mobile-web-app-title" content="Copy Cloud">
     <meta name="description" content="Copy Cloud is a secure online clipboard for no-login transfer. Share text and files between devices anonymously. Temporary file storage that auto-deletes after 24 hours.">
-    <meta name="description" content="Free online clipboard. Share text and files up to 40MB anonmously without login.">
-    <meta name="keywords" content="online clipboard, no login transfer, copy paste online, share text between devices, temporary file storage, secure clipboard, anonymous file transfer, cloud clipboard, copy cloud, transfer files without account, cross platform clipboard, free file sharing, copy text to phone, paste from computer">
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Anshdeep Singh">
-    <meta name="google-site-verification" content="zUIv4rZus97oBoL6cnrCNeKngCIuHRzdncwD9e0eDRw" />
-    <link rel="canonical" href="https://copycloud.vercel.app/" />
-
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="apple-touch-icon" href="/favicon.svg">
-
-    <meta property="og:site_name" content="Copy Cloud">
-    <meta property="og:title" content="Copy Cloud - Free Online Clipboard">
-    <meta property="og:description" content="Instantly share text and files between devices without logging in.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://copycloud.vercel.app/">
     
-    <script type="application/ld+json">
-    [
-        {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": "Copy Cloud",
-            "alternateName": ["CopyCloud", "Online Clipboard"],
-            "url": "https://copycloud.vercel.app/"
-        },
-        {
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "Copy Cloud",
-            "applicationCategory": "UtilityApplication",
-            "operatingSystem": "Any",
-            "description": "Secure online clipboard for anonymous text and file transfer without login.",
-            "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-            },
-            "featureList": "No login required, 24-hour auto-delete, Cross-device sync, Encrypted transfer, Free file sharing"
-        }
-    ]
-    </script>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
     <style>
         body { font-family: 'Inter', sans-serif; }
-        
-        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
-        /* Animation Utilities */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         
@@ -435,17 +392,31 @@
 
         const supabase = window.supabase.createClient(SB_URL, SB_KEY);
 
-        // 2. INITIALIZATION (LOADING SCREEN FIX)
-        window.addEventListener('load', () => {
-            // Keep the loading screen for 1.5 seconds so it looks cool, then fade it out.
-            setTimeout(() => {
-                const loader = document.getElementById('loading-screen');
-                if (loader) {
-                    loader.style.opacity = '0'; 
-                    setTimeout(() => loader.remove(), 500); 
-                }
-            }, 1500);
+        // 2. LOADING SCREEN LOGIC (TRIPLE REDUNDANCY TO PREVENT STICKING)
+        // We use three methods to ensure the loading screen is removed.
+        function hideLoadingScreen() {
+            const loader = document.getElementById('loading-screen');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => { 
+                    if(loader.parentNode) loader.parentNode.removeChild(loader); 
+                }, 500);
+            }
+        }
+
+        // Method A: Run on DOMContentLoaded (Fastest)
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(hideLoadingScreen, 1500); // Wait 1.5s for effect
         });
+
+        // Method B: Run on window.load (Safe)
+        window.addEventListener('load', () => {
+            setTimeout(hideLoadingScreen, 1500);
+        });
+
+        // Method C: Force remove after 3 seconds (Fail-safe)
+        setTimeout(hideLoadingScreen, 3000);
+
 
         // 3. UI VARIABLES
         let selectedFile = null; 
