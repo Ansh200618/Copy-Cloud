@@ -8,6 +8,7 @@
     <meta name="application-name" content="Copy Cloud">
     <meta name="apple-mobile-web-app-title" content="Copy Cloud">
     <meta name="description" content="Copy Cloud is a secure online clipboard for no-login transfer. Share text and files between devices anonymously. Temporary file storage that auto-deletes after 24 hours.">
+    <meta name="description" content="Free online clipboard. Share text and files up to 40MB anonmously without login.">
     <meta name="keywords" content="online clipboard, no login transfer, copy paste online, share text between devices, temporary file storage, secure clipboard, anonymous file transfer, cloud clipboard, copy cloud, transfer files without account, cross platform clipboard, free file sharing, copy text to phone, paste from computer">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Anshdeep Singh">
@@ -132,7 +133,7 @@
                         <p>We respect your privacy. Here is how we handle your data:</p>
                         <div class="bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-xl">
                             <p class="text-indigo-200 font-medium text-xs uppercase mb-1">Data Handling</p>
-                            <p class="text-indigo-100">Files and text are stored securely in our Supabase database and are only accessible via the unique 6-character code generated at upload.</p>
+                            <p class="text-indigo-100">Files and text are stored securely in our database and are only accessible via the unique 6-character code generated at upload.</p>
                         </div>
                         <ul class="list-disc pl-5 space-y-1 marker:text-emerald-500">
                             <li><strong>Data Deletion:</strong> All user data is permanently purged from our systems automatically after the 24-hour expiration period.</li>
@@ -213,7 +214,7 @@
                                         </div>
                                         <p class="text-slate-300 font-medium mb-1">Click to upload file</p>
                                         <p class="text-slate-500 text-xs">Images, Documents, Audio</p>
-                                        <div class="mt-4 px-3 py-1 bg-white/5 rounded-full text-[10px] text-emerald-400 border border-white/5 inline-block">Max 5MB</div>
+                                        <div class="mt-4 px-3 py-1 bg-white/5 rounded-full text-[10px] text-emerald-400 border border-white/5 inline-block">Max 40MB</div>
                                     </div>
 
                                     <div id="file-selected-state" class="hidden absolute inset-0 w-full h-full bg-slate-900/90 flex flex-col items-center justify-center z-20">
@@ -334,14 +335,14 @@
                         <div class="bg-white/5 p-6 rounded-2xl border border-white/5">
                             <i data-lucide="zap" class="text-purple-400 mb-4 w-6 h-6"></i>
                             <h3 class="text-lg font-bold text-white mb-2">Instant Transfer</h3>
-                            <p class="text-slate-400 text-sm leading-relaxed">Powered by Supabase PostgreSQL database for low latency between devices.</p>
+                            <p class="text-slate-400 text-sm leading-relaxed">Powered by Supabase Database.</p>
                         </div>
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-white mb-4">Usage Limits</h3>
                         <ul class="space-y-2 text-slate-400 text-sm">
                             <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Text: Unlimited Characters</li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Files: Max 5MB</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Files: Max 40MB</li>
                             <li class="flex items-center gap-2"><i data-lucide="clock" class="text-rose-500 w-4 h-4"></i> Expiration: 24 Hours</li>
                         </ul>
                     </div>
@@ -358,7 +359,7 @@
                     <div class="space-y-4">
                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
                             <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="upload" class="w-5 h-5"></i></div>
-                            <div><h4 class="text-white font-medium text-sm mb-1">Upload Content</h4><p class="text-slate-400 text-xs leading-relaxed">Paste text or select a file (up to 5MB) in the 'Send' tab.</p></div>
+                            <div><h4 class="text-white font-medium text-sm mb-1">Upload Content</h4><p class="text-slate-400 text-xs leading-relaxed">Paste text or select a file (up to 40MB) in the 'Send' tab.</p></div>
                         </div>
                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
                             <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="shield" class="w-5 h-5"></i></div>
@@ -428,24 +429,29 @@
         // Initialize Lucide Icons
         lucide.createIcons();
 
-        // --- SUPABASE CONFIGURATION ---
-        // Your Keys are pre-filled here
+        // 1. SUPABASE CONFIGURATION
         const SB_URL = 'https://luunzeonlmzvmewaucqj.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dW56ZW9ubG16dm1ld2F1Y3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMzAyNzEsImV4cCI6MjA4NTcwNjI3MX0.qQpWEGFLg6Weof0NO_ApntTrGGYVsrsNB2zaujRMuFY';
 
         const supabase = window.supabase.createClient(SB_URL, SB_KEY);
 
-        // Remove loading screen immediately (no auth wait time needed for Supabase RLS)
-        setTimeout(() => {
-            const loader = document.getElementById('loading-screen');
-            loader.style.opacity = '0';
-            setTimeout(() => loader.remove(), 500);
-        }, 800);
+        // 2. INITIALIZATION (LOADING SCREEN FIX)
+        window.addEventListener('load', () => {
+            // Keep the loading screen for 1.5 seconds so it looks cool, then fade it out.
+            setTimeout(() => {
+                const loader = document.getElementById('loading-screen');
+                if (loader) {
+                    loader.style.opacity = '0'; 
+                    setTimeout(() => loader.remove(), 500); 
+                }
+            }, 1500);
+        });
 
+        // 3. UI VARIABLES
         let selectedFile = null; 
         let currentInputType = 'text';
 
-        // 3. UI STATE FUNCTIONS
+        // 4. UI FUNCTIONS
         window.switchTab = (tabName) => {
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.className = "nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5";
@@ -488,9 +494,9 @@
             const file = event.target.files[0];
             if (!file) return;
 
-            // 5MB Limit
-            if (file.size > 5 * 1024 * 1024) {
-                showNotification("File too large. Limit is 5MB.", "error");
+            // --- CHANGED LIMIT TO 40MB ---
+            if (file.size > 40 * 1024 * 1024) { 
+                showNotification("File too large. Max 40MB.", "error");
                 event.target.value = "";
                 return;
             }
@@ -499,7 +505,6 @@
             const reader = new FileReader();
             reader.onloadend = () => {
                 selectedFile = file;
-                // Add preview data to file object for UI only
                 selectedFile.preview = file.type.startsWith('image/') ? reader.result : null;
                 updateFileUI();
             };
@@ -538,7 +543,7 @@
             updateFileUI();
         };
 
-        // 4. SUPABASE LOGIC: SEND
+        // 5. SUPABASE LOGIC: SEND
         window.handleSend = async () => {
             const textVal = document.getElementById('text-input').value;
 
@@ -562,8 +567,9 @@
             let mimeType = "text/plain";
             
             try {
-                // Handle File Upload to Storage Bucket 'uploads'
+                // HANDLE FILE UPLOAD (SUPABASE STORAGE)
                 if (currentInputType === 'file') {
+                    // Unique name to prevent collision
                     fileName = `${code}-${selectedFile.name}`;
                     const { data, error } = await supabase.storage
                         .from('uploads')
@@ -571,25 +577,24 @@
                     
                     if (error) throw error;
                     
-                    contentValue = fileName; // Store path
+                    contentValue = fileName; // We store the path to the file
                     fileName = selectedFile.name;
                     fileSize = selectedFile.size;
                     mimeType = selectedFile.type;
                 } else {
-                    // Handle Text
+                    // HANDLE TEXT
                     contentValue = textVal;
                     fileSize = new Blob([textVal]).size;
                 }
 
-                // Insert into Database
+                // SAVE TO DATABASE
                 const { error: dbError } = await supabase
                     .from('clips')
                     .insert([{ 
                         code: code, 
                         content: contentValue, 
                         type: currentInputType,
-                        created_at: new Date(),
-                        // Storing extra metadata if needed (optional based on your schema)
+                        created_at: new Date()
                     }]);
 
                 if (dbError) throw dbError;
@@ -624,7 +629,7 @@
         };
 
 
-        // 5. SUPABASE LOGIC: RETRIEVE
+        // 6. SUPABASE LOGIC: RETRIEVE
         window.handleRetrieve = async () => {
             const codeInput = document.getElementById('retrieve-code-input').value.toUpperCase().trim();
             if (codeInput.length < 4) return showNotification("Enter a valid code.", "error");
@@ -693,13 +698,13 @@
                 const publicUrl = fileData.publicUrl;
 
                 document.getElementById('retrieved-filename').textContent = 'File Found';
-                document.getElementById('retrieved-filesize').textContent = ''; // Size not stored in simple schema, optional
+                document.getElementById('retrieved-filesize').textContent = ''; 
 
                 const imgEl = document.getElementById('retrieved-image');
                 const infoEl = document.getElementById('retrieved-file-info');
 
                 // Basic extension check for image preview
-                if (data.content.match(/\.(jpeg|jpg|gif|png)$/) != null) {
+                if (data.content.match(/\.(jpeg|jpg|gif|png|webp)$/i) != null) {
                     imgEl.src = publicUrl;
                     imgEl.classList.remove('hidden');
                     infoEl.classList.add('hidden');
@@ -722,7 +727,7 @@
             }
         };
 
-        // 6. UTILS
+        // 7. UTILS
         function generateId() {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
             let result = '';
@@ -775,19 +780,17 @@
             }, 3000);
         }
 
-        // --- NEW: MODAL LOGIC ---
+        // 8. MODAL LOGIC
         window.openLegalModal = (mode = 'all') => {
             const modal = document.getElementById('legal-modal');
             const terms = document.getElementById('modal-section-terms');
             const privacy = document.getElementById('modal-section-privacy');
             const divider = document.getElementById('modal-divider');
 
-            // Reset visibilities
             terms.classList.remove('hidden');
             privacy.classList.remove('hidden');
             divider.classList.remove('hidden');
 
-            // Apply logic
             if (mode === 'terms') {
                 privacy.classList.add('hidden');
                 divider.classList.add('hidden');
@@ -795,7 +798,6 @@
                 terms.classList.add('hidden');
                 divider.classList.add('hidden');
             }
-            // 'all' keeps everything visible
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -807,18 +809,12 @@
             modal.classList.remove('flex');
         };
 
-        // Close modal on click outside
         document.getElementById('legal-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'legal-modal') {
-                window.closeLegalModal();
-            }
+            if (e.target.id === 'legal-modal') window.closeLegalModal();
         });
         
-        // Close modal on Escape key
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                window.closeLegalModal();
-            }
+            if (e.key === 'Escape') window.closeLegalModal();
         });
 
     </script>
