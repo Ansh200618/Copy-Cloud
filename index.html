@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,12 +9,50 @@
     <meta name="application-name" content="Copy Cloud">
     <meta name="apple-mobile-web-app-title" content="Copy Cloud">
     <meta name="description" content="Copy Cloud is a secure online clipboard for no-login transfer. Share text and files between devices anonymously. Temporary file storage that auto-deletes after 24 hours.">
+    <meta name="keywords" content="online clipboard, no login transfer, copy paste online, share text between devices, temporary file storage, secure clipboard, anonymous file transfer, cloud clipboard, copy cloud, transfer files without account, cross platform clipboard, free file sharing, copy text to phone, paste from computer">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Anshdeep Singh">
+    <meta name="google-site-verification" content="zUIv4rZus97oBoL6cnrCNeKngCIuHRzdncwD9e0eDRw" />
+    <link rel="canonical" href="https://copycloud.vercel.app/" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/favicon.svg">
+
+    <meta property="og:site_name" content="Copy Cloud">
+    <meta property="og:title" content="Copy Cloud - Free Online Clipboard">
+    <meta property="og:description" content="Instantly share text and files between devices without logging in.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://copycloud.vercel.app/">
     
+    <script type="application/ld+json">
+    [
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Copy Cloud",
+            "alternateName": ["CopyCloud", "Online Clipboard"],
+            "url": "https://copycloud.vercel.app/"
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Copy Cloud",
+            "applicationCategory": "UtilityApplication",
+            "operatingSystem": "Any",
+            "description": "Secure online clipboard for anonymous text and file transfer without login.",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "featureList": "No login required, 24-hour auto-delete, Cross-device sync, Encrypted transfer, Free file sharing"
+        }
+    ]
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -174,7 +213,7 @@
                                         </div>
                                         <p class="text-slate-300 font-medium mb-1">Click to upload file</p>
                                         <p class="text-slate-500 text-xs">Images, Documents, Audio</p>
-                                        <div class="mt-4 px-3 py-1 bg-white/5 rounded-full text-[10px] text-emerald-400 border border-white/5 inline-block">Max 40MB</div>
+                                        <div class="mt-4 px-3 py-1 bg-white/5 rounded-full text-[10px] text-emerald-400 border border-white/5 inline-block">Max 1MB</div>
                                     </div>
 
                                     <div id="file-selected-state" class="hidden absolute inset-0 w-full h-full bg-slate-900/90 flex flex-col items-center justify-center z-20">
@@ -295,14 +334,14 @@
                         <div class="bg-white/5 p-6 rounded-2xl border border-white/5">
                             <i data-lucide="zap" class="text-purple-400 mb-4 w-6 h-6"></i>
                             <h3 class="text-lg font-bold text-white mb-2">Instant Transfer</h3>
-                            <p class="text-slate-400 text-sm leading-relaxed">Powered by Supabase Database.</p>
+                            <p class="text-slate-400 text-sm leading-relaxed">Powered by Firebase Firestore real-time database for millisecond latency between devices.</p>
                         </div>
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-white mb-4">Usage Limits</h3>
                         <ul class="space-y-2 text-slate-400 text-sm">
                             <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Text: Unlimited Characters</li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Files: Max 40MB</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Files: Max 1MB</li>
                             <li class="flex items-center gap-2"><i data-lucide="clock" class="text-rose-500 w-4 h-4"></i> Expiration: 24 Hours</li>
                         </ul>
                     </div>
@@ -319,7 +358,7 @@
                     <div class="space-y-4">
                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
                             <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="upload" class="w-5 h-5"></i></div>
-                            <div><h4 class="text-white font-medium text-sm mb-1">Upload Content</h4><p class="text-slate-400 text-xs leading-relaxed">Paste text or select a file (up to 40MB) in the 'Send' tab.</p></div>
+                            <div><h4 class="text-white font-medium text-sm mb-1">Upload Content</h4><p class="text-slate-400 text-xs leading-relaxed">Paste text or select a file (up to 1MB) in the 'Send' tab.</p></div>
                         </div>
                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
                             <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="shield" class="w-5 h-5"></i></div>
@@ -385,47 +424,57 @@
         </footer>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+        
+        // NO STORAGE IMPORTS NEEDED FOR DATABASE-ONLY VERSION
+
         // Initialize Lucide Icons
         lucide.createIcons();
 
-        // 1. SUPABASE CONFIGURATION
-        const SB_URL = 'https://luunzeonlmzvmewaucqj.supabase.co';
-        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dW56ZW9ubG16dm1ld2F1Y3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMzAyNzEsImV4cCI6MjA4NTcwNjI3MX0.qQpWEGFLg6Weof0NO_ApntTrGGYVsrsNB2zaujRMuFY';
+        // 1. CONFIGURATION (YOUR KEYS ARE HERE)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUkLRcMOWXc_Gc5uC7H6oM0Vll2ojBXo8",
+            authDomain: "my-online-clipboard.firebaseapp.com",
+            projectId: "my-online-clipboard",
+            storageBucket: "my-online-clipboard.firebasestorage.app",
+            messagingSenderId: "215450582617",
+            appId: "1:215450582617:web:fe40c881cda4d4eb243b48"
+        };
+        
+        const appId = 'my-clipboard-live'; 
 
-        const supabase = window.supabase.createClient(SB_URL, SB_KEY);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        // 2. LOADING SCREEN LOGIC (TRIPLE REDUNDANCY TO PREVENT STICKING)
-        // We use three methods to ensure the loading screen is removed.
-        function hideLoadingScreen() {
-            const loader = document.getElementById('loading-screen');
-            if (loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => { 
-                    if(loader.parentNode) loader.parentNode.removeChild(loader); 
-                }, 500);
-            }
-        }
-
-        // Method A: Run on DOMContentLoaded (Fastest)
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(hideLoadingScreen, 1500); // Wait 1.5s for effect
-        });
-
-        // Method B: Run on window.load (Safe)
-        window.addEventListener('load', () => {
-            setTimeout(hideLoadingScreen, 1500);
-        });
-
-        // Method C: Force remove after 3 seconds (Fail-safe)
-        setTimeout(hideLoadingScreen, 3000);
-
-
-        // 3. UI VARIABLES
+        let currentUser = null;
         let selectedFile = null; 
         let currentInputType = 'text';
 
-        // 4. UI FUNCTIONS
+        // 2. AUTHENTICATION
+        const initAuth = async () => {
+            try {
+                await signInAnonymously(auth);
+            } catch (error) {
+                console.error("Auth error:", error);
+                showNotification("Authentication failed. Please refresh.", "error");
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading-screen').remove(), 500);
+            }
+        });
+
+        initAuth();
+
+        // 3. UI STATE FUNCTIONS
         window.switchTab = (tabName) => {
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.className = "nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5";
@@ -468,9 +517,9 @@
             const file = event.target.files[0];
             if (!file) return;
 
-            // --- CHANGED LIMIT TO 40MB ---
-            if (file.size > 40 * 1024 * 1024) { 
-                showNotification("File too large. Max 40MB.", "error");
+            // 1MB Limit (Strict Database Limit)
+            if (file.size > 1000 * 1024) {
+                showNotification("File too large. Free limit is 1MB.", "error");
                 event.target.value = "";
                 return;
             }
@@ -478,8 +527,13 @@
             // Preview logic
             const reader = new FileReader();
             reader.onloadend = () => {
-                selectedFile = file;
-                selectedFile.preview = file.type.startsWith('image/') ? reader.result : null;
+                selectedFile = {
+                    base64: reader.result, // Use base64 directly
+                    name: file.name,
+                    size: file.size,
+                    mimeType: file.type,
+                    preview: file.type.startsWith('image/') ? reader.result : null
+                };
                 updateFileUI();
             };
             reader.readAsDataURL(file);
@@ -517,8 +571,10 @@
             updateFileUI();
         };
 
-        // 5. SUPABASE LOGIC: SEND
+        // 4. LOGIC: SEND
         window.handleSend = async () => {
+            if (!currentUser) return showNotification("Connecting...", "info");
+
             const textVal = document.getElementById('text-input').value;
 
             if (currentInputType === 'text' && !textVal.trim()) {
@@ -535,43 +591,23 @@
             document.getElementById('send-btn-spinner').classList.remove('hidden');
 
             const code = generateId();
-            let contentValue = "";
-            let fileName = "";
-            let fileSize = 0;
-            let mimeType = "text/plain";
             
             try {
-                // HANDLE FILE UPLOAD (SUPABASE STORAGE)
-                if (currentInputType === 'file') {
-                    // Unique name to prevent collision
-                    fileName = `${code}-${selectedFile.name}`;
-                    const { data, error } = await supabase.storage
-                        .from('uploads')
-                        .upload(fileName, selectedFile);
-                    
-                    if (error) throw error;
-                    
-                    contentValue = fileName; // We store the path to the file
-                    fileName = selectedFile.name;
-                    fileSize = selectedFile.size;
-                    mimeType = selectedFile.type;
-                } else {
-                    // HANDLE TEXT
-                    contentValue = textVal;
-                    fileSize = new Blob([textVal]).size;
-                }
+                // Save to Firestore (Database Only - No Storage Bucket)
+                const docPath = `artifacts/${appId}/public/data/clipboard_items/${code}`;
+                
+                const payload = {
+                    id: code,
+                    type: currentInputType,
+                    content: currentInputType === 'text' ? textVal : selectedFile.base64, // Store Base64 directly
+                    filename: currentInputType === 'file' ? selectedFile.name : null,
+                    mimeType: currentInputType === 'file' ? selectedFile.mimeType : 'text/plain',
+                    size: currentInputType === 'file' ? selectedFile.size : new Blob([textVal]).size,
+                    createdAt: serverTimestamp(),
+                    device: navigator.platform || 'Web Client',
+                };
 
-                // SAVE TO DATABASE
-                const { error: dbError } = await supabase
-                    .from('clips')
-                    .insert([{ 
-                        code: code, 
-                        content: contentValue, 
-                        type: currentInputType,
-                        created_at: new Date()
-                    }]);
-
-                if (dbError) throw dbError;
+                await setDoc(doc(db, docPath), payload);
 
                 // Show Success
                 document.getElementById('send-input-view').classList.add('hidden');
@@ -582,7 +618,7 @@
 
             } catch (error) {
                 console.error("Upload Error:", error);
-                showNotification("Upload failed. " + error.message, "error");
+                showNotification("Upload failed. Try again.", "error");
             } finally {
                 btn.disabled = false;
                 document.getElementById('send-btn-text').classList.remove('hidden');
@@ -603,7 +639,7 @@
         };
 
 
-        // 6. SUPABASE LOGIC: RETRIEVE
+        // 5. LOGIC: RETRIEVE
         window.handleRetrieve = async () => {
             const codeInput = document.getElementById('retrieve-code-input').value.toUpperCase().trim();
             if (codeInput.length < 4) return showNotification("Enter a valid code.", "error");
@@ -614,21 +650,27 @@
             document.getElementById('retrieve-spinner').classList.remove('hidden');
             document.getElementById('retrieved-content-area').classList.add('hidden');
 
+            const docPath = `artifacts/${appId}/public/data/clipboard_items/${codeInput}`;
+
             try {
-                // Fetch from Database
-                const { data, error } = await supabase
-                    .from('clips')
-                    .select('*')
-                    .eq('code', codeInput)
-                    .single();
+                const docSnap = await getDoc(doc(db, docPath));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
 
-                if (error || !data) {
-                    showNotification("Code not found or expired.", "error");
+                    // --- EXPIRATION CHECK (24h) ---
+                    const createdTime = data.createdAt ? data.createdAt.toMillis() : 0;
+                    const oneDayMs = 24 * 60 * 60 * 1000;
+                    
+                    if (Date.now() - createdTime > oneDayMs) {
+                        showNotification("This code has expired (24h limit).", "error");
+                    } else {
+                        displayRetrievedContent(data, codeInput);
+                        showNotification("Content Found!", "success");
+                    }
+
                 } else {
-                    displayRetrievedContent(data, codeInput);
-                    showNotification("Content Found!", "success");
+                    showNotification("Code not found or expired.", "error");
                 }
-
             } catch (error) {
                 console.error("Retrieve Error", error);
                 showNotification("Error fetching content.", "error");
@@ -647,7 +689,7 @@
             area.classList.remove('hidden');
 
             document.getElementById('retrieved-type-text').textContent = data.type;
-            document.getElementById('retrieved-date').textContent = new Date(data.created_at).toLocaleString();
+            document.getElementById('retrieved-date').textContent = new Date(data.createdAt.seconds * 1000).toLocaleString();
 
             const textContainer = document.getElementById('retrieved-text-container');
             const fileContainer = document.getElementById('retrieved-file-container');
@@ -664,22 +706,14 @@
                 textContainer.classList.add('hidden');
                 fileContainer.classList.remove('hidden');
                 
-                // Get Public URL for file
-                const { data: fileData } = supabase.storage
-                    .from('uploads')
-                    .getPublicUrl(data.content);
-
-                const publicUrl = fileData.publicUrl;
-
-                document.getElementById('retrieved-filename').textContent = 'File Found';
-                document.getElementById('retrieved-filesize').textContent = ''; 
+                document.getElementById('retrieved-filename').textContent = data.filename || 'file';
+                document.getElementById('retrieved-filesize').textContent = formatBytes(data.size);
 
                 const imgEl = document.getElementById('retrieved-image');
                 const infoEl = document.getElementById('retrieved-file-info');
 
-                // Basic extension check for image preview
-                if (data.content.match(/\.(jpeg|jpg|gif|png|webp)$/i) != null) {
-                    imgEl.src = publicUrl;
+                if (data.mimeType && data.mimeType.startsWith('image/')) {
+                    imgEl.src = data.content;
                     imgEl.classList.remove('hidden');
                     infoEl.classList.add('hidden');
                 } else {
@@ -690,8 +724,9 @@
                 // Buttons
                 copyBtn.classList.add('hidden');
                 dlBtn.classList.remove('hidden');
-                dlBtn.href = publicUrl; 
-                dlBtn.download = `clipboard-${code}`;
+                // Use the Base64 Data URI directly
+                dlBtn.href = data.content; 
+                dlBtn.download = data.filename || `clipboard-${code}`;
             }
         }
 
@@ -701,7 +736,7 @@
             }
         };
 
-        // 7. UTILS
+        // 6. UTILS
         function generateId() {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
             let result = '';
@@ -754,17 +789,19 @@
             }, 3000);
         }
 
-        // 8. MODAL LOGIC
+        // --- NEW: MODAL LOGIC ---
         window.openLegalModal = (mode = 'all') => {
             const modal = document.getElementById('legal-modal');
             const terms = document.getElementById('modal-section-terms');
             const privacy = document.getElementById('modal-section-privacy');
             const divider = document.getElementById('modal-divider');
 
+            // Reset visibilities
             terms.classList.remove('hidden');
             privacy.classList.remove('hidden');
             divider.classList.remove('hidden');
 
+            // Apply logic
             if (mode === 'terms') {
                 privacy.classList.add('hidden');
                 divider.classList.add('hidden');
@@ -772,9 +809,12 @@
                 terms.classList.add('hidden');
                 divider.classList.add('hidden');
             }
+            // 'all' keeps everything visible
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            // Trigger reflow/animation
+            // Note: simple flex display works with Tailwind transition-opacity if opacity handled
         };
 
         window.closeLegalModal = () => {
@@ -783,14 +823,30 @@
             modal.classList.remove('flex');
         };
 
+        // Close modal on click outside
         document.getElementById('legal-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'legal-modal') window.closeLegalModal();
+            if (e.target.id === 'legal-modal') {
+                window.closeLegalModal();
+            }
         });
         
+        // Close modal on Escape key
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') window.closeLegalModal();
+            if (e.key === 'Escape') {
+                window.closeLegalModal();
+            }
         });
 
     </script>
+
+    <script>
+        window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
+
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
