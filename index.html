@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- SEO & Identity -->
     <title>Copy Cloud - Online Clipboard & No Login Transfer</title>
     <meta name="application-name" content="Copy Cloud">
     <meta name="apple-mobile-web-app-title" content="Copy Cloud">
@@ -14,15 +15,29 @@
     <meta name="google-site-verification" content="zUIv4rZus97oBoL6cnrCNeKngCIuHRzdncwD9e0eDRw" />
     <link rel="canonical" href="https://copycloud.vercel.app/" />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="apple-touch-icon" href="/favicon.svg">
-
+    <!-- Open Graph / Facebook -->
     <meta property="og:site_name" content="Copy Cloud">
     <meta property="og:title" content="Copy Cloud - Free Online Clipboard">
     <meta property="og:description" content="Instantly share text and files between devices without logging in.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://copycloud.vercel.app/">
+    <meta property="og:image" content="https://copycloud.vercel.app/og-image.png"> 
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Copy Cloud - Free Online Clipboard">
+    <meta name="twitter:description" content="Instantly share text and files between devices without logging in.">
+
+    <!-- FAVICON AREA -->
+    <link rel="icon" type="image/x-icon" href="assets/favicons/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="assets/favicons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicons/favicon-96x96.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/favicons/web-app-manifest-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicons/web-app-manifest-512x512.png">
+    <link rel="manifest" href="assets/favicons/site.webmanifest">
     
+    <!-- JSON-LD Structured Data for Google -->
     <script type="application/ld+json">
     [
         {
@@ -49,10 +64,11 @@
     ]
     </script>
 
+    <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -71,6 +87,11 @@
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .animate-spin-custom { animation: spin 1s linear infinite; }
 
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
         .glass-panel {
             background-color: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(20px);
@@ -86,10 +107,37 @@
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-950 via-[#0f172a] to-slate-950 opacity-100"></div>
         <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E')"></div>
-        <div class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px]"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[100px]"></div>
     </div>
 
+    <!-- PROGRESS MODAL -->
+    <div id="upload-progress-modal" class="fixed inset-0 z-[80] bg-black/90 backdrop-blur-md hidden flex-col items-center justify-center p-4 animate-fade-in">
+        <div class="w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+            <!-- Decoration -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+            
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-white font-bold flex items-center gap-2">
+                    <i data-lucide="cloud-upload" class="text-indigo-400 w-5 h-5"></i> Uploading...
+                </h3>
+                <span id="progress-percent" class="text-indigo-300 font-mono font-bold">0%</span>
+            </div>
+    
+            <!-- Progress Bar Track -->
+            <div class="h-4 bg-black/50 rounded-full overflow-hidden border border-white/5 mb-3">
+                <!-- Progress Bar Fill -->
+                <div id="progress-bar-fill" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 w-0 transition-all duration-150 ease-out relative">
+                     <div class="absolute inset-0 bg-white/20" style="animation: shimmer 2s infinite;"></div>
+                </div>
+            </div>
+    
+            <div class="flex justify-between text-xs font-medium text-slate-400 font-mono">
+                <span id="progress-stats">0.0 MB / 0.0 MB</span>
+                <span id="progress-file-name" class="truncate max-w-[150px] text-right">Initializing...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Modal -->
     <div id="legal-modal" class="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-2xl flex flex-col max-h-[85vh] shadow-2xl animate-fade-in relative overflow-hidden">
             <div class="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
@@ -145,6 +193,7 @@
         </div>
     </div>
 
+    <!-- Main App Container -->
     <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col min-h-screen">
         
         <header class="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
@@ -175,6 +224,7 @@
             
             <div class="lg:col-span-8 w-full space-y-6">
                 
+                <!-- SEND TAB -->
                 <div id="tab-send" class="glass-panel rounded-3xl p-1 shadow-2xl animate-fade-in">
                     <div class="bg-slate-900/50 rounded-[22px] p-6 sm:p-8 border border-white/5 relative overflow-hidden">
                         
@@ -191,7 +241,7 @@
                                     <i data-lucide="file-text" class="w-4 h-4"></i> Text
                                 </button>
                                 <button onclick="setInputType('file')" id="type-file-btn" class="py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm text-slate-400 hover:text-white">
-                                    <i data-lucide="file" class="w-4 h-4"></i> File
+                                    <i data-lucide="files" class="w-4 h-4"></i> Files
                                 </button>
                             </div>
 
@@ -205,31 +255,49 @@
                                         <div class="w-16 h-16 bg-indigo-500/10 rounded-full flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
                                             <i data-lucide="upload" class="text-indigo-400 w-7 h-7"></i>
                                         </div>
-                                        <p class="text-slate-300 font-medium mb-1">Click to upload file</p>
+                                        <p class="text-slate-300 font-medium mb-1">Click to upload files</p>
                                         <p class="text-slate-500 text-xs">Images, Documents, Audio</p>
-                                        <div class="mt-4 px-3 py-1 bg-white/5 rounded-full text-[10px] text-emerald-400 border border-white/5 inline-block">Max 40MB</div>
+                                        <div class="mt-4 px-3 py-1 bg-white/5 rounded-full text-[10px] text-emerald-400 border border-white/5 inline-block">Max 40MB Total</div>
                                     </div>
 
                                     <div id="file-selected-state" class="hidden absolute inset-0 w-full h-full bg-slate-900/90 flex flex-col items-center justify-center z-20">
-                                        <img id="file-preview-img" class="h-24 object-contain rounded-lg mb-3 shadow-lg hidden" />
-                                        <i id="file-preview-icon" data-lucide="file" class="text-indigo-400 w-12 h-12 mb-3 hidden"></i>
-                                        <p id="file-name" class="text-white font-medium text-sm truncate max-w-[80%] px-4">filename.txt</p>
+                                        <!-- Single File Preview -->
+                                        <div id="single-file-preview" class="flex flex-col items-center hidden">
+                                            <img id="file-preview-img" class="h-24 object-contain rounded-lg mb-3 shadow-lg hidden" />
+                                            <i id="file-preview-icon" data-lucide="file" class="text-indigo-400 w-12 h-12 mb-3 hidden"></i>
+                                            <p id="file-name" class="text-white font-medium text-sm truncate max-w-[80%] px-4">filename.txt</p>
+                                        </div>
+                                        
+                                        <!-- Multiple Files Preview -->
+                                        <div id="multi-file-preview" class="flex flex-col items-center hidden">
+                                            <div class="relative w-16 h-16 mb-4">
+                                                <i data-lucide="files" class="text-indigo-400 w-16 h-16 absolute top-0 left-0"></i>
+                                                <span id="file-count-badge" class="absolute -top-1 -right-1 bg-emerald-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-slate-900">0</span>
+                                            </div>
+                                            <p class="text-white font-medium text-sm mb-1"><span id="files-count-text">0</span> files selected</p>
+                                        </div>
+
                                         <p id="file-size" class="text-slate-500 text-xs mt-1">0 KB</p>
+
                                         <button onclick="clearFileSelection(event)" class="absolute top-3 right-3 bg-black/50 hover:bg-rose-500/80 text-white p-2 rounded-full transition-colors backdrop-blur-md">
                                             <i data-lucide="x" class="w-4 h-4"></i>
                                         </button>
                                     </div>
 
-                                    <input type="file" id="file-upload" class="absolute inset-0 opacity-0 cursor-pointer z-10" onchange="handleFileSelect(event)">
+                                    <input type="file" id="file-upload" class="absolute inset-0 opacity-0 cursor-pointer z-10" multiple onchange="handleFileSelect(event)">
                                 </div>
                             </div>
 
-                            <button onclick="handleSend()" id="send-btn" class="w-full py-4 bg-gradient-to-r from-indigo-600 via-indigo-600 to-purple-600 rounded-xl font-bold text-white shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/40 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2 border border-white/10">
-                                <span id="send-btn-text" class="flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4 fill-current"></i> Generate Secure Code</span>
-                                <i id="send-btn-spinner" data-lucide="refresh-cw" class="w-4 h-4 animate-spin-custom hidden"></i>
+                            <!-- IMPROVED SEND BUTTON -->
+                            <button onclick="handleSend()" id="send-btn" class="w-full py-4 bg-gradient-to-r from-indigo-600 via-indigo-600 to-purple-600 rounded-xl font-bold text-white shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/40 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2 border border-white/10 group">
+                                <!-- Default Text -->
+                                <span id="send-btn-text" class="flex items-center gap-2">
+                                    <i data-lucide="zap" class="w-4 h-4 fill-current"></i> Generate Secure Code
+                                </span>
                             </button>
                         </div>
 
+                        <!-- SUCCESS VIEW -->
                         <div id="send-success-view" class="text-center py-8 hidden animate-fade-in">
                             <div class="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
                                 <i data-lucide="check" class="w-10 h-10"></i>
@@ -256,6 +324,7 @@
                     </div>
                 </div>
 
+                <!-- RETRIEVE TAB -->
                 <div id="tab-retrieve" class="glass-panel rounded-3xl p-1 shadow-2xl hidden animate-fade-in">
                     <div class="bg-slate-900/50 rounded-[22px] p-6 sm:p-8 border border-white/5 min-h-[400px]">
                         <h2 class="text-xl font-bold text-white flex items-center gap-2 mb-6">
@@ -291,10 +360,12 @@
                             </div>
 
                             <div class="bg-[#0B1120] rounded-xl border border-white/10 overflow-hidden relative group shadow-inner min-h-[200px]">
+                                <!-- Text Content -->
                                 <div id="retrieved-text-container" class="p-6 hidden">
                                     <pre id="retrieved-text-content" class="text-slate-200 whitespace-pre-wrap font-mono text-sm leading-relaxed max-h-96 overflow-y-auto custom-scrollbar"></pre>
                                 </div>
 
+                                <!-- Single File Content -->
                                 <div id="retrieved-file-container" class="p-8 flex flex-col items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] hidden">
                                     <img id="retrieved-image" class="hidden max-h-80 rounded-lg shadow-2xl object-contain border border-white/10" />
                                     <div id="retrieved-file-info" class="hidden text-center">
@@ -304,7 +375,21 @@
                                     </div>
                                 </div>
 
-                                <div class="absolute top-4 right-4 flex gap-2">
+                                <!-- Multi File List Content -->
+                                <div id="retrieved-multi-file-container" class="hidden p-4">
+                                    <!-- Download All Button -->
+                                    <button id="download-zip-btn" class="w-full mb-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 transition-all">
+                                        <i data-lucide="archive" class="w-4 h-4"></i> Download All as ZIP
+                                    </button>
+
+                                    <p class="text-slate-400 text-xs font-medium mb-3 uppercase tracking-wider px-2">Available Files:</p>
+                                    <div id="retrieved-file-list" class="space-y-2 max-h-80 overflow-y-auto custom-scrollbar pr-2">
+                                        <!-- Files injected here -->
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div id="retrieved-actions" class="absolute top-4 right-4 flex gap-2">
                                     <button id="copy-retrieved-btn" onclick="copyRetrievedContent()" class="hidden px-4 py-2 bg-indigo-600/90 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg shadow-lg backdrop-blur-md flex items-center gap-2 transition-all">
                                         <i data-lucide="copy" class="w-4 h-4"></i> Copy
                                     </button>
@@ -317,6 +402,7 @@
                     </div>
                 </div>
 
+                <!-- ABOUT TAB -->
                 <div id="tab-about" class="glass-panel rounded-3xl p-8 shadow-2xl space-y-8 hidden animate-fade-in">
                     <h2 class="text-2xl font-bold text-white">Platform Information</h2>
                     <div class="grid md:grid-cols-2 gap-6">
@@ -335,7 +421,7 @@
                         <h3 class="text-lg font-bold text-white mb-4">Usage Limits</h3>
                         <ul class="space-y-2 text-slate-400 text-sm">
                             <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Text: Unlimited Characters</li>
-                            <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Files: Max 40MB</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> Files: Max 40MB Total</li>
                             <li class="flex items-center gap-2"><i data-lucide="clock" class="text-rose-500 w-4 h-4"></i> Expiration: 24 Hours</li>
                         </ul>
                     </div>
@@ -352,7 +438,7 @@
                     <div class="space-y-4">
                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
                             <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="upload" class="w-5 h-5"></i></div>
-                            <div><h4 class="text-white font-medium text-sm mb-1">Upload Content</h4><p class="text-slate-400 text-xs leading-relaxed">Paste text or select a file (up to 40MB) in the 'Send' tab.</p></div>
+                            <div><h4 class="text-white font-medium text-sm mb-1">Upload Content</h4><p class="text-slate-400 text-xs leading-relaxed">Paste text or select multiple files (up to 40MB total).</p></div>
                         </div>
                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
                             <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="shield" class="w-5 h-5"></i></div>
@@ -423,14 +509,12 @@
         lucide.createIcons();
 
         // --- SUPABASE CONFIGURATION ---
-        // I have used the exact keys you provided
         const SB_URL = 'https://luunzeonlmzvmewaucqj.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dW56ZW9ubG16dm1ld2F1Y3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMzAyNzEsImV4cCI6MjA4NTcwNjI3MX0.qQpWEGFLg6Weof0NO_ApntTrGGYVsrsNB2zaujRMuFY';
 
-        // RENAMED TO 'db' TO FIX CONFLICTS
         const db = window.supabase.createClient(SB_URL, SB_KEY);
 
-        let selectedFile = null; 
+        let selectedFiles = []; 
         let currentInputType = 'text';
 
         // UI STATE FUNCTIONS
@@ -473,44 +557,65 @@
         };
 
         window.handleFileSelect = (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
+            const files = Array.from(event.target.files);
+            if (!files.length) return;
 
-            // 40MB Limit
-            if (file.size > 40 * 1024 * 1024) {
-                showNotification("File too large. Limit is 40MB.", "error");
+            // 40MB Total Limit
+            const totalSize = files.reduce((acc, file) => acc + file.size, 0);
+
+            if (totalSize > 40 * 1024 * 1024) {
+                showNotification("Total size exceeds 40MB limit.", "error");
                 event.target.value = "";
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                selectedFile = file;
-                // We keep preview logic for UI
-                selectedFile.preview = file.type.startsWith('image/') ? reader.result : null;
-                updateFileUI();
-            };
-            reader.readAsDataURL(file);
+            selectedFiles = files;
+            updateFileUI();
         };
 
         function updateFileUI() {
             const emptyState = document.getElementById('file-empty-state');
             const selectedState = document.getElementById('file-selected-state');
+            const singlePreview = document.getElementById('single-file-preview');
+            const multiPreview = document.getElementById('multi-file-preview');
             
-            if (selectedFile) {
+            if (selectedFiles.length > 0) {
                 emptyState.classList.add('hidden');
                 selectedState.classList.remove('hidden');
                 
-                document.getElementById('file-name').textContent = selectedFile.name;
-                document.getElementById('file-size').textContent = formatBytes(selectedFile.size);
-                
-                if (selectedFile.preview) {
-                    document.getElementById('file-preview-img').src = selectedFile.preview;
-                    document.getElementById('file-preview-img').classList.remove('hidden');
-                    document.getElementById('file-preview-icon').classList.add('hidden');
+                // Calculate total size display
+                const totalSize = selectedFiles.reduce((acc, file) => acc + file.size, 0);
+                document.getElementById('file-size').textContent = formatBytes(totalSize);
+
+                if (selectedFiles.length === 1) {
+                    // Single File UI
+                    multiPreview.classList.add('hidden');
+                    singlePreview.classList.remove('hidden');
+                    singlePreview.classList.add('flex');
+
+                    const file = selectedFiles[0];
+                    document.getElementById('file-name').textContent = file.name;
+
+                    // Preview Logic
+                    if (file.type.startsWith('image/')) {
+                         const reader = new FileReader();
+                         reader.onloadend = () => {
+                             document.getElementById('file-preview-img').src = reader.result;
+                             document.getElementById('file-preview-img').classList.remove('hidden');
+                             document.getElementById('file-preview-icon').classList.add('hidden');
+                         }
+                         reader.readAsDataURL(file);
+                    } else {
+                        document.getElementById('file-preview-img').classList.add('hidden');
+                        document.getElementById('file-preview-icon').classList.remove('hidden');
+                    }
                 } else {
-                    document.getElementById('file-preview-img').classList.add('hidden');
-                    document.getElementById('file-preview-icon').classList.remove('hidden');
+                    // Multi File UI
+                    singlePreview.classList.add('hidden');
+                    multiPreview.classList.remove('hidden');
+                    
+                    document.getElementById('files-count-text').textContent = selectedFiles.length;
+                    document.getElementById('file-count-badge').textContent = selectedFiles.length;
                 }
             } else {
                 emptyState.classList.remove('hidden');
@@ -521,9 +626,97 @@
 
         window.clearFileSelection = (e) => {
             if(e) e.stopPropagation();
-            selectedFile = null;
+            selectedFiles = [];
             updateFileUI();
         };
+
+        // --- HELPER: FORCE DOWNLOAD (FIXED) ---
+        async function forceDownload(url, filename) {
+            try {
+                // Visual feedback
+                const btnIcon = document.activeElement ? document.activeElement.querySelector('i') : null;
+                const originalIcon = btnIcon ? btnIcon.getAttribute('data-lucide') : null;
+                
+                if (btnIcon) {
+                    btnIcon.setAttribute('data-lucide', 'loader-2');
+                    btnIcon.classList.add('animate-spin');
+                    lucide.createIcons();
+                } else {
+                     showNotification("Downloading...", "info");
+                }
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Network error");
+                const blob = await response.blob();
+                const blobUrl = window.URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = blobUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                
+                window.URL.revokeObjectURL(blobUrl);
+                document.body.removeChild(a);
+                
+                if (btnIcon && originalIcon) {
+                    btnIcon.setAttribute('data-lucide', originalIcon);
+                    btnIcon.classList.remove('animate-spin');
+                    lucide.createIcons();
+                }
+                
+            } catch (error) {
+                console.error("Download error:", error);
+                // Fallback
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        }
+
+        // --- CUSTOM XHR UPLOAD FUNCTION TO GET PROGRESS ---
+        function uploadFileWithProgress(file, fileName, onProgress) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                // Supabase Storage Endpoint
+                const url = `${SB_URL}/storage/v1/object/uploads/${fileName}`;
+                
+                xhr.open('POST', url);
+                
+                // Necessary Headers
+                xhr.setRequestHeader('Authorization', `Bearer ${SB_KEY}`);
+                xhr.setRequestHeader('apikey', SB_KEY);
+                // Optional: Force upsert to avoid conflicts (though we use random IDs)
+                xhr.setRequestHeader('x-upsert', 'true'); 
+                // Don't set Content-Type manually for FormData/Binary if browser handles it, 
+                // but for raw binary body, Supabase usually expects exact type or octet-stream.
+                xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        onProgress(e.loaded, e.total);
+                    }
+                };
+                
+                xhr.onload = () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        // Success
+                        resolve(fileName); // Return path
+                    } else {
+                        reject(new Error(`Upload failed: ${xhr.statusText}`));
+                    }
+                };
+                
+                xhr.onerror = () => reject(new Error('Network Error during upload'));
+                
+                xhr.send(file);
+            });
+        }
 
         // --- SUPABASE LOGIC: SEND ---
         window.handleSend = async () => {
@@ -532,35 +725,77 @@
             if (currentInputType === 'text' && !textVal.trim()) {
                 return showNotification("Please enter some text.", "error");
             }
-            if (currentInputType === 'file' && !selectedFile) {
-                return showNotification("Please select a file.", "error");
+            if (currentInputType === 'file' && selectedFiles.length === 0) {
+                return showNotification("Please select files.", "error");
             }
 
-            // UI Setup
+            // Setup Progress UI
+            const progressModal = document.getElementById('upload-progress-modal');
+            const progressBar = document.getElementById('progress-bar-fill');
+            const progressPercent = document.getElementById('progress-percent');
+            const progressStats = document.getElementById('progress-stats');
+            const progressFileName = document.getElementById('progress-file-name');
             const btn = document.getElementById('send-btn');
+            
             btn.disabled = true;
-            document.getElementById('send-btn-text').classList.add('hidden');
-            document.getElementById('send-btn-spinner').classList.remove('hidden');
 
             const code = generateId();
             let contentValue = "";
             
             try {
-                // Handle File Upload to Supabase Storage
+                // Handle File Upload
                 if (currentInputType === 'file') {
-                    const fileName = `${code}-${selectedFile.name}`;
-                    const { data, error } = await db.storage
-                        .from('uploads')
-                        .upload(fileName, selectedFile);
+                    // Show Modal
+                    progressModal.classList.remove('hidden');
+                    progressModal.classList.add('flex');
+
+                    const totalSize = selectedFiles.reduce((acc, f) => acc + f.size, 0);
+                    let loadedBytesArray = new Array(selectedFiles.length).fill(0);
+
+                    // Update UI Function
+                    const updateProgressUI = () => {
+                        const totalLoaded = loadedBytesArray.reduce((acc, bytes) => acc + bytes, 0);
+                        const percent = Math.round((totalLoaded / totalSize) * 100) || 0;
+                        
+                        progressBar.style.width = `${percent}%`;
+                        progressPercent.textContent = `${percent}%`;
+                        
+                        const mbLoaded = (totalLoaded / (1024 * 1024)).toFixed(1);
+                        const mbTotal = (totalSize / (1024 * 1024)).toFixed(1);
+                        progressStats.textContent = `${mbLoaded} MB / ${mbTotal} MB`;
+                    };
+
+                    // Initial UI
+                    updateProgressUI();
+
+                    // Parallel Uploads with XHR
+                    const uploadPromises = selectedFiles.map((file, index) => {
+                        const sanitizedName = file.name.replace(/[^\w.-]/g, '_');
+                        const fileName = `${code}-${Math.random().toString(36).substring(7)}-${sanitizedName}`;
+
+                        // UI: Show currently starting file
+                        progressFileName.textContent = `Processing ${selectedFiles.length} file(s)...`;
+
+                        return uploadFileWithProgress(file, fileName, (loaded, total) => {
+                            loadedBytesArray[index] = loaded;
+                            updateProgressUI();
+                        });
+                    });
+
+                    const filePaths = await Promise.all(uploadPromises);
                     
-                    if (error) throw error;
+                    if (filePaths.length === 1) {
+                         contentValue = filePaths[0]; 
+                    } else {
+                         contentValue = JSON.stringify(filePaths);
+                    }
                     
-                    contentValue = fileName; // Store the file path
                 } else {
+                    // Text Upload
                     contentValue = textVal;
                 }
 
-                // Insert into Supabase Database
+                // Insert into Supabase Database (Metadata)
                 const { error: dbError } = await db
                     .from('clips')
                     .insert([{ 
@@ -573,6 +808,8 @@
                 if (dbError) throw dbError;
 
                 // Show Success
+                progressModal.classList.add('hidden');
+                progressModal.classList.remove('flex');
                 document.getElementById('send-input-view').classList.add('hidden');
                 document.getElementById('send-success-view').classList.remove('hidden');
                 document.getElementById('generated-code-display').textContent = code;
@@ -581,11 +818,11 @@
 
             } catch (error) {
                 console.error("Upload Error:", error);
+                progressModal.classList.add('hidden'); // Hide progress on error
+                progressModal.classList.remove('flex');
                 showNotification("Upload failed. " + error.message, "error");
             } finally {
                 btn.disabled = false;
-                document.getElementById('send-btn-text').classList.remove('hidden');
-                document.getElementById('send-btn-spinner').classList.add('hidden');
             }
         };
 
@@ -650,48 +887,179 @@
 
             const textContainer = document.getElementById('retrieved-text-container');
             const fileContainer = document.getElementById('retrieved-file-container');
+            const multiFileContainer = document.getElementById('retrieved-multi-file-container');
+            const actions = document.getElementById('retrieved-actions');
             const copyBtn = document.getElementById('copy-retrieved-btn');
             const dlBtn = document.getElementById('download-retrieved-btn');
 
+            // Reset visibilities
+            textContainer.classList.add('hidden');
+            fileContainer.classList.add('hidden');
+            multiFileContainer.classList.add('hidden');
+            actions.classList.remove('hidden');
+
             if (data.type === 'text') {
                 textContainer.classList.remove('hidden');
-                fileContainer.classList.add('hidden');
                 document.getElementById('retrieved-text-content').textContent = data.content;
                 copyBtn.classList.remove('hidden');
                 dlBtn.classList.add('hidden');
             } else {
-                textContainer.classList.add('hidden');
-                fileContainer.classList.remove('hidden');
+                // Handle Files (Single or Multiple)
+                copyBtn.classList.add('hidden');
+
+                // Check if content is JSON array (Multiple files)
+                let filePaths = [];
+                let isMulti = false;
                 
-                // Get Public URL for file
-                const { data: fileData } = db.storage
-                    .from('uploads')
-                    .getPublicUrl(data.content);
-
-                const publicUrl = fileData.publicUrl;
-
-                document.getElementById('retrieved-filename').textContent = 'File Found';
-                // Note: File size isn't stored in basic schema, but that's okay.
-                document.getElementById('retrieved-filesize').textContent = ''; 
-
-                const imgEl = document.getElementById('retrieved-image');
-                const infoEl = document.getElementById('retrieved-file-info');
-
-                // Check for image extensions
-                if (data.content.match(/\.(jpeg|jpg|gif|png|webp)$/i) != null) {
-                    imgEl.src = publicUrl;
-                    imgEl.classList.remove('hidden');
-                    infoEl.classList.add('hidden');
-                } else {
-                    imgEl.classList.add('hidden');
-                    infoEl.classList.remove('hidden');
+                try {
+                    const parsed = JSON.parse(data.content);
+                    if (Array.isArray(parsed)) {
+                        filePaths = parsed;
+                        isMulti = true;
+                    } else {
+                        filePaths = [data.content];
+                    }
+                } catch (e) {
+                    // Not JSON, assume simple string (Legacy/Single)
+                    filePaths = [data.content];
                 }
 
-                // Buttons
-                copyBtn.classList.add('hidden');
-                dlBtn.classList.remove('hidden');
-                dlBtn.href = publicUrl; 
-                dlBtn.download = `clipboard-${code}`;
+                if (!isMulti && filePaths.length === 1) {
+                    // --- Single File View ---
+                    fileContainer.classList.remove('hidden');
+                    dlBtn.classList.remove('hidden');
+
+                    const { data: fileData } = db.storage.from('uploads').getPublicUrl(filePaths[0]);
+                    const publicUrl = fileData.publicUrl;
+
+                    document.getElementById('retrieved-filename').textContent = 'File Found';
+                    document.getElementById('retrieved-filesize').textContent = ''; 
+
+                    const imgEl = document.getElementById('retrieved-image');
+                    const infoEl = document.getElementById('retrieved-file-info');
+
+                    if (filePaths[0].match(/\.(jpeg|jpg|gif|png|webp|svg)$/i) != null) {
+                        imgEl.src = publicUrl;
+                        imgEl.classList.remove('hidden');
+                        infoEl.classList.add('hidden');
+                    } else {
+                        imgEl.classList.add('hidden');
+                        infoEl.classList.remove('hidden');
+                    }
+                    
+                    // FIXED: Single File Download Logic using forceDownload
+                    dlBtn.removeAttribute('href');
+                    dlBtn.onclick = (e) => {
+                        e.preventDefault();
+                        let cleanName = filePaths[0].split('-').slice(2).join('-') || `clipboard-${code}`;
+                        if(filePaths[0].split('-').length < 3) cleanName = filePaths[0]; 
+                        forceDownload(publicUrl, cleanName);
+                    };
+                } else {
+                    // --- Multiple Files List View ---
+                    multiFileContainer.classList.remove('hidden');
+                    dlBtn.classList.add('hidden'); // Hide main download btn, use individual ones
+
+                    const listEl = document.getElementById('retrieved-file-list');
+                    listEl.innerHTML = ''; // Clear previous
+
+                    // Setup ZIP Button
+                    const zipBtn = document.getElementById('download-zip-btn');
+                    // Remove old listener if exists by cloning
+                    const newZipBtn = zipBtn.cloneNode(true);
+                    zipBtn.parentNode.replaceChild(newZipBtn, zipBtn);
+                    
+                    newZipBtn.onclick = async () => {
+                         const originalContent = newZipBtn.innerHTML;
+                         newZipBtn.disabled = true;
+                         newZipBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Zipping...`;
+
+                         try {
+                             const zip = new JSZip();
+                             const filePromises = filePaths.map(async (path) => {
+                                 const { data: fileData } = db.storage.from('uploads').getPublicUrl(path);
+                                 const response = await fetch(fileData.publicUrl);
+                                 const blob = await response.blob();
+                                 
+                                 // Clean filename logic: Remove CODE-RANDOM- prefix if possible
+                                 let fileName = path.split('-').slice(2).join('-') || path;
+                                 if(path.split('-').length < 3) fileName = path.split('-').slice(1).join('-') || path;
+                                 
+                                 return { fileName, blob };
+                             });
+
+                             const files = await Promise.all(filePromises);
+                             
+                             // Handle duplicate names in zip
+                             const names = {};
+                             files.forEach(({ fileName, blob }) => {
+                                 let finalName = fileName;
+                                 if (names[fileName]) {
+                                     names[fileName]++;
+                                     // Insert counter before extension
+                                     const parts = fileName.split('.');
+                                     if (parts.length > 1) {
+                                         const ext = parts.pop();
+                                         const base = parts.join('.');
+                                         finalName = `${base} (${names[fileName]}).${ext}`;
+                                     } else {
+                                         finalName = `${fileName} (${names[fileName]})`;
+                                     }
+                                 } else {
+                                     names[fileName] = 0;
+                                 }
+                                 zip.file(finalName, blob);
+                             });
+
+                             const content = await zip.generateAsync({ type: "blob" });
+                             const url = window.URL.createObjectURL(content);
+                             const a = document.createElement('a');
+                             a.href = url;
+                             a.download = `CopyCloud-${code}.zip`;
+                             document.body.appendChild(a);
+                             a.click();
+                             window.URL.revokeObjectURL(url);
+                             document.body.removeChild(a);
+
+                         } catch (e) {
+                             showNotification("Error creating ZIP", "error");
+                             console.error(e);
+                         } finally {
+                             newZipBtn.disabled = false;
+                             newZipBtn.innerHTML = originalContent;
+                             lucide.createIcons(); // Re-render icon
+                         }
+                    };
+
+                    filePaths.forEach((path, index) => {
+                        const { data: fileData } = db.storage.from('uploads').getPublicUrl(path);
+                        const url = fileData.publicUrl;
+                        
+                        // Clean up name for display
+                        let displayName = path.split('-').slice(2).join('-') || path; 
+                        if(path.split('-').length < 3) displayName = path.split('-').slice(1).join('-') || path;
+
+                        const item = document.createElement('div');
+                        item.className = "flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5 hover:bg-white/10 transition-colors group";
+                        
+                        // FIXED: Multi File Download Logic using forceDownload button
+                        item.innerHTML = `
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <div class="w-8 h-8 bg-indigo-500/20 rounded flex items-center justify-center text-indigo-400 shrink-0">
+                                    <i data-lucide="${path.match(/\.(jpg|png|webp)$/i) ? 'image' : 'file'}" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-sm text-slate-200 truncate font-medium">${displayName}</span>
+                            </div>
+                            <button onclick="forceDownload('${url}', '${displayName}')" class="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors opacity-80 group-hover:opacity-100 flex items-center justify-center">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                            </button>
+                        `;
+                        listEl.appendChild(item);
+                    });
+                    
+                    // Re-init icons for new elements
+                    lucide.createIcons();
+                }
             }
         }
 
@@ -799,10 +1167,10 @@
     <script>
         window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
     </script>
-    <script defer src="/_vercel/speed-insights/script.js"></script>
+    <script src="/_vercel/speed-insights/script.js"></script>
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
-    <script defer src="/_vercel/insights/script.js"></script>
+    <script src="/_vercel/insights/script.js"></script>
 </body>
 </html>
