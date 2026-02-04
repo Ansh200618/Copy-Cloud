@@ -1,9 +1,9 @@
-# 📋 Online Clipboard
+# 📋 Copy Cloud - Online Clipboard
 
-A modern, secure, and user-friendly web application for transferring text and files between devices without requiring login or registration. Built with vanilla JavaScript, Firebase, and Tailwind CSS.
+A modern, secure, and user-friendly web application for transferring text and files between devices without requiring login or registration. Built with vanilla JavaScript, Supabase, and Tailwind CSS.
 
 ![HTML](https://img.shields.io/badge/HTML-100%25-orange?style=flat-square)
-![Firebase](https://img.shields.io/badge/Backend-Firebase-yellow?style=flat-square)
+![Supabase](https://img.shields.io/badge/Backend-Supabase-green?style=flat-square)
 ![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)
 
 ---
@@ -11,12 +11,12 @@ A modern, secure, and user-friendly web application for transferring text and fi
 ## 🌟 Features
 
 - **🔐 No Login Required** - Start sharing content instantly without creating an account
-- **⚡ Real-time Transfer** - Powered by Firebase Firestore for instant synchronization
+- **⚡ Real-time Transfer** - Powered by Supabase PostgreSQL for instant synchronization
 - **📱 Cross-Device Sharing** - Seamlessly move content between phones, tablets, and computers
-- **📝 Text & Files** - Support for unlimited text and files up to 1MB
+- **📝 Text & Files** - Support for unlimited text and files up to 40MB
 - **🔒 Auto-Expiry** - All content automatically deletes after 24 hours for privacy
 - **🎨 Modern UI** - Beautiful glassmorphic design with smooth animations
-- **🌐 Offline-Capable** - Uses Firebase's offline persistence
+- **🌐 Real-time Database** - PostgreSQL database with real-time subscriptions
 
 ---
 
@@ -25,7 +25,7 @@ A modern, secure, and user-friendly web application for transferring text and fi
 ### 1. **Upload Content**
 - Navigate to the **Send** tab
 - Choose between **Text** or **File** input
-- Paste your text or select a file (images, documents, audio up to 1MB)
+- Paste your text or select a file (images, documents, audio up to 40MB)
 
 ### 2. **Get Unique Code**
 - Click "Generate Secure Code"
@@ -45,9 +45,9 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **Frontend**: HTML5, Vanilla JavaScript (ES6 Modules)
 - **Styling**: Tailwind CSS (CDN)
 - **Icons**: Lucide Icons
-- **Backend**: Firebase Firestore (NoSQL Database)
-- **Authentication**: Firebase Anonymous Auth
-- **Hosting**: Can be deployed on GitHub Pages, Vercel, Netlify, or Firebase Hosting
+- **Backend**: Supabase PostgreSQL Database
+- **Storage**: Supabase Storage for file uploads
+- **Hosting**: Deployed on Vercel at https://copycloud.vercel.app/
 
 ---
 
@@ -55,7 +55,7 @@ A modern, secure, and user-friendly web application for transferring text and fi
 
 ### Prerequisites
 - A modern web browser (Chrome, Firefox, Safari, Edge)
-- A Firebase project (Free tier is sufficient)
+- A Supabase project (Free tier is sufficient)
 
 ### Steps
 
@@ -65,27 +65,22 @@ A modern, secure, and user-friendly web application for transferring text and fi
    cd Online-Clipboard
    ```
 
-2. **Set Up Firebase**
-   - Go to [Firebase Console](https://console.firebase.google.com/)
+2. **Set Up Supabase**
+   - Go to [Supabase Console](https://supabase.com/)
    - Create a new project (or use existing)
-   - Enable **Firestore Database** (Start in test mode for development)
-   - Enable **Anonymous Authentication** in Authentication settings
-   - Copy your Firebase configuration
+   - Create a **clipboard_items** table with required columns
+   - Create a **Storage** bucket for file uploads
+   - Set up Row Level Security (RLS) policies as needed
+   - Copy your project URL and anon key
 
-3. **Configure Firebase Keys**
+3. **Configure Supabase Keys**
    - Open `index.html`
-   - Locate the Firebase configuration section (around line 373):
+   - Locate the Supabase configuration section (search for `SUPABASE CONFIGURATION`):
    ```javascript
-   const firebaseConfig = {
-       apiKey: "YOUR_API_KEY",
-       authDomain: "YOUR_AUTH_DOMAIN",
-       projectId: "YOUR_PROJECT_ID",
-       storageBucket: "YOUR_STORAGE_BUCKET",
-       messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-       appId: "YOUR_APP_ID"
-   };
+   const SB_URL = 'YOUR_SUPABASE_URL';
+   const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
    ```
-   - Replace with your Firebase project credentials
+   - Replace with your Supabase project credentials
 
 4. **Run Locally**
    - Simply open `index.html` in a web browser, or
@@ -100,14 +95,9 @@ A modern, secure, and user-friendly web application for transferring text and fi
    - Navigate to `http://localhost:8000`
 
 5. **Deploy (Optional)**
+   - **Vercel** (Recommended): `vercel deploy` or connect GitHub repo
    - **GitHub Pages**: Push to GitHub and enable Pages in repository settings
-   - **Vercel**: `vercel deploy`
    - **Netlify**: Drag and drop the folder to Netlify
-   - **Firebase Hosting**:
-     ```bash
-     firebase init hosting
-     firebase deploy
-     ```
 
 ---
 
@@ -117,6 +107,8 @@ A modern, secure, and user-friendly web application for transferring text and fi
 Online-Clipboard/
 │
 ├── index.html          # Main application file (HTML, CSS, JS all-in-one)
+├── favicon.svg         # Site favicon
+├── sitemap.xml         # SEO sitemap
 └── README.md           # Project documentation
 ```
 
@@ -124,10 +116,10 @@ Online-Clipboard/
 
 ## 🔒 Security & Privacy
 
-- **Anonymous Authentication**: Users are authenticated anonymously through Firebase, no personal data collected
+- **No Authentication Required**: No user accounts or personal data collection
 - **Temporary Storage**: All data expires and is deleted after 24 hours
-- **No External APIs**: All functionality is self-contained within Firebase services
-- **Base64 Encoding**: Files are stored as Base64 strings directly in Firestore (no separate storage bucket needed)
+- **Secure Storage**: Files are stored securely in Supabase Storage
+- **Database Security**: PostgreSQL database with Row Level Security (RLS)
 - **Unique Codes**: 6-character random codes using alphanumeric characters (excluding confusing characters like 0, O, 1, I)
 
 ---
@@ -137,9 +129,9 @@ Online-Clipboard/
 | Feature | Limit |
 |---------|-------|
 | Text Length | Unlimited characters |
-| File Size | Max 1MB |
+| File Size | Max 40MB |
 | Data Expiration | 24 hours |
-| Authentication | Anonymous (no login) |
+| Authentication | None required (no login) |
 
 ---
 
@@ -156,11 +148,8 @@ Online-Clipboard/
 
 ## 🐛 Troubleshooting
 
-### Issue: "Authentication failed. Please refresh."
-- **Solution**: Check Firebase configuration keys and ensure Anonymous Auth is enabled
-
 ### Issue: "Upload failed. Try again."
-- **Solution**: Ensure Firestore rules allow writes, check file size is under 1MB
+- **Solution**: Check Supabase configuration keys and ensure database is accessible. Ensure Supabase RLS policies allow writes, check file size is under 40MB
 
 ### Issue: "Code not found or expired."
 - **Solution**: Verify the code is correct and was created within the last 24 hours
@@ -170,20 +159,25 @@ Online-Clipboard/
 
 ---
 
-## 📝 Firestore Rules (Development)
+## 📝 Supabase Configuration
 
-For development, use these Firestore rules:
+### Database Schema
 
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /artifacts/{appId}/public/data/clipboard_items/{itemId} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}
-```
+Create a `clipboard_items` table with the following structure:
+- `id` (text, primary key) - The 6-character code
+- `content_type` (text) - Either "text" or "file"
+- `text_content` (text, nullable) - For text content
+- `file_name` (text, nullable) - Original filename
+- `file_path` (text, nullable) - Path in Supabase Storage
+- `created_at` (timestamp with time zone) - Creation timestamp
+
+### Storage Setup
+
+Create a storage bucket named `clipboard-files` for file uploads.
+
+### Row Level Security (RLS)
+
+Enable RLS and create policies as needed for your security requirements.
 
 ---
 
@@ -215,7 +209,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🌟 Acknowledgments
 
-- **Firebase** - For backend infrastructure
+- **Supabase** - For backend infrastructure and database
 - **Tailwind CSS** - For styling framework
 - **Lucide Icons** - For beautiful icons
 - **Google Fonts** - For Inter font family
