@@ -75,7 +75,7 @@ A modern, secure, and user-friendly web application for transferring text and fi
 
 3. **Configure Supabase Keys**
    - Open `index.html`
-   - Locate the Supabase configuration section (around line 425):
+   - Locate the Supabase configuration section (search for `SUPABASE CONFIGURATION`):
    ```javascript
    const SB_URL = 'YOUR_SUPABASE_URL';
    const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
