@@ -75,6 +75,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -519,9 +520,15 @@
                             <p class="text-slate-400 mb-2 max-w-md mx-auto">Your content is securely stored.</p>
                             <p class="text-rose-400 text-sm mb-8 font-medium bg-rose-500/10 inline-block px-3 py-1 rounded-full border border-rose-500/20">Expires in 24 hours</p>
                             
-                            <div class="max-w-sm mx-auto bg-black/40 border border-indigo-500/30 rounded-2xl p-8 mb-8 relative overflow-hidden group">
+                            <div class="max-w-sm mx-auto bg-black/40 border border-indigo-500/30 rounded-2xl p-8 mb-6 relative overflow-hidden group">
                                 <div class="absolute inset-0 bg-indigo-500/5 group-hover:bg-indigo-500/10 transition-colors"></div>
                                 <span id="generated-code-display" class="relative text-6xl font-mono font-bold tracking-wider text-indigo-300 select-all drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]"></span>
+                            </div>
+
+                            <!-- QR Code -->
+                            <div class="max-w-xs mx-auto mb-6">
+                                <div id="qrcode-container" class="bg-white p-4 rounded-2xl inline-block shadow-2xl"></div>
+                                <p class="text-slate-400 text-sm mt-3">Scan with your mobile device</p>
                             </div>
 
                             <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
@@ -1033,6 +1040,18 @@
                 document.getElementById('send-success-view').classList.remove('hidden');
                 document.getElementById('generated-code-display').textContent = code;
                 
+                // Generate QR Code
+                const qrContainer = document.getElementById('qrcode-container');
+                qrContainer.innerHTML = ''; // Clear any existing QR code
+                new QRCode(qrContainer, {
+                    text: code,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
                 showNotification("Uploaded Successfully!", "success");
 
             } catch (error) {
@@ -1049,6 +1068,7 @@
             document.getElementById('send-input-view').classList.remove('hidden');
             document.getElementById('send-success-view').classList.add('hidden');
             document.getElementById('text-input').value = '';
+            document.getElementById('qrcode-container').innerHTML = ''; // Clear QR code
             clearFileSelection();
         };
 
