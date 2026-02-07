@@ -67,6 +67,23 @@
     <string name="light_themes">Light Mode Themes</string>
     <string name="dark_themes">Dark Mode Themes</string>
     <string name="theme_applied">Theme applied!</string>
+    <string name="device_code_title">Device Code</string>
+    <string name="your_device_code">Your Device Code:</string>
+    <string name="device_code_desc">Share this code with others to receive content directly on this device</string>
+    <string name="device_code_copied">Device code copied!</string>
+    
+    <!-- History Screen -->
+    <string name="tab_history">History</string>
+    <string name="history_title">Recent History</string>
+    <string name="history_empty">No history yet</string>
+    <string name="history_empty_desc">Retrieved content will appear here</string>
+    <string name="clear_history">Clear All</string>
+    <string name="delete_item">Delete</string>
+    <string name="history_cleared">History cleared</string>
+    <string name="send_to_device">Send to Device</string>
+    <string name="target_device_code">Target Device Code (8 digits)</string>
+    <string name="send_to_all">Send to All Devices</string>
+    <string name="send_to_specific">Send to Specific Device</string>
     
     <!-- Theme Names -->
     <string name="theme_ocean_dark">Ocean Dark</string>
