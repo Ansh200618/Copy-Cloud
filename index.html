@@ -1376,10 +1376,52 @@
                 window.closeLegalModal();
             }
         });
+
+        // --- APK MODAL ---
+        window.openApkModal = () => {
+            const modal = document.getElementById('apk-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons(); // Re-initialize icons for modal
+        };
+
+        window.closeApkModal = () => {
+            const modal = document.getElementById('apk-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        document.getElementById('apk-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'apk-modal') {
+                window.closeApkModal();
+            }
+        });
+
+        // --- COMING SOON MODAL ---
+        window.openComingSoonModal = () => {
+            const modal = document.getElementById('coming-soon-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons(); // Re-initialize icons for modal
+        };
+
+        window.closeComingSoonModal = () => {
+            const modal = document.getElementById('coming-soon-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        document.getElementById('coming-soon-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'coming-soon-modal') {
+                window.closeComingSoonModal();
+            }
+        });
         
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 window.closeLegalModal();
+                window.closeApkModal();
+                window.closeComingSoonModal();
             }
         });
 
