@@ -1,16 +1,25 @@
 package com.copycloud.app;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.copycloud.app.adapters.ViewPagerAdapter;
+import com.copycloud.app.utils.NotificationHelper;
 import com.copycloud.app.utils.ThemeManager;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
+    
+    private static final int REQUEST_NOTIFICATION_PERMISSION = 100;
     
     private BottomNavigationView bottomNavigation;
     private ViewPager2 viewPager;
@@ -24,9 +33,46 @@ public class MainActivity extends AppCompatActivity {
         
         setContentView(R.layout.activity_main);
         
+        // Initialize notification channel
+        NotificationHelper.createNotificationChannel(this);
+        
+        // Request notification permission if needed
+        requestNotificationPermissionIfNeeded();
+        
         initViews();
         setupViewPager();
         setupBottomNavigation();
+        
+        // Handle notification intent
+        handleNotificationIntent(getIntent());
+    }
+    
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleNotificationIntent(intent);
+    }
+    
+    private void handleNotificationIntent(Intent intent) {
+        if (intent != null && intent.getBooleanExtra("open_retrieve", false)) {
+            // Open retrieve tab
+            viewPager.setCurrentItem(1, true);
+            
+            // Optionally pre-fill code if provided
+            String code = intent.getStringExtra("code");
+            // TODO: Pass code to RetrieveFragment
+        }
+    }
+    
+    private void requestNotificationPermissionIfNeeded() {
+        if (NotificationHelper.needsNotificationPermission()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_NOTIFICATION_PERMISSION);
+            }
+        }
     }
     
     private void initViews() {

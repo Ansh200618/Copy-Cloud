@@ -95,6 +95,15 @@
     <string name="send_to_all">Send to All Devices</string>
     <string name="send_to_specific">Send to Specific Device</string>
     
+    <!-- Notifications -->
+    <string name="notification_channel_name">Copy Cloud Notifications</string>
+    <string name="notification_channel_desc">Notifications for received content</string>
+    <string name="notification_text_received">Text Received</string>
+    <string name="notification_file_received">File Received</string>
+    <string name="notification_files_received">Files Received</string>
+    <string name="notification_upload_success">Upload Complete</string>
+    <string name="notification_tap_to_open">Tap to open</string>
+    
     <!-- Theme Names -->
     <string name="theme_ocean_dark">Ocean Dark</string>
     <string name="theme_midnight_blue">Midnight Blue</string>
