@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand Colors -->
+    <!-- Default Dark Theme - Ocean Dark -->
     <color name="primary">#6366F1</color>
     <color name="primary_dark">#4F46E5</color>
     <color name="primary_light">#818CF8</color>
@@ -26,4 +26,43 @@
     <!-- Transparent -->
     <color name="transparent">#00000000</color>
     <color name="overlay">#80000000</color>
+    
+    <!-- Theme: Midnight Blue (Dark) -->
+    <color name="theme_midnight_primary">#3B82F6</color>
+    <color name="theme_midnight_bg">#0A0E27</color>
+    <color name="theme_midnight_surface">#1A1F3A</color>
+    
+    <!-- Theme: Purple Night (Dark) -->
+    <color name="theme_purple_primary">#A855F7</color>
+    <color name="theme_purple_bg">#1E1024</color>
+    <color name="theme_purple_surface">#2D1B3D</color>
+    
+    <!-- Theme: Forest Dark (Dark) -->
+    <color name="theme_forest_primary">#10B981</color>
+    <color name="theme_forest_bg">#0A1F17</color>
+    <color name="theme_forest_surface">#1A2F27</color>
+    
+    <!-- Theme: Sunset Light (Light) -->
+    <color name="theme_sunset_primary">#F97316</color>
+    <color name="theme_sunset_bg">#FFF7ED</color>
+    <color name="theme_sunset_surface">#FFEDD5</color>
+    <color name="theme_sunset_text">#1F2937</color>
+    
+    <!-- Theme: Sky Blue (Light) -->
+    <color name="theme_sky_primary">#0EA5E9</color>
+    <color name="theme_sky_bg">#F0F9FF</color>
+    <color name="theme_sky_surface">#E0F2FE</color>
+    <color name="theme_sky_text">#1F2937</color>
+    
+    <!-- Theme: Pink Blossom (Light) -->
+    <color name="theme_pink_primary">#EC4899</color>
+    <color name="theme_pink_bg">#FDF2F8</color>
+    <color name="theme_pink_surface">#FCE7F3</color>
+    <color name="theme_pink_text">#1F2937</color>
+    
+    <!-- Theme: Mint Fresh (Light) -->
+    <color name="theme_mint_primary">#14B8A6</color>
+    <color name="theme_mint_bg">#F0FDFA</color>
+    <color name="theme_mint_surface">#CCFBF1</color>
+    <color name="theme_mint_text">#1F2937</color>
 </resources>

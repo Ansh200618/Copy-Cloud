@@ -6,30 +6,34 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.copycloud.app.adapters.ViewPagerAdapter;
+import com.copycloud.app.utils.ThemeManager;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     
-    private TabLayout tabLayout;
+    private BottomNavigationView bottomNavigation;
     private ViewPager2 viewPager;
-    private final String[] tabTitles = new String[]{"Send", "Retrieve", "About"};
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Apply saved theme
+        ThemeManager.applyThemeToActivity(this);
+        
         setContentView(R.layout.activity_main);
         
         initViews();
         setupViewPager();
+        setupBottomNavigation();
     }
     
     private void initViews() {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         
-        tabLayout = findViewById(R.id.tabLayout);
+        bottomNavigation = findViewById(R.id.bottomNavigation);
         viewPager = findViewById(R.id.viewPager);
     }
     
@@ -37,8 +41,46 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(adapter);
         
-        new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText(tabTitles[position])
-        ).attach();
+        // Sync ViewPager with BottomNavigation
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                switch (position) {
+                    case 0:
+                        bottomNavigation.setSelectedItemId(R.id.nav_send);
+                        break;
+                    case 1:
+                        bottomNavigation.setSelectedItemId(R.id.nav_retrieve);
+                        break;
+                    case 2:
+                        bottomNavigation.setSelectedItemId(R.id.nav_about);
+                        break;
+                    case 3:
+                        bottomNavigation.setSelectedItemId(R.id.nav_settings);
+                        break;
+                }
+            }
+        });
+    }
+    
+    private void setupBottomNavigation() {
+        bottomNavigation.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_send) {
+                viewPager.setCurrentItem(0, true);
+                return true;
+            } else if (itemId == R.id.nav_retrieve) {
+                viewPager.setCurrentItem(1, true);
+                return true;
+            } else if (itemId == R.id.nav_about) {
+                viewPager.setCurrentItem(2, true);
+                return true;
+            } else if (itemId == R.id.nav_settings) {
+                viewPager.setCurrentItem(3, true);
+                return true;
+            }
+            return false;
+        });
     }
 }
