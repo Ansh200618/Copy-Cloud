@@ -1,68 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Default Dark Theme - Ocean Dark -->
-    <color name="primary">#6366F1</color>
-    <color name="primary_dark">#4F46E5</color>
-    <color name="primary_light">#818CF8</color>
-    <color name="accent">#8B5CF6</color>
+    <!-- PREMIUM LUXURY PALETTE 💎 -->
     
-    <!-- Background Colors -->
-    <color name="background">#0F172A</color>
-    <color name="surface">#1E293B</color>
-    <color name="surface_light">#334155</color>
+    <!-- Gold & Precious Metals -->
+    <color name="gold_primary">#FFD700</color>
+    <color name="gold_light">#FFE55C</color>
+    <color name="gold_dark">#C9A961</color>
+    <color name="platinum">#E5E4E2</color>
+    <color name="rose_gold">#B76E79</color>
+    <color name="bronze">#CD7F32</color>
     
-    <!-- Text Colors -->
-    <color name="text_primary">#F1F5F9</color>
-    <color name="text_secondary">#94A3B8</color>
-    <color name="text_hint">#64748B</color>
+    <!-- Deep Luxury Blacks -->
+    <color name="luxury_black">#000000</color>
+    <color name="deep_black">#0A0A0A</color>
+    <color name="midnight_black">#0F0F0F</color>
+    <color name="charcoal">#1A1A1A</color>
     
-    <!-- System Colors -->
+    <!-- Royal Colors -->
+    <color name="royal_purple">#6B46C1</color>
+    <color name="royal_purple_light">#805AD5</color>
+    <color name="royal_blue">#1E3A8A</color>
+    <color name="sapphire">#0F52BA</color>
+    
+    <!-- Premium Gradients Base -->
+    <color name="gradient_gold_start">#FFD700</color>
+    <color name="gradient_gold_end">#FFA500</color>
+    <color name="gradient_platinum_start">#E5E4E2</color>
+    <color name="gradient_platinum_end">#C0C0C0</color>
+    <color name="gradient_luxury_start">#6B46C1</color>
+    <color name="gradient_luxury_end">#1E3A8A</color>
+    
+    <!-- Default Dark Theme - Luxury Ocean Dark -->
+    <color name="primary">#FFD700</color>
+    <color name="primary_dark">#C9A961</color>
+    <color name="primary_light">#FFE55C</color>
+    <color name="accent">#B76E79</color>
+    
+    <!-- Premium Background Colors -->
+    <color name="background">#0A0A0A</color>
+    <color name="surface">#1A1A1A</color>
+    <color name="surface_light">#252525</color>
+    <color name="surface_elevated">#2A2A2A</color>
+    
+    <!-- Premium Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#C0C0C0</color>
+    <color name="text_hint">#808080</color>
+    <color name="text_gold">#FFD700</color>
+    
+    <!-- System Colors with Premium Touch -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="success">#10B981</color>
-    <color name="error">#EF4444</color>
-    <color name="warning">#F59E0B</color>
+    <color name="success">#2ECC71</color>
+    <color name="error">#E74C3C</color>
+    <color name="warning">#F39C12</color>
     
-    <!-- Transparent -->
+    <!-- Transparent & Overlays -->
     <color name="transparent">#00000000</color>
-    <color name="overlay">#80000000</color>
+    <color name="overlay">#CC000000</color>
+    <color name="overlay_light">#66000000</color>
+    <color name="glass_white">#33FFFFFF</color>
+    <color name="glass_gold">#33FFD700</color>
     
-    <!-- Theme: Midnight Blue (Dark) -->
-    <color name="theme_midnight_primary">#3B82F6</color>
-    <color name="theme_midnight_bg">#0A0E27</color>
-    <color name="theme_midnight_surface">#1A1F3A</color>
+    <!-- Premium Theme Variations -->
     
-    <!-- Theme: Purple Night (Dark) -->
-    <color name="theme_purple_primary">#A855F7</color>
-    <color name="theme_purple_bg">#1E1024</color>
-    <color name="theme_purple_surface">#2D1B3D</color>
+    <!-- Midnight Blue (Dark) -->
+    <color name="theme_midnight_primary">#4169E1</color>
+    <color name="theme_midnight_bg">#000814</color>
+    <color name="theme_midnight_surface">#001D3D</color>
     
-    <!-- Theme: Forest Dark (Dark) -->
-    <color name="theme_forest_primary">#10B981</color>
-    <color name="theme_forest_bg">#0A1F17</color>
+    <!-- Purple Night (Dark) -->
+    <color name="theme_purple_primary">#DA70D6</color>
+    <color name="theme_purple_bg">#0D0221</color>
+    <color name="theme_purple_surface">#240046</color>
+    
+    <!-- Forest Dark (Dark) -->
+    <color name="theme_forest_primary">#50C878</color>
+    <color name="theme_forest_bg">#0A1612</color>
     <color name="theme_forest_surface">#1A2F27</color>
     
-    <!-- Theme: Sunset Light (Light) -->
-    <color name="theme_sunset_primary">#F97316</color>
-    <color name="theme_sunset_bg">#FFF7ED</color>
-    <color name="theme_sunset_surface">#FFEDD5</color>
-    <color name="theme_sunset_text">#1F2937</color>
+    <!-- Gold Sunset (Light) -->
+    <color name="theme_sunset_primary">#FF8C00</color>
+    <color name="theme_sunset_bg">#FFF8DC</color>
+    <color name="theme_sunset_surface">#FFEAA7</color>
+    <color name="theme_sunset_text">#2C3E50</color>
     
-    <!-- Theme: Sky Blue (Light) -->
-    <color name="theme_sky_primary">#0EA5E9</color>
-    <color name="theme_sky_bg">#F0F9FF</color>
-    <color name="theme_sky_surface">#E0F2FE</color>
-    <color name="theme_sky_text">#1F2937</color>
+    <!-- Sky Blue (Light) -->
+    <color name="theme_sky_primary">#00BFFF</color>
+    <color name="theme_sky_bg">#F0F8FF</color>
+    <color name="theme_sky_surface">#E0F4FF</color>
+    <color name="theme_sky_text">#1C2833</color>
     
-    <!-- Theme: Pink Blossom (Light) -->
-    <color name="theme_pink_primary">#EC4899</color>
-    <color name="theme_pink_bg">#FDF2F8</color>
-    <color name="theme_pink_surface">#FCE7F3</color>
-    <color name="theme_pink_text">#1F2937</color>
+    <!-- Pink Blossom (Light) -->
+    <color name="theme_pink_primary">#FF69B4</color>
+    <color name="theme_pink_bg">#FFF0F5</color>
+    <color name="theme_pink_surface">#FFE4E1</color>
+    <color name="theme_pink_text">#2C3E50</color>
     
-    <!-- Theme: Mint Fresh (Light) -->
-    <color name="theme_mint_primary">#14B8A6</color>
-    <color name="theme_mint_bg">#F0FDFA</color>
-    <color name="theme_mint_surface">#CCFBF1</color>
-    <color name="theme_mint_text">#1F2937</color>
+    <!-- Mint Fresh (Light) -->
+    <color name="theme_mint_primary">#3EB489</color>
+    <color name="theme_mint_bg">#F5FFFA</color>
+    <color name="theme_mint_surface">#E0FFF0</color>
+    <color name="theme_mint_text">#1C2833</color>
+    
+    <!-- Premium Shadows -->
+    <color name="shadow_soft">#40000000</color>
+    <color name="shadow_gold">#80FFD700</color>
+    <color name="shadow_purple">#806B46C1</color>
 </resources>
