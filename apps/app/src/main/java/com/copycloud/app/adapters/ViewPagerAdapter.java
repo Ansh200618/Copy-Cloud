@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.copycloud.app.fragments.AboutFragment;
+import com.copycloud.app.fragments.HistoryFragment;
 import com.copycloud.app.fragments.RetrieveFragment;
 import com.copycloud.app.fragments.SendFragment;
 import com.copycloud.app.fragments.SettingsFragment;
@@ -25,7 +26,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 1:
                 return new RetrieveFragment();
             case 2:
-                return new AboutFragment();
+                return new HistoryFragment();
             case 3:
                 return new SettingsFragment();
             default:
