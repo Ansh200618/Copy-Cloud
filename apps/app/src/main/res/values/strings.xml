@@ -71,6 +71,16 @@
     <string name="your_device_code">Your Device Code:</string>
     <string name="device_code_desc">Share this code with others to receive content directly on this device</string>
     <string name="device_code_copied">Device code copied!</string>
+    <string name="connected_devices_title">Connected Devices</string>
+    <string name="connected_devices_desc">Connect up to 5 devices (tap to copy, hold to remove)</string>
+    <string name="add_device">Add Device</string>
+    <string name="max_devices_reached">Maximum 5 devices allowed</string>
+    <string name="device_already_connected">Device already connected</string>
+    <string name="device_connected">Device connected!</string>
+    <string name="device_removed">Device removed</string>
+    <string name="connect_device_title">Connect Device</string>
+    <string name="connect_device_message">Enter the 8-digit code from the device you want to connect</string>
+    <string name="invalid_device_code">Invalid device code (must be 8 digits)</string>
     
     <!-- History Screen -->
     <string name="tab_history">History</string>

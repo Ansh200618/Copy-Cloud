@@ -10,15 +10,28 @@ public class ConnectedDevicesManager {
     
     private static final String PREFS_NAME = "CopyCloudPrefs";
     private static final String KEY_CONNECTED_DEVICES = "connected_devices";
+    private static final int MAX_CONNECTED_DEVICES = 5;
     
     /**
-     * Add a connected device code
+     * Add a connected device code (max 5 devices)
      */
-    public static void addConnectedDevice(Context context, String deviceCode) {
+    public static boolean addConnectedDevice(Context context, String deviceCode) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         Set<String> devices = getConnectedDevices(context);
+        
+        // Check if already connected
+        if (devices.contains(deviceCode)) {
+            return false; // Already connected
+        }
+        
+        // Check max limit
+        if (devices.size() >= MAX_CONNECTED_DEVICES) {
+            return false; // Max limit reached
+        }
+        
         devices.add(deviceCode);
         prefs.edit().putStringSet(KEY_CONNECTED_DEVICES, devices).apply();
+        return true;
     }
     
     /**
@@ -55,6 +68,20 @@ public class ConnectedDevicesManager {
      */
     public static int getConnectedDeviceCount(Context context) {
         return getConnectedDevices(context).size();
+    }
+    
+    /**
+     * Check if can add more devices
+     */
+    public static boolean canAddMoreDevices(Context context) {
+        return getConnectedDeviceCount(context) < MAX_CONNECTED_DEVICES;
+    }
+    
+    /**
+     * Get max device limit
+     */
+    public static int getMaxDeviceLimit() {
+        return MAX_CONNECTED_DEVICES;
     }
     
     /**
