@@ -23,10 +23,11 @@ public class SupabaseClient {
     
     private static final String TAG = "SupabaseClient";
     
-    // Supabase credentials - These should match the web app
-    private static final String SUPABASE_URL = "https://your-project.supabase.co";
-    private static final String SUPABASE_KEY = "your-anon-key";
+    // Supabase credentials - Matching web app configuration
+    private static final String SUPABASE_URL = "https://luunzeonlmzvmewaucqj.supabase.co";
+    private static final String SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dW56ZW9ubG16dm1ld2F1Y3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMzAyNzEsImV4cCI6MjA4NTcwNjI3MX0.qQpWEGFLg6Weof0NO_ApntTrGGYVsrsNB2zaujRMuFY";
     private static final String TABLE_NAME = "clips";
+    private static final String STORAGE_BUCKET = "uploads";
     
     private final OkHttpClient client;
     private final Gson gson;
@@ -118,6 +119,80 @@ public class SupabaseClient {
                     }
                 } else {
                     callback.onError("Error: " + response.code());
+                }
+            }
+        });
+    }
+    
+    /**
+     * Upload file to Supabase Storage
+     */
+    public void uploadFile(byte[] fileData, String fileName, String mimeType, ApiCallback<String> callback) {
+        String url = SUPABASE_URL + "/storage/v1/object/" + STORAGE_BUCKET + "/" + fileName;
+        
+        RequestBody body = RequestBody.create(fileData, MediaType.parse(mimeType));
+        
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("apikey", SUPABASE_KEY)
+                .addHeader("Authorization", "Bearer " + SUPABASE_KEY)
+                .addHeader("Content-Type", mimeType)
+                .post(body)
+                .build();
+        
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "File upload failed", e);
+                callback.onError("Upload error: " + e.getMessage());
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    // Return the file path
+                    callback.onSuccess(fileName);
+                } else {
+                    String errorBody = response.body() != null ? response.body().string() : "Unknown error";
+                    Log.e(TAG, "Upload failed: " + errorBody);
+                    callback.onError("Upload failed: " + response.code());
+                }
+            }
+        });
+    }
+    
+    /**
+     * Get public URL for uploaded file
+     */
+    public String getFilePublicUrl(String fileName) {
+        return SUPABASE_URL + "/storage/v1/object/public/" + STORAGE_BUCKET + "/" + fileName;
+    }
+    
+    /**
+     * Download file from Supabase Storage
+     */
+    public void downloadFile(String fileName, ApiCallback<byte[]> callback) {
+        String url = getFilePublicUrl(fileName);
+        
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "File download failed", e);
+                callback.onError("Download error: " + e.getMessage());
+            }
+            
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    byte[] fileData = response.body().bytes();
+                    callback.onSuccess(fileData);
+                } else {
+                    callback.onError("Download failed: " + response.code());
                 }
             }
         });
