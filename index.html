@@ -21,21 +21,27 @@
     <meta property="og:description" content="Instantly share text and files between devices without logging in.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://copycloud.vercel.app/">
-    <meta property="og:image" content="https://copycloud.vercel.app/og-image.png"> 
+    <meta property="og:image" content="https://copycloud.vercel.app/og-image.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="Copy Cloud - Online Clipboard">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Copy Cloud - Free Online Clipboard">
     <meta name="twitter:description" content="Instantly share text and files between devices without logging in.">
+    <meta name="twitter:image" content="https://copycloud.vercel.app/og-image.png">
 
     <!-- FAVICON AREA -->
-    <link rel="icon" type="image/x-icon" href="assets/favicons/favicon.ico">
-    <link rel="icon" type="image/svg+xml" href="assets/favicons/favicon.svg">
-    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicons/favicon-96x96.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/favicons/web-app-manifest-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="assets/favicons/web-app-manifest-512x512.png">
-    <link rel="manifest" href="assets/favicons/site.webmanifest">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicons/web-app-manifest-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicons/web-app-manifest-512x512.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="msapplication-TileColor" content="#6366f1">
     
     <!-- JSON-LD Structured Data for Google -->
     <script type="application/ld+json">
@@ -188,6 +194,213 @@
             <div class="p-4 border-t border-white/10 bg-white/5 flex justify-end">
                 <button onclick="closeLegalModal()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-indigo-500/20">
                     I Understand
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APK Modal -->
+    <div id="apk-modal" class="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl w-full max-w-md flex flex-col shadow-2xl shadow-emerald-500/20 animate-fade-in relative overflow-hidden">
+            <!-- Decorative gradient -->
+            <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-full blur-3xl -z-10"></div>
+            
+            <div class="p-6 border-b border-emerald-500/20 flex justify-between items-center bg-gradient-to-r from-emerald-500/10 to-green-500/10">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="smartphone" class="text-emerald-400 w-5 h-5"></i> Android APK
+                </h3>
+                <button onclick="closeApkModal()" class="text-slate-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="bg-gradient-to-br from-emerald-500 to-green-600 p-4 rounded-2xl shadow-lg shadow-emerald-500/30">
+                        <i data-lucide="download" class="w-12 h-12 text-white"></i>
+                    </div>
+                </div>
+                
+                <div class="text-center space-y-2">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/20 to-green-500/20 rounded-full border border-emerald-500/30 mb-2">
+                        <i data-lucide="clock" class="w-4 h-4 text-emerald-400"></i>
+                        <span class="text-emerald-300 font-semibold text-sm">Coming Soon</span>
+                    </div>
+                    <h4 class="text-2xl font-bold text-white">Native Android App</h4>
+                    <p class="text-slate-400 text-sm">Get Copy Cloud on your Android device!</p>
+                </div>
+
+                <div class="bg-white/5 rounded-xl p-4 border border-white/5 space-y-3">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="zap" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
+                        <div>
+                            <h5 class="text-white font-semibold text-sm mb-1">Faster Performance</h5>
+                            <p class="text-slate-400 text-xs">Native app optimized for Android devices</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="bell" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
+                        <div>
+                            <h5 class="text-white font-semibold text-sm mb-1">Push Notifications</h5>
+                            <p class="text-slate-400 text-xs">Get notified when content is shared with you</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="wifi-off" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
+                        <div>
+                            <h5 class="text-white font-semibold text-sm mb-1">Offline Access</h5>
+                            <p class="text-slate-400 text-xs">View previously downloaded content offline</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-xl">
+                    <p class="text-indigo-200 text-sm text-center">
+                        <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                        We're working hard to bring you the APK. Stay tuned!
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-emerald-500/20 bg-gradient-to-r from-emerald-500/5 to-green-500/5 flex justify-center">
+                <button onclick="closeApkModal()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-emerald-500/20">
+                    Got it!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coming Soon Modal -->
+    <div id="coming-soon-modal" class="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-purple-500/30 rounded-2xl w-full max-w-2xl flex flex-col max-h-[85vh] shadow-2xl shadow-purple-500/20 animate-fade-in relative overflow-hidden">
+            <!-- Decorative gradient -->
+            <div class="absolute top-0 right-0 w-60 h-60 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-full blur-3xl -z-10"></div>
+            
+            <div class="p-6 border-b border-purple-500/20 flex justify-between items-center bg-gradient-to-r from-purple-500/10 to-indigo-500/10">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="sparkles" class="text-purple-400 w-5 h-5"></i> Coming Soon Features
+                </h3>
+                <button onclick="closeComingSoonModal()" class="text-slate-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-4">
+                <div class="text-center mb-4">
+                    <p class="text-slate-400 text-sm">We're constantly working to improve your experience. Here's what we're building next!</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-indigo-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0">
+                                <i data-lucide="lock" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">End-to-End Encryption</h4>
+                                <p class="text-slate-400 text-xs">Extra security layer for sensitive data</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-purple-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-purple-500/20 p-2 rounded-lg text-purple-400 shrink-0">
+                                <i data-lucide="clock" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">Custom Expiration Times</h4>
+                                <p class="text-slate-400 text-xs">Choose 1h, 12h, 7d, or custom duration</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-pink-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-pink-500/20 p-2 rounded-lg text-pink-400 shrink-0">
+                                <i data-lucide="shield" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">Password Protection</h4>
+                                <p class="text-slate-400 text-xs">Secure content with a password</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-emerald-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-emerald-500/20 p-2 rounded-lg text-emerald-400 shrink-0">
+                                <i data-lucide="qr-code" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">QR Code Sharing</h4>
+                                <p class="text-slate-400 text-xs">Easy code sharing with QR codes</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-blue-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-blue-500/20 p-2 rounded-lg text-blue-400 shrink-0">
+                                <i data-lucide="bar-chart" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">Usage Statistics</h4>
+                                <p class="text-slate-400 text-xs">Track your sharing activity</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-yellow-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-yellow-500/20 p-2 rounded-lg text-yellow-400 shrink-0">
+                                <i data-lucide="file-text" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">Rich Text Editor</h4>
+                                <p class="text-slate-400 text-xs">Format text with styles and colors</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-orange-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-orange-500/20 p-2 rounded-lg text-orange-400 shrink-0">
+                                <i data-lucide="moon" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">Dark/Light Theme Toggle</h4>
+                                <p class="text-slate-400 text-xs">Switch between themes</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-teal-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-teal-500/20 p-2 rounded-lg text-teal-400 shrink-0">
+                                <i data-lucide="folder-plus" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">Enhanced Multi-File Upload</h4>
+                                <p class="text-slate-400 text-xs">Upload multiple files seamlessly</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-xl">
+                    <p class="text-slate-400 text-sm">
+                        Want to see a specific feature? 
+                        <a href="https://github.com/Ansh200618/Online-Clipboard/issues" target="_blank" class="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+                            Let us know on GitHub! <i data-lucide="external-link" class="w-3 h-3 inline"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-purple-500/20 bg-gradient-to-r from-purple-500/5 to-indigo-500/5 flex justify-center">
+                <button onclick="closeComingSoonModal()" class="px-6 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-purple-500/20">
+                    Awesome!
                 </button>
             </div>
         </div>
@@ -468,168 +681,22 @@
 
         </main>
 
-        <!-- COMING SOON SECTION -->
-        <section class="mt-16 mb-8">
-            <div class="glass-panel rounded-3xl p-1 shadow-2xl">
-                <div class="bg-slate-900/50 rounded-[22px] p-8 border border-white/5 relative overflow-hidden">
-                    <!-- Decorative gradient background -->
-                    <div class="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-full blur-3xl -z-10"></div>
-                    
-                    <!-- Header -->
-                    <div class="text-center mb-10">
-                        <div class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full border border-indigo-500/30 mb-4">
-                            <i data-lucide="sparkles" class="w-5 h-5 text-indigo-400"></i>
-                            <span class="text-indigo-300 font-semibold text-lg">Coming Soon</span>
-                        </div>
-                        <h2 class="text-3xl font-bold text-white mb-3">Exciting Features on the Way</h2>
-                        <p class="text-slate-400 max-w-2xl mx-auto">We're constantly working to improve your experience. Here's what we're building next!</p>
-                    </div>
-
-                    <!-- APK Section -->
-                    <div class="mb-10 flex justify-center">
-                        <div class="glass-panel rounded-2xl p-6 max-w-md w-full border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 hover:scale-105 cursor-pointer group">
-                            <div class="flex items-center gap-4">
-                                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 rounded-2xl shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-all">
-                                    <i data-lucide="smartphone" class="w-8 h-8 text-white"></i>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="text-xl font-bold text-white mb-1 flex items-center gap-2">
-                                        Android App
-                                        <span class="px-2 py-1 text-xs bg-emerald-500/20 text-emerald-400 rounded-full border border-emerald-500/30">New</span>
-                                    </h3>
-                                    <p class="text-slate-400 text-sm">Native Android APK coming soon!</p>
-                                </div>
-                                <i data-lucide="arrow-right" class="w-5 h-5 text-indigo-400 group-hover:translate-x-1 transition-transform"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Features Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <!-- Feature 1 -->
-                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-indigo-500/30 hover:bg-white/10 transition-all duration-300 group">
-                            <div class="flex items-start gap-3">
-                                <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0 group-hover:scale-110 transition-transform">
-                                    <i data-lucide="lock" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm mb-1">End-to-End Encryption</h4>
-                                    <p class="text-slate-400 text-xs">Extra security layer for sensitive data</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Feature 2 -->
-                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-purple-500/30 hover:bg-white/10 transition-all duration-300 group">
-                            <div class="flex items-start gap-3">
-                                <div class="bg-purple-500/20 p-2 rounded-lg text-purple-400 shrink-0 group-hover:scale-110 transition-transform">
-                                    <i data-lucide="clock" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm mb-1">Custom Expiration Times</h4>
-                                    <p class="text-slate-400 text-xs">Choose 1h, 12h, 7d, or custom duration</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Feature 3 -->
-                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-pink-500/30 hover:bg-white/10 transition-all duration-300 group">
-                            <div class="flex items-start gap-3">
-                                <div class="bg-pink-500/20 p-2 rounded-lg text-pink-400 shrink-0 group-hover:scale-110 transition-transform">
-                                    <i data-lucide="shield" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm mb-1">Password Protection</h4>
-                                    <p class="text-slate-400 text-xs">Secure content with a password</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Feature 4 -->
-                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-emerald-500/30 hover:bg-white/10 transition-all duration-300 group">
-                            <div class="flex items-start gap-3">
-                                <div class="bg-emerald-500/20 p-2 rounded-lg text-emerald-400 shrink-0 group-hover:scale-110 transition-transform">
-                                    <i data-lucide="qr-code" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm mb-1">QR Code Sharing</h4>
-                                    <p class="text-slate-400 text-xs">Easy code sharing with QR codes</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Feature 5 -->
-                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-blue-500/30 hover:bg-white/10 transition-all duration-300 group">
-                            <div class="flex items-start gap-3">
-                                <div class="bg-blue-500/20 p-2 rounded-lg text-blue-400 shrink-0 group-hover:scale-110 transition-transform">
-                                    <i data-lucide="bar-chart" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm mb-1">Usage Statistics</h4>
-                                    <p class="text-slate-400 text-xs">Track your sharing activity</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Feature 6 -->
-                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-yellow-500/30 hover:bg-white/10 transition-all duration-300 group">
-                            <div class="flex items-start gap-3">
-                                <div class="bg-yellow-500/20 p-2 rounded-lg text-yellow-400 shrink-0 group-hover:scale-110 transition-transform">
-                                    <i data-lucide="file-text" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm mb-1">Rich Text Editor</h4>
-                                    <p class="text-slate-400 text-xs">Format text with styles and colors</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Feature 7 -->
-                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-orange-500/30 hover:bg-white/10 transition-all duration-300 group">
-                            <div class="flex items-start gap-3">
-                                <div class="bg-orange-500/20 p-2 rounded-lg text-orange-400 shrink-0 group-hover:scale-110 transition-transform">
-                                    <i data-lucide="moon" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm mb-1">Dark/Light Theme Toggle</h4>
-                                    <p class="text-slate-400 text-xs">Switch between themes</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Feature 8 -->
-                        <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-teal-500/30 hover:bg-white/10 transition-all duration-300 group">
-                            <div class="flex items-start gap-3">
-                                <div class="bg-teal-500/20 p-2 rounded-lg text-teal-400 shrink-0 group-hover:scale-110 transition-transform">
-                                    <i data-lucide="folder-plus" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-white font-semibold text-sm mb-1">Enhanced Multi-File Upload</h4>
-                                    <p class="text-slate-400 text-xs">Upload multiple files seamlessly</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Call to Action -->
-                    <div class="mt-8 text-center">
-                        <p class="text-slate-400 text-sm">
-                            Want to see a specific feature? 
-                            <a href="https://github.com/Ansh200618/Online-Clipboard/issues" target="_blank" class="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
-                                Let us know on GitHub! <i data-lucide="external-link" class="w-3 h-3 inline"></i>
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
         <footer class="mt-12 pt-8 border-t border-white/5 flex flex-col gap-8 text-slate-500 text-sm">
             <div class="flex flex-wrap justify-center gap-4 sm:gap-8">
                 <a href="http://ansh200618.github.io/Portfolio/" target="_blank" class="flex items-center gap-2 hover:text-indigo-400 transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-indigo-500/30 hover:bg-indigo-500/10">
                     <i data-lucide="user" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors"></i>
                     <span>Portfolio</span>
                 </a>
+                <button onclick="openApkModal()" class="flex items-center gap-2 hover:text-emerald-400 transition-all group bg-gradient-to-r from-emerald-500/20 to-green-500/20 px-4 py-2 rounded-full border border-emerald-500/40 hover:border-emerald-500/60 hover:shadow-lg hover:shadow-emerald-500/20 hover:scale-105 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400 group-hover:text-emerald-300 transition-colors relative z-10"></i>
+                    <span class="relative z-10 font-medium">Android APK</span>
+                    <span class="px-2 py-0.5 text-xs bg-emerald-500/30 text-emerald-300 rounded-full border border-emerald-500/40 relative z-10">New</span>
+                </button>
+                <button onclick="openComingSoonModal()" class="flex items-center gap-2 hover:text-purple-400 transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-purple-500/30 hover:bg-purple-500/10">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-slate-400 group-hover:text-purple-400 transition-colors"></i>
+                    <span>Coming Soon</span>
+                </button>
                 <a href="https://www.instagram.com/anshdeep_officiall/" target="_blank" class="flex items-center gap-2 hover:text-pink-400 transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-pink-500/30 hover:bg-pink-500/10">
                     <i data-lucide="instagram" class="w-4 h-4 text-slate-400 group-hover:text-pink-400 transition-colors"></i>
                     <span>Instagram</span>
@@ -1308,10 +1375,52 @@
                 window.closeLegalModal();
             }
         });
+
+        // --- APK MODAL ---
+        window.openApkModal = () => {
+            const modal = document.getElementById('apk-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons(); // Re-initialize icons for modal
+        };
+
+        window.closeApkModal = () => {
+            const modal = document.getElementById('apk-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        document.getElementById('apk-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'apk-modal') {
+                window.closeApkModal();
+            }
+        });
+
+        // --- COMING SOON MODAL ---
+        window.openComingSoonModal = () => {
+            const modal = document.getElementById('coming-soon-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons(); // Re-initialize icons for modal
+        };
+
+        window.closeComingSoonModal = () => {
+            const modal = document.getElementById('coming-soon-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        document.getElementById('coming-soon-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'coming-soon-modal') {
+                window.closeComingSoonModal();
+            }
+        });
         
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 window.closeLegalModal();
+                window.closeApkModal();
+                window.closeComingSoonModal();
             }
         });
 

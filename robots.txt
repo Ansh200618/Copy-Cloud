@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://copycloud.vercel.app/sitemap.xml
