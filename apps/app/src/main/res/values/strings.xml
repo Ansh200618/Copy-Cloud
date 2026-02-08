@@ -47,6 +47,11 @@
     <string name="about_title">About Copy Cloud</string>
     <string name="about_description">Fast, secure, temporary file and text transfer across devices. No login required!</string>
     <string name="about_features_title">Key Features</string>
+    <string name="app_actions">App Actions</string>
+    <string name="rate_app">⭐ Rate App on Play Store</string>
+    <string name="share_app">📤 Share App with Friends</string>
+    <string name="privacy_policy">🔒 Privacy Policy</string>
+    <string name="send_feedback">💬 Send Feedback</string>
     <string name="feature_secure">🔒 Secure &amp; Private\nAll data expires after 24 hours</string>
     <string name="feature_instant">⚡ Instant Transfer\nShare across any device instantly</string>
     <string name="feature_simple">📱 Simple to Use\nJust generate a code and share</string>
