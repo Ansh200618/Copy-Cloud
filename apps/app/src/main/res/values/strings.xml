@@ -94,6 +94,8 @@
     <string name="target_device_code">Target Device Code (8 digits)</string>
     <string name="send_to_all">Send to All Devices</string>
     <string name="send_to_specific">Send to Specific Device</string>
+    <string name="send_to_specific_device">Send to Specific Device (Optional)</string>
+    <string name="optional_device_targeting">Leave empty to send to all devices</string>
     
     <!-- Notifications -->
     <string name="notification_channel_name">Copy Cloud Notifications</string>

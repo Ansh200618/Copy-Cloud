@@ -1,54 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- PREMIUM LUXURY PALETTE 💎 -->
+    <!-- App Color Palette -->
     
-    <!-- Gold & Precious Metals -->
-    <color name="gold_primary">#FFD700</color>
-    <color name="gold_light">#FFE55C</color>
-    <color name="gold_dark">#C9A961</color>
-    <color name="platinum">#E5E4E2</color>
-    <color name="rose_gold">#B76E79</color>
-    <color name="bronze">#CD7F32</color>
+    <!-- Default Dark Theme - Ocean Dark -->
+    <color name="primary">#4169E1</color>
+    <color name="primary_dark">#2E5CB8</color>
+    <color name="primary_light">#6A8FFF</color>
+    <color name="accent">#50C878</color>
     
-    <!-- Deep Luxury Blacks -->
-    <color name="luxury_black">#000000</color>
-    <color name="deep_black">#0A0A0A</color>
-    <color name="midnight_black">#0F0F0F</color>
-    <color name="charcoal">#1A1A1A</color>
-    
-    <!-- Royal Colors -->
-    <color name="royal_purple">#6B46C1</color>
-    <color name="royal_purple_light">#805AD5</color>
-    <color name="royal_blue">#1E3A8A</color>
-    <color name="sapphire">#0F52BA</color>
-    
-    <!-- Premium Gradients Base -->
-    <color name="gradient_gold_start">#FFD700</color>
-    <color name="gradient_gold_end">#FFA500</color>
-    <color name="gradient_platinum_start">#E5E4E2</color>
-    <color name="gradient_platinum_end">#C0C0C0</color>
-    <color name="gradient_luxury_start">#6B46C1</color>
-    <color name="gradient_luxury_end">#1E3A8A</color>
-    
-    <!-- Default Dark Theme - Luxury Ocean Dark -->
-    <color name="primary">#FFD700</color>
-    <color name="primary_dark">#C9A961</color>
-    <color name="primary_light">#FFE55C</color>
-    <color name="accent">#B76E79</color>
-    
-    <!-- Premium Background Colors -->
+    <!-- Background Colors -->
     <color name="background">#0A0A0A</color>
     <color name="surface">#1A1A1A</color>
     <color name="surface_light">#252525</color>
     <color name="surface_elevated">#2A2A2A</color>
     
-    <!-- Premium Text Colors -->
+    <!-- Text Colors -->
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#C0C0C0</color>
     <color name="text_hint">#808080</color>
-    <color name="text_gold">#FFD700</color>
     
-    <!-- System Colors with Premium Touch -->
+    <!-- System Colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="success">#2ECC71</color>
@@ -59,10 +30,8 @@
     <color name="transparent">#00000000</color>
     <color name="overlay">#CC000000</color>
     <color name="overlay_light">#66000000</color>
-    <color name="glass_white">#33FFFFFF</color>
-    <color name="glass_gold">#33FFD700</color>
     
-    <!-- Premium Theme Variations -->
+    <!-- Theme Variations -->
     
     <!-- Midnight Blue (Dark) -->
     <color name="theme_midnight_primary">#4169E1</color>
@@ -103,8 +72,6 @@
     <color name="theme_mint_surface">#E0FFF0</color>
     <color name="theme_mint_text">#1C2833</color>
     
-    <!-- Premium Shadows -->
+    <!-- Shadows -->
     <color name="shadow_soft">#40000000</color>
-    <color name="shadow_gold">#80FFD700</color>
-    <color name="shadow_purple">#806B46C1</color>
 </resources>
