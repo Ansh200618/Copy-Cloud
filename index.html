@@ -669,20 +669,24 @@
         let selectedFiles = []; 
         let currentInputType = 'text';
 
+        // Constants
+        const AUTO_RETRIEVE_DELAY_MS = 500;
+
         // --- URL PARAMETER DETECTION FOR QR CODE REDIRECT ---
         (function checkURLParameters() {
             const urlParams = new URLSearchParams(window.location.search);
             const codeParam = urlParams.get('code');
             
-            if (codeParam && codeParam.length === 6) {
+            // Validate code: 6 characters, alphanumeric only
+            if (codeParam && /^[A-Z0-9]{6}$/i.test(codeParam)) {
                 // Switch to retrieve tab
                 window.switchTab('retrieve');
-                // Fill in the code
+                // Fill in the code (uppercase)
                 document.getElementById('retrieve-code-input').value = codeParam.toUpperCase();
-                // Auto-retrieve (optional - you can remove this if you want manual retrieval)
+                // Auto-retrieve after delay
                 setTimeout(() => {
                     window.handleRetrieve();
-                }, 500);
+                }, AUTO_RETRIEVE_DELAY_MS);
             }
         })();
 
@@ -988,7 +992,7 @@
                 // Generate QR Code with full URL
                 const qrContainer = document.getElementById('qrcode-container');
                 qrContainer.innerHTML = ''; // Clear any existing QR code
-                const websiteURL = window.location.origin + window.location.pathname + '?code=' + code;
+                const websiteURL = `${window.location.origin}${window.location.pathname}?code=${code}`;
                 new QRCode(qrContainer, {
                     text: websiteURL,
                     width: 200,
