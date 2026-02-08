@@ -1,4 +1,6 @@
-# Copy Cloud - React Native Expo App
+# Copy Cloud - React Native Expo App (Optional)
+
+> **Note**: This is an experimental React Native version. The **recommended approach** is to use the native Android app in the `apps/` directory, which builds automatically without any setup.
 
 This is the React Native Expo version of Copy Cloud that replicates the HTML interface.
 
