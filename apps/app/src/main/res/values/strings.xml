@@ -81,6 +81,7 @@
     <string name="connect_device_title">Connect Device</string>
     <string name="connect_device_message">Enter the 8-digit code from the device you want to connect</string>
     <string name="invalid_device_code">Invalid device code (must be 8 digits)</string>
+    <string name="content_for_different_device">This content is intended for device: %s</string>
     
     <!-- History Screen -->
     <string name="tab_history">History</string>

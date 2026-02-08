@@ -203,10 +203,11 @@ public class RetrieveFragment extends Fragment {
         String targetDevice = data.getTarget_device();
         String myDeviceCode = DeviceManager.getDeviceCode(requireContext());
         
-        if (targetDevice != null && !targetDevice.isEmpty() && !targetDevice.equals(myDeviceCode)) {
+        if (isContentForDifferentDevice(targetDevice, myDeviceCode)) {
             // Content is for a different device
+            String formattedCode = DeviceManager.formatDeviceCode(targetDevice);
             Toast.makeText(requireContext(), 
-                "This content is intended for device: " + DeviceManager.formatDeviceCode(targetDevice), 
+                getString(R.string.content_for_different_device, formattedCode), 
                 Toast.LENGTH_LONG).show();
             contentCard.setVisibility(View.GONE);
             return;
@@ -220,6 +221,13 @@ public class RetrieveFragment extends Fragment {
         
         // Set created time
         tvCreatedAt.setText(getString(R.string.created_at, getTimeAgo(data.getCreated_at())));
+    }
+    
+    /**
+     * Check if content is targeted to a different device
+     */
+    private boolean isContentForDifferentDevice(String targetDevice, String myDeviceCode) {
+        return targetDevice != null && !targetDevice.isEmpty() && !targetDevice.equals(myDeviceCode);
     }
     
     private void displayTextContent(com.copycloud.app.models.ClipData data) {
