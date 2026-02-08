@@ -15,45 +15,9 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **📱 Cross-Device Sharing** - Seamlessly move content between phones, tablets, and computers
 - **📝 Text & Files** - Support for unlimited text and files up to 40MB
 - **🔒 Auto-Expiry** - All content automatically deletes after 24 hours for privacy
-- **📷 QR Code Scanner** - Quick code scanning in the Android app
+- **📷 QR Code Generation** - Scan QR codes to quickly access shared content
 - **💜 Purple Gradient UI** - Modern design with indigo-to-purple gradient theme
 - **🌐 Real-time Database** - PostgreSQL database with real-time subscriptions
-- **📱 Native Android App** - Available with automatic builds via GitHub Actions
-
----
-
-## 📱 Android App
-
-### Get the APK
-
-The Android APK is **automatically built** when code is merged to the main branch. No manual setup required!
-
-#### Download Options:
-
-1. **From GitHub Releases** (Recommended)
-   - Visit: [Releases Page](https://github.com/Ansh200618/Online-Clipboard/releases)
-   - Download `app-debug.apk` from the latest release
-   - Install on your Android device
-
-2. **From GitHub Actions**
-   - Go to the [Actions tab](https://github.com/Ansh200618/Online-Clipboard/actions)
-   - Click on the latest "Build and Release Android APK" workflow
-   - Download the APK from artifacts (available for 30 days)
-
-### Features in Android App:
-- ✅ Send text or files
-- ✅ Retrieve content with 6-character code
-- ✅ QR code scanning for quick retrieval
-- ✅ Local history storage
-- ✅ Push notifications
-- ✅ Purple gradient UI matching website
-- ✅ Glassmorphism design
-
-### Installation:
-1. Download the APK
-2. Enable "Install from Unknown Sources" in Android settings
-3. Open the APK file
-4. Follow installation prompts
 
 ---
 
@@ -204,16 +168,7 @@ Create a `clips` table with the following structure:
 - `code` (text, primary key) - The 6-character code
 - `content` (text, nullable) - For text content
 - `type` (text) - Either "text" or "file"
-- `target_device` (text, nullable) - Optional 8-digit device code for device-specific delivery
 - `created_at` (timestamp with time zone) - Creation timestamp
-
-Run the migration SQL:
-```sql
-ALTER TABLE clips ADD COLUMN IF NOT EXISTS target_device TEXT;
-CREATE INDEX IF NOT EXISTS idx_clips_target_device ON clips(target_device);
-```
-
-See `database_migration.sql` for details.
 
 ### Storage Setup
 
