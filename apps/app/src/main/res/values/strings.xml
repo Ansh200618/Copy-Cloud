@@ -108,6 +108,9 @@
     <string name="notification_tap_to_open">Tap to open</string>
     
     <!-- Theme Names -->
+    <string name="system_theme">System Theme</string>
+    <string name="theme_system">Follow System</string>
+    <string name="theme_system_desc">Adapts to your device theme and wallpaper (Android 12+)</string>
     <string name="theme_ocean_dark">Ocean Dark</string>
     <string name="theme_midnight_blue">Midnight Blue</string>
     <string name="theme_purple_night">Purple Night</string>
