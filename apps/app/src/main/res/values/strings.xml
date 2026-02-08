@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Copy Cloud</string>
+    <string name="app_version">Version 1.0.0</string>
+    <string name="splash_tagline">Share Instantly, No Login Required</string>
     <string name="tab_send">Send</string>
     <string name="tab_retrieve">Retrieve</string>
     <string name="tab_about">About</string>

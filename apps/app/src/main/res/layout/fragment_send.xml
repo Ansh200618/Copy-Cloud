@@ -154,7 +154,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -171,13 +172,16 @@
                     android:text="@string/optional_device_targeting"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginBottom="16dp" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/target_device_code"
-                    app:boxBackgroundColor="@color/surface_light">
+                    style="@style/EditTextStyle"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/text_hint">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTargetDevice"
@@ -186,7 +190,9 @@
                         android:textColor="@color/text_primary"
                         android:textColorHint="@color/text_hint"
                         android:inputType="number"
-                        android:maxLength="8" />
+                        android:maxLength="8"
+                        android:paddingVertical="16dp"
+                        android:textSize="16sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
