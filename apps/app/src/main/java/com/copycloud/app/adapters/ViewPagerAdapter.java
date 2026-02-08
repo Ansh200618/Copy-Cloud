@@ -9,7 +9,6 @@ import com.copycloud.app.fragments.AboutFragment;
 import com.copycloud.app.fragments.HistoryFragment;
 import com.copycloud.app.fragments.RetrieveFragment;
 import com.copycloud.app.fragments.SendFragment;
-import com.copycloud.app.fragments.SettingsFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
     
@@ -27,8 +26,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
                 return new RetrieveFragment();
             case 2:
                 return new HistoryFragment();
-            case 3:
-                return new SettingsFragment();
             default:
                 return new SendFragment();
         }
@@ -36,6 +33,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     
     @Override
     public int getItemCount() {
-        return 4;
+        return 3;
     }
 }

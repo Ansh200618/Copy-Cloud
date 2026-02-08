@@ -102,9 +102,6 @@ public class MainActivity extends AppCompatActivity {
                     case 2:
                         bottomNavigation.setSelectedItemId(R.id.nav_history);
                         break;
-                    case 3:
-                        bottomNavigation.setSelectedItemId(R.id.nav_settings);
-                        break;
                 }
             }
         });
@@ -121,9 +118,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.nav_history) {
                 viewPager.setCurrentItem(2, true);
-                return true;
-            } else if (itemId == R.id.nav_settings) {
-                viewPager.setCurrentItem(3, true);
                 return true;
             }
             return false;

@@ -43,9 +43,8 @@ public class SendFragment extends Fragment {
     private static final int MAX_FILE_SIZE = 40 * 1024 * 1024; // 40MB
     
     private MaterialButton btnTextMode, btnFileMode;
-    private MaterialCardView textInputCard, fileInputCard, successCard, deviceTargetCard;
+    private MaterialCardView textInputCard, fileInputCard, successCard;
     private EditText editTextContent;
-    private TextInputEditText editTargetDevice;
     private MaterialButton btnSelectFiles, btnGenerate, btnCopyCode, btnStartNew;
     private TextView tvFileInfo, tvGeneratedCode;
     private ImageView imageQrCode;
@@ -98,9 +97,7 @@ public class SendFragment extends Fragment {
         textInputCard = view.findViewById(R.id.textInputCard);
         fileInputCard = view.findViewById(R.id.fileInputCard);
         successCard = view.findViewById(R.id.successCard);
-        deviceTargetCard = view.findViewById(R.id.deviceTargetCard);
         editTextContent = view.findViewById(R.id.editTextContent);
-        editTargetDevice = view.findViewById(R.id.editTargetDevice);
         btnSelectFiles = view.findViewById(R.id.btnSelectFiles);
         btnGenerate = view.findViewById(R.id.btnGenerate);
         tvFileInfo = view.findViewById(R.id.tvFileInfo);
@@ -214,22 +211,8 @@ public class SendFragment extends Fragment {
         btnGenerate.setEnabled(false);
         
         String code = CodeGenerator.generateCode();
-        String targetDevice = editTargetDevice.getText().toString().trim();
         
-        // Validate device code if provided
-        if (!targetDevice.isEmpty() && targetDevice.length() != 8) {
-            Toast.makeText(requireContext(), R.string.invalid_device_code, Toast.LENGTH_SHORT).show();
-            progressBar.setVisibility(View.GONE);
-            btnGenerate.setEnabled(true);
-            return;
-        }
-        
-        ClipData clipData;
-        if (targetDevice.isEmpty()) {
-            clipData = new ClipData(code, text, "text");
-        } else {
-            clipData = new ClipData(code, text, "text", targetDevice);
-        }
+        ClipData clipData = new ClipData(code, text, "text");
         
         supabaseClient.insertClip(clipData, new SupabaseClient.ApiCallback<ClipData>() {
             @Override
@@ -284,7 +267,6 @@ public class SendFragment extends Fragment {
         successCard.setVisibility(View.GONE);
         btnGenerate.setVisibility(View.VISIBLE);
         editTextContent.setText("");
-        editTargetDevice.setText("");
         selectedFiles.clear();
         updateFileInfo();
         
