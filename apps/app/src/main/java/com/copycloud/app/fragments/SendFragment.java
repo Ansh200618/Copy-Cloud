@@ -2,7 +2,6 @@ package com.copycloud.app.fragments;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -162,7 +161,7 @@ public class SendFragment extends Fragment {
         
         if (data.getClipData() != null) {
             // Multiple files
-            ClipData clipData = data.getClipData();
+            android.content.ClipData clipData = data.getClipData();
             for (int i = 0; i < clipData.getItemCount(); i++) {
                 selectedFiles.add(clipData.getItemAt(i).getUri());
             }
@@ -257,7 +256,7 @@ public class SendFragment extends Fragment {
     
     private void copyCodeToClipboard() {
         ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Copy Cloud Code", generatedCode);
+        android.content.ClipData clip = android.content.ClipData.newPlainText("Copy Cloud Code", generatedCode);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(requireContext(), R.string.code_copied, Toast.LENGTH_SHORT).show();
     }

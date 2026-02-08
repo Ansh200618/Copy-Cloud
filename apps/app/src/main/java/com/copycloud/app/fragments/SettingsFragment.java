@@ -24,6 +24,7 @@ import com.copycloud.app.utils.ConnectedDevicesManager;
 import com.copycloud.app.utils.DeviceManager;
 import com.copycloud.app.utils.ThemeManager;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.Set;
 
@@ -228,7 +229,7 @@ public class SettingsFragment extends Fragment {
         
         int themeId = getThemeCardId(currentTheme);
         if (themeId != 0) {
-            CardView card = view.findViewById(themeId);
+            MaterialCardView card = view.findViewById(themeId);
             if (card != null) {
                 card.setStrokeWidth(4);
             }
@@ -236,7 +237,7 @@ public class SettingsFragment extends Fragment {
     }
     
     private void removeHighlight(View view, int cardId) {
-        CardView card = view.findViewById(cardId);
+        MaterialCardView card = view.findViewById(cardId);
         if (card != null) {
             card.setStrokeWidth(0);
         }
