@@ -13,9 +13,11 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **🔐 No Login Required** - Start sharing content instantly without creating an account
 - **⚡ Real-time Transfer** - Powered by Supabase PostgreSQL for instant synchronization
 - **📱 Cross-Device Sharing** - Seamlessly move content between phones, tablets, and computers
+- **🎯 Device Targeting** - Send content to specific devices using 8-digit device codes
 - **📝 Text & Files** - Support for unlimited text and files up to 40MB
 - **🔒 Auto-Expiry** - All content automatically deletes after 24 hours for privacy
-- **🎨 Modern UI** - Beautiful glassmorphic design with smooth animations
+- **📷 QR Code Scanner** - Square QR scanner for quick code sharing
+- **🎨 Modern UI** - Beautiful design with 8 theme options (4 dark, 4 light)
 - **🌐 Real-time Database** - PostgreSQL database with real-time subscriptions
 
 ---
@@ -163,13 +165,20 @@ Online-Clipboard/
 
 ### Database Schema
 
-Create a `clipboard_items` table with the following structure:
-- `id` (text, primary key) - The 6-character code
-- `content_type` (text) - Either "text" or "file"
-- `text_content` (text, nullable) - For text content
-- `file_name` (text, nullable) - Original filename
-- `file_path` (text, nullable) - Path in Supabase Storage
+Create a `clips` table with the following structure:
+- `code` (text, primary key) - The 6-character code
+- `content` (text, nullable) - For text content
+- `type` (text) - Either "text" or "file"
+- `target_device` (text, nullable) - Optional 8-digit device code for device-specific delivery
 - `created_at` (timestamp with time zone) - Creation timestamp
+
+Run the migration SQL:
+```sql
+ALTER TABLE clips ADD COLUMN IF NOT EXISTS target_device TEXT;
+CREATE INDEX IF NOT EXISTS idx_clips_target_device ON clips(target_device);
+```
+
+See `database_migration.sql` for details.
 
 ### Storage Setup
 

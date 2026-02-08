@@ -5,6 +5,7 @@ public class ClipData {
     private String content;
     private String type;
     private String created_at;
+    private String target_device;
 
     public ClipData() {
     }
@@ -13,6 +14,13 @@ public class ClipData {
         this.code = code;
         this.content = content;
         this.type = type;
+    }
+
+    public ClipData(String code, String content, String type, String target_device) {
+        this.code = code;
+        this.content = content;
+        this.type = type;
+        this.target_device = target_device;
     }
 
     public String getCode() {
@@ -45,5 +53,13 @@ public class ClipData {
 
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
+    }
+
+    public String getTarget_device() {
+        return target_device;
+    }
+
+    public void setTarget_device(String target_device) {
+        this.target_device = target_device;
     }
 }

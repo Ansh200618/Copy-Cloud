@@ -195,6 +195,9 @@ public class SettingsFragment extends Fragment {
     }
     
     private void setupThemeListeners(View view) {
+        // System theme
+        view.findViewById(R.id.themeSystem).setOnClickListener(v -> applyTheme("system"));
+        
         // Dark themes
         view.findViewById(R.id.themeOceanDark).setOnClickListener(v -> applyTheme("ocean_dark"));
         view.findViewById(R.id.themeMidnightBlue).setOnClickListener(v -> applyTheme("midnight_blue"));
@@ -216,8 +219,9 @@ public class SettingsFragment extends Fragment {
     }
     
     private void highlightCurrentTheme(View view) {
-        String currentTheme = prefs.getString("selected_theme", "ocean_dark");
+        String currentTheme = prefs.getString("selected_theme", "system");
         
+        removeHighlight(view, R.id.themeSystem);
         removeHighlight(view, R.id.themeOceanDark);
         removeHighlight(view, R.id.themeMidnightBlue);
         removeHighlight(view, R.id.themePurpleNight);
@@ -245,6 +249,7 @@ public class SettingsFragment extends Fragment {
     
     private int getThemeCardId(String themeName) {
         switch (themeName) {
+            case "system": return R.id.themeSystem;
             case "ocean_dark": return R.id.themeOceanDark;
             case "midnight_blue": return R.id.themeMidnightBlue;
             case "purple_night": return R.id.themePurpleNight;

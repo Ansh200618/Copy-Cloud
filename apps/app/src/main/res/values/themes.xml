@@ -14,6 +14,13 @@
 
     <style name="Theme.CopyCloud" parent="Base.Theme.CopyCloud" />
 
+    <!-- Splash Screen Theme -->
+    <style name="Theme.CopyCloud.Splash" parent="Base.Theme.CopyCloud">
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
     <!-- Custom Card Style -->
     <style name="CardStyle">
         <item name="cardBackgroundColor">@color/surface</item>

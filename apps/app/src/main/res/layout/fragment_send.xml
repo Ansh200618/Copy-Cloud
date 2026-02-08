@@ -142,6 +142,64 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Device Targeting Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/deviceTargetCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/CardStyle"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/textInputCard">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/send_to_specific_device"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/optional_device_targeting"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="16dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/target_device_code"
+                    style="@style/EditTextStyle"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/primary"
+                    app:hintTextColor="@color/text_hint">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTargetDevice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_hint"
+                        android:inputType="number"
+                        android:maxLength="8"
+                        android:paddingVertical="16dp"
+                        android:textSize="16sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Success View -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/successCard"
@@ -252,7 +310,7 @@
             android:text="@string/btn_generate_code"
             style="@style/PrimaryButton"
             android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/textInputCard" />
+            app:layout_constraintTop_toBottomOf="@id/deviceTargetCard" />
 
         <!-- Progress Bar -->
         <ProgressBar

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Copy Cloud</string>
+    <string name="app_version">Version 1.0.0</string>
+    <string name="splash_tagline">Share Instantly, No Login Required</string>
     <string name="tab_send">Send</string>
     <string name="tab_retrieve">Retrieve</string>
     <string name="tab_about">About</string>
@@ -45,6 +47,11 @@
     <string name="about_title">About Copy Cloud</string>
     <string name="about_description">Fast, secure, temporary file and text transfer across devices. No login required!</string>
     <string name="about_features_title">Key Features</string>
+    <string name="app_actions">App Actions</string>
+    <string name="rate_app">⭐ Rate App on Play Store</string>
+    <string name="share_app">📤 Share App with Friends</string>
+    <string name="privacy_policy">🔒 Privacy Policy</string>
+    <string name="send_feedback">💬 Send Feedback</string>
     <string name="feature_secure">🔒 Secure &amp; Private\nAll data expires after 24 hours</string>
     <string name="feature_instant">⚡ Instant Transfer\nShare across any device instantly</string>
     <string name="feature_simple">📱 Simple to Use\nJust generate a code and share</string>
@@ -81,6 +88,7 @@
     <string name="connect_device_title">Connect Device</string>
     <string name="connect_device_message">Enter the 8-digit code from the device you want to connect</string>
     <string name="invalid_device_code">Invalid device code (must be 8 digits)</string>
+    <string name="content_for_different_device">This content is intended for device: %s</string>
     
     <!-- History Screen -->
     <string name="tab_history">History</string>
@@ -94,6 +102,8 @@
     <string name="target_device_code">Target Device Code (8 digits)</string>
     <string name="send_to_all">Send to All Devices</string>
     <string name="send_to_specific">Send to Specific Device</string>
+    <string name="send_to_specific_device">Send to Specific Device (Optional)</string>
+    <string name="optional_device_targeting">Leave empty to send to all devices</string>
     
     <!-- Notifications -->
     <string name="notification_channel_name">Copy Cloud Notifications</string>
@@ -105,6 +115,9 @@
     <string name="notification_tap_to_open">Tap to open</string>
     
     <!-- Theme Names -->
+    <string name="system_theme">System Theme</string>
+    <string name="theme_system">Follow System</string>
+    <string name="theme_system_desc">Adapts to your device theme and wallpaper (Android 12+)</string>
     <string name="theme_ocean_dark">Ocean Dark</string>
     <string name="theme_midnight_blue">Midnight Blue</string>
     <string name="theme_purple_night">Purple Night</string>

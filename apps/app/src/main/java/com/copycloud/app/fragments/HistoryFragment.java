@@ -13,11 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.copycloud.app.R;
 import com.copycloud.app.adapters.HistoryAdapter;
 import com.copycloud.app.database.HistoryDatabase;
 import com.copycloud.app.models.HistoryItem;
+import com.copycloud.app.utils.ThemeManager;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
@@ -29,6 +31,7 @@ public class HistoryFragment extends Fragment {
     private HistoryDatabase historyDb;
     private LinearLayout emptyState;
     private MaterialButton btnClearHistory;
+    private SwipeRefreshLayout swipeRefresh;
     
     @Nullable
     @Override
@@ -44,6 +47,7 @@ public class HistoryFragment extends Fragment {
         
         initViews(view);
         setupRecyclerView();
+        setupSwipeRefresh();
         loadHistory();
     }
     
@@ -51,8 +55,24 @@ public class HistoryFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewHistory);
         emptyState = view.findViewById(R.id.emptyState);
         btnClearHistory = view.findViewById(R.id.btnClearHistory);
+        swipeRefresh = view.findViewById(R.id.swipeRefresh);
         
         btnClearHistory.setOnClickListener(v -> showClearHistoryDialog());
+    }
+    
+    private void setupSwipeRefresh() {
+        // Set color scheme for refresh indicator
+        int primaryColor = ThemeManager.getPrimaryColor(requireContext());
+        swipeRefresh.setColorSchemeColors(primaryColor);
+        swipeRefresh.setProgressBackgroundColorSchemeColor(
+            ThemeManager.getBackgroundColor(requireContext())
+        );
+        
+        swipeRefresh.setOnRefreshListener(() -> {
+            loadHistory();
+            swipeRefresh.setRefreshing(false);
+            Toast.makeText(requireContext(), "History refreshed", Toast.LENGTH_SHORT).show();
+        });
     }
     
     private void setupRecyclerView() {
