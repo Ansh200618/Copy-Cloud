@@ -2,11 +2,12 @@
 <resources>
     <!-- App Color Palette -->
     
-    <!-- Default Dark Theme - Ocean Dark -->
-    <color name="primary">#4169E1</color>
-    <color name="primary_dark">#2E5CB8</color>
-    <color name="primary_light">#6A8FFF</color>
-    <color name="accent">#50C878</color>
+    <!-- Default Dark Theme - Purple Gradient (matching website) -->
+    <color name="primary">#6366F1</color>
+    <color name="primary_dark">#4F46E5</color>
+    <color name="primary_light">#818CF8</color>
+    <color name="accent">#A855F7</color>
+    <color name="accent_light">#C084FC</color>
     
     <!-- Background Colors -->
     <color name="background">#0A0A0A</color>

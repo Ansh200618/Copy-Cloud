@@ -13,12 +13,47 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **🔐 No Login Required** - Start sharing content instantly without creating an account
 - **⚡ Real-time Transfer** - Powered by Supabase PostgreSQL for instant synchronization
 - **📱 Cross-Device Sharing** - Seamlessly move content between phones, tablets, and computers
-- **🎯 Device Targeting** - Send content to specific devices using 8-digit device codes
 - **📝 Text & Files** - Support for unlimited text and files up to 40MB
 - **🔒 Auto-Expiry** - All content automatically deletes after 24 hours for privacy
-- **📷 QR Code Scanner** - Square QR scanner for quick code sharing
-- **🎨 Modern UI** - Beautiful design with 8 theme options (4 dark, 4 light)
+- **📷 QR Code Scanner** - Quick code scanning in the Android app
+- **💜 Purple Gradient UI** - Modern design with indigo-to-purple gradient theme
 - **🌐 Real-time Database** - PostgreSQL database with real-time subscriptions
+- **📱 Native Android App** - Available with automatic builds via GitHub Actions
+
+---
+
+## 📱 Android App
+
+### Get the APK
+
+The Android APK is **automatically built** when code is merged to the main branch. No manual setup required!
+
+#### Download Options:
+
+1. **From GitHub Releases** (Recommended)
+   - Visit: [Releases Page](https://github.com/Ansh200618/Online-Clipboard/releases)
+   - Download `app-debug.apk` from the latest release
+   - Install on your Android device
+
+2. **From GitHub Actions**
+   - Go to the [Actions tab](https://github.com/Ansh200618/Online-Clipboard/actions)
+   - Click on the latest "Build and Release Android APK" workflow
+   - Download the APK from artifacts (available for 30 days)
+
+### Features in Android App:
+- ✅ Send text or files
+- ✅ Retrieve content with 6-character code
+- ✅ QR code scanning for quick retrieval
+- ✅ Local history storage
+- ✅ Push notifications
+- ✅ Purple gradient UI matching website
+- ✅ Glassmorphism design
+
+### Installation:
+1. Download the APK
+2. Enable "Install from Unknown Sources" in Android settings
+3. Open the APK file
+4. Follow installation prompts
 
 ---
 

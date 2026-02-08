@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.copycloud.app.R;
 import com.copycloud.app.models.HistoryItem;
-import com.copycloud.app.utils.DeviceManager;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -97,14 +96,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 tvContentPreview.setText(preview);
             } else {
                 tvContentPreview.setText("No preview available");
-            }
-            
-            // Show device code if targeted
-            if (item.getDeviceCode() != null && !item.getDeviceCode().isEmpty()) {
-                tvDeviceCode.setVisibility(View.VISIBLE);
-                tvDeviceCode.setText("📱 Device: " + DeviceManager.formatDeviceCode(item.getDeviceCode()));
-            } else {
-                tvDeviceCode.setVisibility(View.GONE);
             }
             
             // Click handlers

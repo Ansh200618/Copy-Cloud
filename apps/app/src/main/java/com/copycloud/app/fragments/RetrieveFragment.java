@@ -29,7 +29,6 @@ import com.copycloud.app.R;
 import com.copycloud.app.adapters.FileAdapter;
 import com.copycloud.app.api.SupabaseClient;
 import com.copycloud.app.models.FileItem;
-import com.copycloud.app.utils.DeviceManager;
 import com.copycloud.app.utils.NetworkUtils;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -199,20 +198,6 @@ public class RetrieveFragment extends Fragment {
     private void displayContent(com.copycloud.app.models.ClipData data) {
         contentCard.setVisibility(View.VISIBLE);
         
-        // Check if content is targeted to a specific device
-        String targetDevice = data.getTarget_device();
-        String myDeviceCode = DeviceManager.getDeviceCode(requireContext());
-        
-        if (isContentForDifferentDevice(targetDevice, myDeviceCode)) {
-            // Content is for a different device
-            String formattedCode = DeviceManager.formatDeviceCode(targetDevice);
-            Toast.makeText(requireContext(), 
-                getString(R.string.content_for_different_device, formattedCode), 
-                Toast.LENGTH_LONG).show();
-            contentCard.setVisibility(View.GONE);
-            return;
-        }
-        
         if ("text".equals(data.getType())) {
             displayTextContent(data);
         } else {
@@ -221,13 +206,6 @@ public class RetrieveFragment extends Fragment {
         
         // Set created time
         tvCreatedAt.setText(getString(R.string.created_at, getTimeAgo(data.getCreated_at())));
-    }
-    
-    /**
-     * Check if content is targeted to a different device
-     */
-    private boolean isContentForDifferentDevice(String targetDevice, String myDeviceCode) {
-        return targetDevice != null && !targetDevice.isEmpty() && !targetDevice.equals(myDeviceCode);
     }
     
     private void displayTextContent(com.copycloud.app.models.ClipData data) {
