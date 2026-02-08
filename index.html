@@ -201,75 +201,6 @@
     </div>
 
     <!-- APK Modal -->
-    <div id="apk-modal" class="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-slate-900 border border-emerald-500/30 rounded-2xl w-full max-w-md flex flex-col shadow-2xl shadow-emerald-500/20 animate-fade-in relative overflow-hidden">
-            <!-- Decorative gradient -->
-            <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-full blur-3xl -z-10"></div>
-            
-            <div class="p-6 border-b border-emerald-500/20 flex justify-between items-center bg-gradient-to-r from-emerald-500/10 to-green-500/10">
-                <h3 class="text-xl font-bold text-white flex items-center gap-2">
-                    <i data-lucide="smartphone" class="text-emerald-400 w-5 h-5"></i> Android APK
-                </h3>
-                <button onclick="closeApkModal()" class="text-slate-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
-            </div>
-            
-            <div class="p-6 space-y-4">
-                <div class="flex items-center justify-center mb-4">
-                    <div class="bg-gradient-to-br from-emerald-500 to-green-600 p-4 rounded-2xl shadow-lg shadow-emerald-500/30">
-                        <i data-lucide="download" class="w-12 h-12 text-white"></i>
-                    </div>
-                </div>
-                
-                <div class="text-center space-y-2">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/20 to-green-500/20 rounded-full border border-emerald-500/30 mb-2">
-                        <i data-lucide="clock" class="w-4 h-4 text-emerald-400"></i>
-                        <span class="text-emerald-300 font-semibold text-sm">Coming Soon</span>
-                    </div>
-                    <h4 class="text-2xl font-bold text-white">Native Android App</h4>
-                    <p class="text-slate-400 text-sm">Get Copy Cloud on your Android device!</p>
-                </div>
-
-                <div class="bg-white/5 rounded-xl p-4 border border-white/5 space-y-3">
-                    <div class="flex items-start gap-3">
-                        <i data-lucide="zap" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
-                        <div>
-                            <h5 class="text-white font-semibold text-sm mb-1">Faster Performance</h5>
-                            <p class="text-slate-400 text-xs">Native app optimized for Android devices</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <i data-lucide="bell" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
-                        <div>
-                            <h5 class="text-white font-semibold text-sm mb-1">Push Notifications</h5>
-                            <p class="text-slate-400 text-xs">Get notified when content is shared with you</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <i data-lucide="wifi-off" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
-                        <div>
-                            <h5 class="text-white font-semibold text-sm mb-1">Offline Access</h5>
-                            <p class="text-slate-400 text-xs">View previously downloaded content offline</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-xl">
-                    <p class="text-indigo-200 text-sm text-center">
-                        <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
-                        We're working hard to bring you the APK. Stay tuned!
-                    </p>
-                </div>
-            </div>
-
-            <div class="p-4 border-t border-emerald-500/20 bg-gradient-to-r from-emerald-500/5 to-green-500/5 flex justify-center">
-                <button onclick="closeApkModal()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-emerald-500/20">
-                    Got it!
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Coming Soon Modal -->
     <div id="coming-soon-modal" class="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity duration-300">
@@ -695,12 +626,6 @@
                     <i data-lucide="user" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors"></i>
                     <span>Portfolio</span>
                 </a>
-                <button onclick="openApkModal()" class="flex items-center gap-2 hover:text-emerald-400 transition-all group bg-gradient-to-r from-emerald-500/20 to-green-500/20 px-4 py-2 rounded-full border border-emerald-500/40 hover:border-emerald-500/60 hover:shadow-lg hover:shadow-emerald-500/20 hover:scale-105 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400 group-hover:text-emerald-300 transition-colors relative z-10"></i>
-                    <span class="relative z-10 font-medium">Android APK</span>
-                    <span class="px-2 py-0.5 text-xs bg-emerald-500/30 text-emerald-300 rounded-full border border-emerald-500/40 relative z-10">New</span>
-                </button>
                 <button onclick="openComingSoonModal()" class="flex items-center gap-2 hover:text-purple-400 transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-purple-500/30 hover:bg-purple-500/10">
                     <i data-lucide="sparkles" class="w-4 h-4 text-slate-400 group-hover:text-purple-400 transition-colors"></i>
                     <span>Coming Soon</span>
@@ -743,6 +668,23 @@
 
         let selectedFiles = []; 
         let currentInputType = 'text';
+
+        // --- URL PARAMETER DETECTION FOR QR CODE REDIRECT ---
+        (function checkURLParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const codeParam = urlParams.get('code');
+            
+            if (codeParam && codeParam.length === 6) {
+                // Switch to retrieve tab
+                window.switchTab('retrieve');
+                // Fill in the code
+                document.getElementById('retrieve-code-input').value = codeParam.toUpperCase();
+                // Auto-retrieve (optional - you can remove this if you want manual retrieval)
+                setTimeout(() => {
+                    window.handleRetrieve();
+                }, 500);
+            }
+        })();
 
         // UI STATE FUNCTIONS
         window.switchTab = (tabName) => {
@@ -1043,11 +985,12 @@
                 document.getElementById('send-success-view').classList.remove('hidden');
                 document.getElementById('generated-code-display').textContent = code;
                 
-                // Generate QR Code
+                // Generate QR Code with full URL
                 const qrContainer = document.getElementById('qrcode-container');
                 qrContainer.innerHTML = ''; // Clear any existing QR code
+                const websiteURL = window.location.origin + window.location.pathname + '?code=' + code;
                 new QRCode(qrContainer, {
-                    text: code,
+                    text: websiteURL,
                     width: 200,
                     height: 200,
                     colorDark: "#000000",
@@ -1399,26 +1342,6 @@
             }
         });
 
-        // --- APK MODAL ---
-        window.openApkModal = () => {
-            const modal = document.getElementById('apk-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            lucide.createIcons(); // Re-initialize icons for modal
-        };
-
-        window.closeApkModal = () => {
-            const modal = document.getElementById('apk-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        };
-
-        document.getElementById('apk-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'apk-modal') {
-                window.closeApkModal();
-            }
-        });
-
         // --- COMING SOON MODAL ---
         window.openComingSoonModal = () => {
             const modal = document.getElementById('coming-soon-modal');
@@ -1442,7 +1365,6 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 window.closeLegalModal();
-                window.closeApkModal();
                 window.closeComingSoonModal();
             }
         });
