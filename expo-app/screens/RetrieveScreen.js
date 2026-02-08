@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { Search, Copy, Download, FileText } from 'lucide-react-native';
+import { Search, Copy, Download, FileText, QrCode, X } from 'lucide-react-native';
+import { Camera } from 'expo-camera';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 import GlassPanel from '../components/GlassPanel';
 import { supabase } from '../lib/supabase';
 import * as Clipboard from 'expo-clipboard';
@@ -10,9 +12,50 @@ export default function RetrieveScreen() {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [clipData, setClipData] = useState(null);
+  const [showScanner, setShowScanner] = useState(false);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
 
-  const handleRetrieve = async () => {
-    if (!code.trim() || code.length !== 6) {
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  const handleBarCodeScanned = ({ type, data }) => {
+    setScanned(true);
+    setShowScanner(false);
+    
+    // Extract code from QR data (it might be a URL or just the code)
+    const extractedCode = data.includes('copycloud') ? data.split('/').pop() : data;
+    setCode(extractedCode.toUpperCase());
+    
+    // Auto-retrieve after scanning
+    setTimeout(() => {
+      handleRetrieve(extractedCode);
+    }, 300);
+  };
+
+  const openScanner = async () => {
+    if (hasPermission === null) {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
+    }
+    
+    if (hasPermission === false) {
+      Alert.alert('Permission Denied', 'Camera permission is required to scan QR codes');
+      return;
+    }
+
+    setScanned(false);
+    setShowScanner(true);
+  };
+
+  const handleRetrieve = async (codeToRetrieve = null) => {
+    const retrieveCode = codeToRetrieve || code;
+    
+    if (!retrieveCode.trim() || retrieveCode.length !== 6) {
       Alert.alert('Error', 'Please enter a valid 6-character code');
       return;
     }
@@ -23,7 +66,7 @@ export default function RetrieveScreen() {
       const { data, error } = await supabase
         .from('clips')
         .select('*')
-        .eq('code', code.toUpperCase())
+        .eq('code', retrieveCode.toUpperCase())
         .single();
 
       if (error || !data) {
@@ -49,6 +92,44 @@ export default function RetrieveScreen() {
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   };
 
+  if (showScanner) {
+    return (
+      <View className="flex-1 bg-slate-900">
+        <StatusBar style="light" />
+        <Camera
+          style={{ flex: 1 }}
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          barCodeScannerSettings={{
+            barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+          }}
+        >
+          <View className="flex-1 justify-between p-6">
+            {/* Header */}
+            <View className="flex-row justify-between items-center">
+              <Text className="text-white text-xl font-bold">Scan QR Code</Text>
+              <TouchableOpacity 
+                onPress={() => setShowScanner(false)}
+                className="bg-red-600 p-3 rounded-full"
+              >
+                <X color="#fff" size={24} />
+              </TouchableOpacity>
+            </View>
+
+            {/* Scanner Frame */}
+            <View className="items-center">
+              <View className="w-64 h-64 border-4 border-white rounded-2xl opacity-50" />
+              <Text className="text-white text-center mt-6 text-base">
+                Point camera at QR code
+              </Text>
+            </View>
+
+            <View className="h-20" />
+          </View>
+        </Camera>
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1 bg-slate-900">
       <StatusBar style="light" />
@@ -72,7 +153,7 @@ export default function RetrieveScreen() {
             />
             <TouchableOpacity 
               className="bg-indigo-600 px-6 rounded-lg ml-3 items-center justify-center"
-              onPress={handleRetrieve}
+              onPress={() => handleRetrieve()}
               disabled={loading}
             >
               {loading ? (
@@ -82,6 +163,15 @@ export default function RetrieveScreen() {
               )}
             </TouchableOpacity>
           </View>
+
+          {/* QR Scan Button */}
+          <TouchableOpacity 
+            className="bg-purple-600 py-3 rounded-lg mt-3 flex-row items-center justify-center"
+            onPress={openScanner}
+          >
+            <QrCode color="#fff" size={20} />
+            <Text className="text-white font-semibold ml-2">Scan QR Code</Text>
+          </TouchableOpacity>
         </GlassPanel>
 
         {/* Retrieved Content Display */}
@@ -142,7 +232,7 @@ export default function RetrieveScreen() {
           <GlassPanel className="items-center py-12">
             <Search color="#64748b" size={64} />
             <Text className="text-slate-400 mt-4 text-center">
-              Enter a code above to retrieve content
+              Enter a code above or scan a QR code to retrieve content
             </Text>
           </GlassPanel>
         )}
