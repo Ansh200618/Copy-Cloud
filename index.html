@@ -502,23 +502,6 @@
                                 </div>
                             </div>
 
-                            <!-- DEVICE TARGETING SECTION -->
-                            <div class="mb-6 bg-black/20 border border-white/10 rounded-xl p-4">
-                                <div class="flex items-center justify-between mb-3">
-                                    <label class="flex items-center gap-2 text-slate-300 text-sm font-medium">
-                                        <i data-lucide="smartphone" class="w-4 h-4 text-indigo-400"></i>
-                                        Send to Specific Device
-                                    </label>
-                                    <input type="checkbox" id="device-targeting-toggle" onchange="toggleDeviceTargeting()" class="w-4 h-4 rounded bg-black/30 border border-white/20 text-indigo-600 focus:ring-2 focus:ring-indigo-500">
-                                </div>
-                                <div id="device-code-input-area" class="hidden animate-fade-in">
-                                    <input type="text" id="target-device-code" placeholder="Enter 8-digit device code" maxlength="8" class="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:bg-black/40 transition-all font-mono text-sm tracking-wider uppercase">
-                                    <p class="text-slate-500 text-xs mt-2 flex items-center gap-1">
-                                        <i data-lucide="info" class="w-3 h-3"></i>
-                                        Only the device with this code can retrieve the content
-                                    </p>
-                                </div>
-                            </div>
 
                             <!-- IMPROVED SEND BUTTON -->
                             <button onclick="handleSend()" id="send-btn" class="w-full py-4 bg-gradient-to-r from-indigo-600 via-indigo-600 to-purple-600 rounded-xl font-bold text-white shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/40 hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2 border border-white/10 group">
@@ -800,19 +783,6 @@
             }
         };
 
-        // Device Targeting Functions
-        window.toggleDeviceTargeting = () => {
-            const toggle = document.getElementById('device-targeting-toggle');
-            const inputArea = document.getElementById('device-code-input-area');
-            
-            if (toggle.checked) {
-                inputArea.classList.remove('hidden');
-            } else {
-                inputArea.classList.add('hidden');
-                document.getElementById('target-device-code').value = '';
-            }
-        };
-
         window.handleFileSelect = (event) => {
             const files = Array.from(event.target.files);
             if (!files.length) return;
@@ -1052,17 +1022,6 @@
                     contentValue = textVal;
                 }
 
-                // Get device targeting info
-                const deviceTargetingEnabled = document.getElementById('device-targeting-toggle').checked;
-                const targetDeviceCode = deviceTargetingEnabled ? document.getElementById('target-device-code').value.trim().toUpperCase() : null;
-                
-                // Validate device code if targeting is enabled
-                if (deviceTargetingEnabled && (!targetDeviceCode || targetDeviceCode.length !== 8)) {
-                    progressModal.classList.add('hidden');
-                    progressModal.classList.remove('flex');
-                    return showNotification("Please enter a valid 8-digit device code.", "error");
-                }
-
                 // Insert into Supabase Database (Metadata)
                 const clipData = { 
                     code: code, 
@@ -1070,11 +1029,6 @@
                     type: currentInputType,
                     created_at: new Date()
                 };
-                
-                // Add device_code if targeting is enabled
-                if (targetDeviceCode) {
-                    clipData.device_code = targetDeviceCode;
-                }
                 
                 const { error: dbError } = await db
                     .from('clips')
@@ -1118,9 +1072,6 @@
             document.getElementById('send-success-view').classList.add('hidden');
             document.getElementById('text-input').value = '';
             document.getElementById('qrcode-container').innerHTML = ''; // Clear QR code
-            document.getElementById('device-targeting-toggle').checked = false;
-            document.getElementById('device-code-input-area').classList.add('hidden');
-            document.getElementById('target-device-code').value = '';
             clearFileSelection();
         };
 
