@@ -1,5 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Copy Cloud</string>
-    <string name="app_tagline">Secure Online Clipboard</string>
+    <string name="tab_send">Send</string>
+    <string name="tab_retrieve">Retrieve</string>
+    <string name="tab_about">About</string>
+    
+    <!-- Send Screen -->
+    <string name="send_title">Share Your Content</string>
+    <string name="send_text_hint">Paste or type your text here…</string>
+    <string name="send_file_hint">Tap to select files (max 40MB)</string>
+    <string name="btn_generate_code">Generate Secure Code</string>
+    <string name="uploading_title">Uploading…</string>
+    <string name="upload_success">Code Generated!</string>
+    <string name="your_code">Your Code:</string>
+    <string name="copy_code">Copy Code</string>
+    <string name="start_new">Start New</string>
+    <string name="code_copied">Code copied to clipboard</string>
+    <string name="select_files">Selected: %d file(s)</string>
+    <string name="file_size_limit">Total size: %s / 40MB</string>
+    <string name="error_size_limit">Total file size exceeds 40MB limit</string>
+    <string name="scan_qr_code">Scan QR code on another device</string>
+    <string name="share_qr">Share QR Code</string>
+    
+    <!-- Retrieve Screen -->
+    <string name="retrieve_title">Enter Code</string>
+    <string name="retrieve_hint">Enter 6-character code</string>
+    <string name="btn_retrieve">Retrieve Content</string>
+    <string name="btn_scan_qr">Scan QR Code</string>
+    <string name="retrieving">Retrieving…</string>
+    <string name="content_type_text">Text Content</string>
+    <string name="content_type_file">File(s)</string>
+    <string name="btn_copy_text">Copy Text</string>
+    <string name="btn_download">Download</string>
+    <string name="btn_download_all">Download All as ZIP</string>
+    <string name="text_copied">Text copied to clipboard</string>
+    <string name="download_started">Download started</string>
+    <string name="created_at">Created: %s</string>
+    <string name="error_invalid_code">Invalid code. Please check and try again.</string>
+    <string name="error_code_not_found">Code not found or expired.</string>
+    <string name="qr_scan_instruction">Point camera at QR code</string>
+    <string name="permission_camera">Camera permission is needed to scan QR codes</string>
+    
+    <!-- About Screen -->
+    <string name="about_title">About Copy Cloud</string>
+    <string name="about_description">Fast, secure, temporary file and text transfer across devices. No login required!</string>
+    <string name="about_features_title">Key Features</string>
+    <string name="feature_secure">🔒 Secure &amp; Private\nAll data expires after 24 hours</string>
+    <string name="feature_instant">⚡ Instant Transfer\nShare across any device instantly</string>
+    <string name="feature_simple">📱 Simple to Use\nJust generate a code and share</string>
+    <string name="about_limits_title">Limits</string>
+    <string name="limit_text">Text: Unlimited</string>
+    <string name="limit_files">Files: 40MB max</string>
+    <string name="limit_expiry">Auto-delete: 24 hours</string>
+    
+    <!-- Common -->
+    <string name="error_network">No internet connection</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="permission_storage">Storage permission is needed to upload files</string>
+    <string name="loading">Loading…</string>
+    
+    <!-- Settings Screen -->
+    <string name="tab_settings">Settings</string>
+    <string name="settings_title">Settings</string>
+    <string name="theme_settings">Theme Settings</string>
+    <string name="choose_theme">Choose Your Theme</string>
+    <string name="light_themes">Light Mode Themes</string>
+    <string name="dark_themes">Dark Mode Themes</string>
+    <string name="theme_applied">Theme applied!</string>
+    <string name="device_code_title">Device Code</string>
+    <string name="your_device_code">Your Device Code:</string>
+    <string name="device_code_desc">Share this code with others to receive content directly on this device</string>
+    <string name="device_code_copied">Device code copied!</string>
+    <string name="connected_devices_title">Connected Devices</string>
+    <string name="connected_devices_desc">Connect up to 5 devices (tap to copy, hold to remove)</string>
+    <string name="add_device">Add Device</string>
+    <string name="max_devices_reached">Maximum 5 devices allowed</string>
+    <string name="device_already_connected">Device already connected</string>
+    <string name="device_connected">Device connected!</string>
+    <string name="device_removed">Device removed</string>
+    <string name="connect_device_title">Connect Device</string>
+    <string name="connect_device_message">Enter the 8-digit code from the device you want to connect</string>
+    <string name="invalid_device_code">Invalid device code (must be 8 digits)</string>
+    
+    <!-- History Screen -->
+    <string name="tab_history">History</string>
+    <string name="history_title">Recent History</string>
+    <string name="history_empty">No history yet</string>
+    <string name="history_empty_desc">Retrieved content will appear here</string>
+    <string name="clear_history">Clear All</string>
+    <string name="delete_item">Delete</string>
+    <string name="history_cleared">History cleared</string>
+    <string name="send_to_device">Send to Device</string>
+    <string name="target_device_code">Target Device Code (8 digits)</string>
+    <string name="send_to_all">Send to All Devices</string>
+    <string name="send_to_specific">Send to Specific Device</string>
+    
+    <!-- Notifications -->
+    <string name="notification_channel_name">Copy Cloud Notifications</string>
+    <string name="notification_channel_desc">Notifications for received content</string>
+    <string name="notification_text_received">Text Received</string>
+    <string name="notification_file_received">File Received</string>
+    <string name="notification_files_received">Files Received</string>
+    <string name="notification_upload_success">Upload Complete</string>
+    <string name="notification_tap_to_open">Tap to open</string>
+    
+    <!-- Theme Names -->
+    <string name="theme_ocean_dark">Ocean Dark</string>
+    <string name="theme_midnight_blue">Midnight Blue</string>
+    <string name="theme_purple_night">Purple Night</string>
+    <string name="theme_forest_dark">Forest Dark</string>
+    <string name="theme_sunset_light">Sunset Light</string>
+    <string name="theme_sky_blue">Sky Blue</string>
+    <string name="theme_pink_blossom">Pink Blossom</string>
+    <string name="theme_mint_fresh">Mint Fresh</string>
 </resources>
