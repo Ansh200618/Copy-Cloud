@@ -672,24 +672,6 @@
         // Constants
         const AUTO_RETRIEVE_DELAY_MS = 500;
 
-        // --- URL PARAMETER DETECTION FOR QR CODE REDIRECT ---
-        (function checkURLParameters() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const codeParam = urlParams.get('code');
-            
-            // Validate code: 6 characters, alphanumeric only
-            if (codeParam && /^[A-Z0-9]{6}$/i.test(codeParam)) {
-                // Switch to retrieve tab
-                window.switchTab('retrieve');
-                // Fill in the code (uppercase)
-                document.getElementById('retrieve-code-input').value = codeParam.toUpperCase();
-                // Auto-retrieve after delay
-                setTimeout(() => {
-                    window.handleRetrieve();
-                }, AUTO_RETRIEVE_DELAY_MS);
-            }
-        })();
-
         // UI STATE FUNCTIONS
         window.switchTab = (tabName) => {
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -1372,6 +1354,33 @@
                 window.closeComingSoonModal();
             }
         });
+
+        // --- URL PARAMETER DETECTION FOR QR CODE REDIRECT ---
+        // Run after DOM is ready and all functions are defined
+        function checkURLParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const codeParam = urlParams.get('code');
+            
+            // Validate code: 6 characters, alphanumeric only
+            if (codeParam && /^[A-Z0-9]{6}$/i.test(codeParam)) {
+                // Switch to retrieve tab
+                window.switchTab('retrieve');
+                // Fill in the code (uppercase)
+                document.getElementById('retrieve-code-input').value = codeParam.toUpperCase();
+                // Auto-retrieve after delay
+                setTimeout(() => {
+                    window.handleRetrieve();
+                }, AUTO_RETRIEVE_DELAY_MS);
+            }
+        }
+        
+        // Check if DOM is already loaded, otherwise wait for it
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkURLParameters);
+        } else {
+            // DOM is already ready, call immediately
+            checkURLParameters();
+        }
 
     </script>
     <script>
