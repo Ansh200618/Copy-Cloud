@@ -219,15 +219,15 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ### Send Tab
 ![Send Tab](https://github.com/Ansh200618/Online-Clipboard/blob/main/Screenshots/Send.png)
-Upload your text or file and receive a unique 6-character code.
+- Upload your text or file and receive a unique 6-character code.
 
 ### Retrieve Tab
 ![Retrieve Tab](https://github.com/Ansh200618/Online-Clipboard/blob/main/Screenshots/Retrieve.png)
-Enter a code to instantly access shared content from any device.
+- Enter a code to instantly access shared content from any device.
 
 ### About Tab
 ![About Tab](https://github.com/Ansh200618/Online-Clipboard/blob/main/Screenshots/About.png)
-Learn about the platform's features and usage limits.
+- Learn about the platform's features and usage limits.
 
 ---
 
