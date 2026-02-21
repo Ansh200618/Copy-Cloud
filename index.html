@@ -998,7 +998,11 @@
                 });
                 
                 showNotification("Uploaded Successfully!", "success");
-                addToHistory(code, 'send');
+                if (currentInputType === 'text') {
+                    addToHistory(code, 'send', { preview: textVal.trim().slice(0, 80) });
+                } else {
+                    addToHistory(code, 'send', { fileNames: selectedFiles.map(f => f.name) });
+                }
 
             } catch (error) {
                 console.error("Upload Error:", error);
@@ -1048,7 +1052,17 @@
                 } else {
                     displayRetrievedContent(data, codeInput);
                     showNotification("Content Found!", "success");
-                    addToHistory(codeInput, 'retrieve');
+                    if (data.type === 'text') {
+                        addToHistory(codeInput, 'retrieve', { preview: data.content.slice(0, 80) });
+                    } else {
+                        let rFilePaths = [];
+                        try {
+                            const parsed = JSON.parse(data.content);
+                            rFilePaths = Array.isArray(parsed) ? parsed : [data.content];
+                        } catch(e) { rFilePaths = [data.content]; }
+                        const rFileNames = rFilePaths.map(p => p.split('-').slice(2).join('-') || p);
+                        addToHistory(codeInput, 'retrieve', { fileNames: rFileNames });
+                    }
                 }
 
             } catch (error) {
@@ -1382,9 +1396,9 @@
             }
         }
 
-        function addToHistory(code, type) {
+        function addToHistory(code, type, extra = {}) {
             const history = getHistory();
-            history.unshift({ code, type, timestamp: Date.now() });
+            history.unshift({ code, type, ...extra, timestamp: Date.now() });
             if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY, history.length - MAX_HISTORY);
             localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
             renderHistory();
@@ -1421,22 +1435,43 @@
 
             history.forEach(item => {
                 const isSend = item.type === 'send';
+                const hasPreview = item.preview != null;
+                const hasFiles = Array.isArray(item.fileNames) && item.fileNames.length > 0;
+
+                // Primary label: text preview OR file name(s)
+                let primaryText = item.code;
+                let secondaryText = `${isSend ? 'Sent' : 'Retrieved'} · ${getRelativeTime(item.timestamp)}`;
+                let iconName = isSend ? 'upload' : 'download';
+
+                if (hasPreview) {
+                    primaryText = item.preview.length > 50 ? item.preview.slice(0, 50) + '…' : item.preview;
+                    secondaryText = `Code: ${item.code} · ${isSend ? 'Sent' : 'Retrieved'} · ${getRelativeTime(item.timestamp)}`;
+                    iconName = 'file-text';
+                } else if (hasFiles) {
+                    primaryText = item.fileNames.length === 1
+                        ? item.fileNames[0]
+                        : `${item.fileNames.length} files`;
+                    secondaryText = `Code: ${item.code} · ${isSend ? 'Sent' : 'Retrieved'} · ${getRelativeTime(item.timestamp)}`;
+                    iconName = item.fileNames.length === 1 ? 'file' : 'files';
+                }
+
                 const el = document.createElement('div');
                 el.setAttribute('role', 'listitem');
                 el.className = 'flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors';
                 el.innerHTML = `
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-3 overflow-hidden">
                         <div class="w-8 h-8 ${isSend ? 'bg-indigo-500/20' : 'bg-purple-500/20'} rounded-lg flex items-center justify-center shrink-0">
-                            <i data-lucide="${isSend ? 'upload' : 'download'}" class="w-4 h-4 ${isSend ? 'text-indigo-400' : 'text-purple-400'}"></i>
+                            <i data-lucide="${iconName}" class="w-4 h-4 ${isSend ? 'text-indigo-400' : 'text-purple-400'}"></i>
                         </div>
-                        <div>
-                            <p class="text-white font-mono font-bold text-sm tracking-wider" data-history-code></p>
-                            <p class="text-slate-500 text-xs">${isSend ? 'Sent' : 'Retrieved'} · ${getRelativeTime(item.timestamp)}</p>
+                        <div class="overflow-hidden">
+                            <p class="${hasPreview ? 'text-slate-200 text-xs italic' : 'text-white font-mono font-bold text-sm tracking-wider'} truncate" data-history-primary></p>
+                            <p class="text-slate-500 text-xs truncate" data-history-secondary></p>
                         </div>
                     </div>
-                    <span class="text-xs px-2 py-1 rounded-full ${isSend ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}">${isSend ? 'Send' : 'Receive'}</span>
+                    <span class="text-xs px-2 py-1 rounded-full shrink-0 ml-2 ${isSend ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}">${isSend ? 'Send' : 'Receive'}</span>
                 `;
-                el.querySelector('[data-history-code]').textContent = item.code;
+                el.querySelector('[data-history-primary]').textContent = primaryText;
+                el.querySelector('[data-history-secondary]').textContent = secondaryText;
                 listEl.appendChild(el);
             });
 
