@@ -78,7 +78,16 @@
                 if (s) {
                     const dark = s.mode === 'dark' ? true : s.mode === 'light' ? false : window.matchMedia('(prefers-color-scheme: dark)').matches;
                     if (!dark) document.documentElement.classList.add('light-mode');
-                    if (s.accent && s.accent !== 'indigo') document.documentElement.setAttribute('data-accent', s.accent);
+                    const a = s.accent || 'indigo';
+                    if (a !== 'indigo') document.documentElement.setAttribute('data-accent', a);
+                    // Set background CSS vars immediately so body/overlay paint with correct colors
+                    const DARK_BODY_BG = {indigo:'#0b0d1e',purple:'#100819',blue:'#080e1f',emerald:'#041412',rose:'#1c0710',amber:'#181005',teal:'#041614',pink:'#190614'};
+                    const LIGHT_BODY_BG = {indigo:'#f0f2ff',purple:'#f7f0ff',blue:'#eff6ff',emerald:'#ecfdf5',rose:'#fff1f2',amber:'#fefce8',teal:'#f0fdfa',pink:'#fdf2f8'};
+                    const DARK_OVERLAY  = {indigo:'linear-gradient(135deg,#0b0d1e,#0f172a,#090b1c)',purple:'linear-gradient(135deg,#100819,#0f102a,#0d0617)',blue:'linear-gradient(135deg,#080e1f,#091422,#060c1d)',emerald:'linear-gradient(135deg,#041412,#06180f,#031210)',rose:'linear-gradient(135deg,#1c0710,#16091c,#190508)',amber:'linear-gradient(135deg,#181005,#1b1408,#140e04)',teal:'linear-gradient(135deg,#041614,#051c18,#031110)',pink:'linear-gradient(135deg,#190614,#14091e,#160312)'};
+                    const LIGHT_OVERLAY = {indigo:'linear-gradient(135deg,#e8eaff,#f5f6ff,#e8eaff)',purple:'linear-gradient(135deg,#f0e4ff,#f9f5ff,#f0e4ff)',blue:'linear-gradient(135deg,#dbeafe,#eff6ff,#dbeafe)',emerald:'linear-gradient(135deg,#d1fae5,#f0fdf6,#d1fae5)',rose:'linear-gradient(135deg,#ffe4e6,#fff5f6,#ffe4e6)',amber:'linear-gradient(135deg,#fef3c7,#fefce8,#fef3c7)',teal:'linear-gradient(135deg,#ccfbf1,#f0fdfa,#ccfbf1)',pink:'linear-gradient(135deg,#fce7f3,#fdf8fb,#fce7f3)'};
+                    const h = document.documentElement;
+                    h.style.setProperty('--page-bg',    dark ? (DARK_BODY_BG[a]||DARK_BODY_BG.indigo)   : (LIGHT_BODY_BG[a]||LIGHT_BODY_BG.indigo));
+                    h.style.setProperty('--overlay-bg', dark ? (DARK_OVERLAY[a]||DARK_OVERLAY.indigo) : (LIGHT_OVERLAY[a]||LIGHT_OVERLAY.indigo));
                 }
             } catch (e) {}
         })();
@@ -119,6 +128,11 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
+
+        /* Dynamic background driven by --page-bg / --overlay-bg CSS vars
+           (set by FOUC script + applyTheme). !important beats Tailwind CDN classes. */
+        body { background-color: var(--page-bg, #0f172a) !important; }
+        #bg-overlay-main { background: var(--overlay-bg, linear-gradient(135deg,#0b0d1e,#0f172a,#090b1c)) !important; }
 
         /* =============================================
            THEME SYSTEM – Accent Colors & Day/Night Mode
@@ -175,8 +189,7 @@
            LIGHT MODE
            ================= */
         html.light-mode { color-scheme: light; }
-        html.light-mode body { background-color: #f1f5f9 !important; color: #1e293b !important; }
-        html.light-mode #bg-overlay-main { background: linear-gradient(to bottom right,#dde3ed,#f1f5f9,#dde3ed) !important; }
+        html.light-mode body { color: #1e293b !important; }
         html.light-mode #bg-noise-overlay { opacity: 0.03 !important; }
         html.light-mode .glass-panel {
             background-color: rgba(255,255,255,0.88) !important;
@@ -589,14 +602,14 @@
             </div>
 
             <div class="flex items-center gap-2 w-full md:w-auto">
-                <nav class="flex flex-1 md:flex-none bg-slate-900/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 justify-center">
-                    <button onclick="switchTab('send')" id="nav-send" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50">
+                <nav class="flex min-w-0 flex-1 md:flex-none bg-slate-900/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 justify-center">
+                    <button onclick="switchTab('send')" id="nav-send" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-3 sm:px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50">
                         <i data-lucide="upload" class="w-4 h-4"></i> Send
                     </button>
-                    <button onclick="switchTab('retrieve')" id="nav-retrieve" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
+                    <button onclick="switchTab('retrieve')" id="nav-retrieve" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-3 sm:px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
                         <i data-lucide="download" class="w-4 h-4"></i> Retrieve
                     </button>
-                    <button onclick="switchTab('about')" id="nav-about" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
+                    <button onclick="switchTab('about')" id="nav-about" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-3 sm:px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
                         <i data-lucide="info" class="w-4 h-4"></i> About
                     </button>
                 </nav>
@@ -944,10 +957,10 @@
         // UI STATE FUNCTIONS
         window.switchTab = (tabName) => {
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5";
+                btn.className = "nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-3 sm:px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5";
             });
             const activeBtn = document.getElementById(`nav-${tabName}`);
-            activeBtn.className = "nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50";
+            activeBtn.className = "nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-3 sm:px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50";
 
             ['send', 'retrieve', 'about'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
@@ -1691,8 +1704,20 @@
 
         function addToHistory(code, type, extra = {}) {
             const history = getHistory();
-            history.unshift({ code, type, ...extra, timestamp: Date.now() });
-            if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY, history.length - MAX_HISTORY);
+            // Find existing entry with same code AND same type
+            const existingIdx = history.findIndex(h => h.code === code && h.type === type);
+            if (existingIdx !== -1) {
+                // Deduplicate: bring to top, refresh data, bump retrieve counter
+                const existing = history.splice(existingIdx, 1)[0];
+                const updated = { ...existing, ...extra, timestamp: Date.now() };
+                if (type === 'retrieve') updated.retrieveCount = (existing.retrieveCount || 1) + 1;
+                history.unshift(updated);
+            } else {
+                const entry = { code, type, ...extra, timestamp: Date.now() };
+                if (type === 'retrieve') entry.retrieveCount = 1;
+                history.unshift(entry);
+                if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY, history.length - MAX_HISTORY);
+            }
             localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
             renderHistory();
         }
@@ -1753,6 +1778,11 @@
                 el.className = 'flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors cursor-pointer';
                 el.title = `Click to retrieve code ${item.code}`;
                 el.addEventListener('click', () => retrieveFromHistory(item.code));
+
+                const countBadge = (!isSend && item.retrieveCount > 1)
+                    ? `<span class="text-xs px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono font-bold shrink-0">×${item.retrieveCount}</span>`
+                    : '';
+
                 el.innerHTML = `
                     <div class="flex items-center gap-3 overflow-hidden">
                         <div class="w-8 h-8 ${isSend ? 'bg-indigo-500/20' : 'bg-purple-500/20'} rounded-lg flex items-center justify-center shrink-0">
@@ -1763,7 +1793,10 @@
                             <p class="text-slate-500 text-xs truncate" data-history-secondary></p>
                         </div>
                     </div>
-                    <span class="text-xs px-2 py-1 rounded-full shrink-0 ml-2 ${isSend ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}">${isSend ? 'Send' : 'Receive'}</span>
+                    <div class="flex items-center gap-1.5 shrink-0 ml-2">
+                        <span class="text-xs px-2 py-1 rounded-full ${isSend ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}">${isSend ? 'Send' : 'Receive'}</span>
+                        ${countBadge}
+                    </div>
                 `;
                 el.querySelector('[data-history-primary]').textContent = primaryText;
                 el.querySelector('[data-history-secondary]').textContent = secondaryText;
@@ -1831,6 +1864,12 @@
 
         const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
 
+        // Per-accent background palettes
+        const DARK_BODY_BG  = {indigo:'#0b0d1e',purple:'#100819',blue:'#080e1f',emerald:'#041412',rose:'#1c0710',amber:'#181005',teal:'#041614',pink:'#190614'};
+        const LIGHT_BODY_BG = {indigo:'#f0f2ff',purple:'#f7f0ff',blue:'#eff6ff',emerald:'#ecfdf5',rose:'#fff1f2',amber:'#fefce8',teal:'#f0fdfa',pink:'#fdf2f8'};
+        const DARK_OVERLAY  = {indigo:'linear-gradient(135deg,#0b0d1e,#0f172a,#090b1c)',purple:'linear-gradient(135deg,#100819,#0f102a,#0d0617)',blue:'linear-gradient(135deg,#080e1f,#091422,#060c1d)',emerald:'linear-gradient(135deg,#041412,#06180f,#031210)',rose:'linear-gradient(135deg,#1c0710,#16091c,#190508)',amber:'linear-gradient(135deg,#181005,#1b1408,#140e04)',teal:'linear-gradient(135deg,#041614,#051c18,#031110)',pink:'linear-gradient(135deg,#190614,#14091e,#160312)'};
+        const LIGHT_OVERLAY = {indigo:'linear-gradient(135deg,#e8eaff,#f5f6ff,#e8eaff)',purple:'linear-gradient(135deg,#f0e4ff,#f9f5ff,#f0e4ff)',blue:'linear-gradient(135deg,#dbeafe,#eff6ff,#dbeafe)',emerald:'linear-gradient(135deg,#d1fae5,#f0fdf6,#d1fae5)',rose:'linear-gradient(135deg,#ffe4e6,#fff5f6,#ffe4e6)',amber:'linear-gradient(135deg,#fef3c7,#fefce8,#fef3c7)',teal:'linear-gradient(135deg,#ccfbf1,#f0fdfa,#ccfbf1)',pink:'linear-gradient(135deg,#fce7f3,#fdf8fb,#fce7f3)'};
+
         function loadThemeState() {
             try {
                 const saved = JSON.parse(localStorage.getItem(THEME_KEY) || 'null');
@@ -1853,6 +1892,10 @@
                     ? false
                     : systemDark.matches;
             isDark ? html.classList.remove('light-mode') : html.classList.add('light-mode');
+            // Apply accent-tinted background via CSS vars (beats Tailwind via !important in <style>)
+            const a = themeState.accent;
+            html.style.setProperty('--page-bg',    isDark ? (DARK_BODY_BG[a]  || DARK_BODY_BG.indigo)  : (LIGHT_BODY_BG[a]  || LIGHT_BODY_BG.indigo));
+            html.style.setProperty('--overlay-bg', isDark ? (DARK_OVERLAY[a]  || DARK_OVERLAY.indigo)  : (LIGHT_OVERLAY[a]  || LIGHT_OVERLAY.indigo));
             // Update header button icon
             const icon = document.getElementById('appearance-btn-icon');
             if (icon) {
@@ -1862,7 +1905,7 @@
             }
             // Update meta theme-color
             const meta = document.querySelector('meta[name="theme-color"]');
-            if (meta) meta.content = isDark ? '#0f172a' : '#f1f5f9';
+            if (meta) meta.content = isDark ? (DARK_BODY_BG[a] || '#0f172a') : (LIGHT_BODY_BG[a] || '#f1f5f9');
             // Sync modal UI if open
             updateAppearanceModalUI();
         }
