@@ -104,6 +104,10 @@
 
     <style>
         body { font-family: 'Inter', sans-serif; }
+
+        /* Text selection uses the active accent colour with white text */
+        ::selection      { background-color: rgba(var(--accent-rgb), 0.40); color: #ffffff; }
+        ::-moz-selection { background-color: rgba(var(--accent-rgb), 0.40); color: #ffffff; }
         
         /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
@@ -309,7 +313,7 @@
         .tex-swatch[data-tex="circles"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.25'/></svg>"); background-size:44px 44px; }
     </style>
 </head>
-<body class="bg-[#0f172a] text-slate-200 min-h-screen selection:bg-indigo-500/30 overflow-x-hidden flex flex-col">
+<body class="bg-[#0f172a] text-slate-200 min-h-screen overflow-x-hidden flex flex-col">
 
     <div id="notification-area" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none w-full max-w-sm px-4"></div>
 
