@@ -458,14 +458,26 @@
                             </div>
 
                             <!-- QR Code -->
-                            <div class="max-w-xs mx-auto mb-6">
+                            <div class="max-w-xs mx-auto mb-4">
                                 <div id="qrcode-container" class="bg-white p-4 rounded-2xl inline-block shadow-2xl"></div>
                                 <p class="text-slate-400 text-sm mt-3">Scan with your mobile device</p>
+                            </div>
+
+                            <!-- Shareable Link -->
+                            <div class="max-w-md mx-auto mb-6 flex items-center gap-2 bg-black/30 border border-white/10 rounded-xl px-4 py-2.5">
+                                <i data-lucide="link" class="w-4 h-4 text-slate-500 shrink-0"></i>
+                                <span id="generated-link-display" class="flex-1 text-slate-400 text-xs font-mono truncate text-left"></span>
+                                <button onclick="copyGeneratedLink()" title="Copy link" class="shrink-0 p-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors">
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                </button>
                             </div>
 
                             <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                                 <button onclick="copyGeneratedCode()" class="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
                                     <i data-lucide="copy" class="w-4 h-4"></i> Copy Code
+                                </button>
+                                <button onclick="shareGeneratedLink()" class="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
+                                    <i data-lucide="share-2" class="w-4 h-4"></i> Share Link
                                 </button>
                                 <button onclick="resetSend()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium transition-colors shadow-lg shadow-indigo-600/20">
                                     Start New
@@ -579,6 +591,19 @@
                     </div>
                 </div>
 
+                <!-- RECENT HISTORY SECTION -->
+                <div id="recent-history-section" class="glass-panel rounded-3xl p-6 shadow-xl animate-fade-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i data-lucide="history" class="text-purple-400 w-5 h-5"></i> Recent Activity
+                        </h3>
+                        <button onclick="clearHistory()" id="clear-history-btn" aria-label="Clear all recent activity history" class="text-slate-500 hover:text-rose-400 text-xs transition-colors hidden">Clear All</button>
+                    </div>
+                    <div id="history-list" role="list" class="space-y-2">
+                        <p id="history-empty" class="text-slate-500 text-sm text-center py-4">No recent activity yet</p>
+                    </div>
+                </div>
+
             </div>
 
             <div class="lg:col-span-4 space-y-6 w-full">
@@ -668,6 +693,7 @@
 
         let selectedFiles = []; 
         let currentInputType = 'text';
+        let lastGeneratedURL = '';
 
         // Constants
         const AUTO_RETRIEVE_DELAY_MS = 500;
@@ -975,6 +1001,8 @@
                 const qrContainer = document.getElementById('qrcode-container');
                 qrContainer.innerHTML = ''; // Clear any existing QR code
                 const websiteURL = `${window.location.origin}${window.location.pathname}?code=${code}`;
+                lastGeneratedURL = websiteURL;
+                document.getElementById('generated-link-display').textContent = websiteURL;
                 new QRCode(qrContainer, {
                     text: websiteURL,
                     width: 200,
@@ -985,6 +1013,11 @@
                 });
                 
                 showNotification("Uploaded Successfully!", "success");
+                if (currentInputType === 'text') {
+                    addToHistory(code, 'send', { preview: textVal.trim().slice(0, 80) });
+                } else {
+                    addToHistory(code, 'send', { fileNames: selectedFiles.map(f => f.name) });
+                }
 
             } catch (error) {
                 console.error("Upload Error:", error);
@@ -1007,6 +1040,40 @@
         window.copyGeneratedCode = () => {
             const code = document.getElementById('generated-code-display').textContent;
             copyToClipboard(code);
+        };
+
+        window.copyGeneratedLink = () => {
+            copyToClipboard(lastGeneratedURL);
+        };
+
+        window.shareGeneratedLink = async () => {
+            const url = lastGeneratedURL;
+            const code = document.getElementById('generated-code-display').textContent;
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Copy Cloud – Secure Clipboard',
+                        text: `Use code ${code} to retrieve your content on Copy Cloud.`,
+                        url: url
+                    });
+                } catch (err) {
+                    // User cancelled or share failed — ignore
+                    if (err.name !== 'AbortError') {
+                        showNotification("Share failed. Copying link instead.", "error");
+                        copyToClipboard(url);
+                    }
+                }
+            } else {
+                // Fallback: copy the full URL to clipboard
+                copyToClipboard(url);
+                showNotification("Link copied to clipboard!", "success");
+            }
+        };
+
+        window.retrieveFromHistory = (code) => {
+            window.switchTab('retrieve');
+            document.getElementById('retrieve-code-input').value = code;
+            window.handleRetrieve();
         };
 
 
@@ -1034,6 +1101,17 @@
                 } else {
                     displayRetrievedContent(data, codeInput);
                     showNotification("Content Found!", "success");
+                    if (data.type === 'text') {
+                        addToHistory(codeInput, 'retrieve', { preview: data.content.slice(0, 80) });
+                    } else {
+                        let rFilePaths = [];
+                        try {
+                            const parsed = JSON.parse(data.content);
+                            rFilePaths = Array.isArray(parsed) ? parsed : [data.content];
+                        } catch(e) { rFilePaths = [data.content]; }
+                        const rFileNames = rFilePaths.map(p => p.split('-').slice(2).join('-') || p);
+                        addToHistory(codeInput, 'retrieve', { fileNames: rFileNames });
+                    }
                 }
 
             } catch (error) {
@@ -1352,6 +1430,124 @@
             if (e.key === 'Escape') {
                 window.closeLegalModal();
                 window.closeComingSoonModal();
+            }
+        });
+
+        // --- HISTORY MANAGEMENT ---
+        const HISTORY_KEY = 'copyCloudHistory';
+        const MAX_HISTORY = 10;
+
+        function getHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+            } catch(e) {
+                return [];
+            }
+        }
+
+        function addToHistory(code, type, extra = {}) {
+            const history = getHistory();
+            history.unshift({ code, type, ...extra, timestamp: Date.now() });
+            if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY, history.length - MAX_HISTORY);
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+            renderHistory();
+        }
+
+        function getRelativeTime(timestamp) {
+            const diff = Date.now() - timestamp;
+            const mins = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            if (mins < 1) return 'Just now';
+            if (mins < 60) return `${mins} min${mins > 1 ? 's' : ''} ago`;
+            if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            return `${days} day${days > 1 ? 's' : ''} ago`;
+        }
+
+        function renderHistory() {
+            const history = getHistory();
+            const listEl = document.getElementById('history-list');
+            const emptyEl = document.getElementById('history-empty');
+            const clearBtn = document.getElementById('clear-history-btn');
+
+            // Remove only the dynamically-inserted items so #history-empty stays in the DOM
+            listEl.querySelectorAll('[role="listitem"]').forEach(el => el.remove());
+
+            if (!history.length) {
+                emptyEl.classList.remove('hidden');
+                clearBtn.classList.add('hidden');
+                return;
+            }
+
+            emptyEl.classList.add('hidden');
+            clearBtn.classList.remove('hidden');
+
+            history.forEach(item => {
+                const isSend = item.type === 'send';
+                const hasPreview = item.preview != null;
+                const hasFiles = Array.isArray(item.fileNames) && item.fileNames.length > 0;
+
+                // Primary label: text preview OR file name(s)
+                let primaryText = item.code;
+                let secondaryText = `${isSend ? 'Sent' : 'Retrieved'} · ${getRelativeTime(item.timestamp)}`;
+                let iconName = isSend ? 'upload' : 'download';
+
+                if (hasPreview) {
+                    primaryText = item.preview.length > 50 ? item.preview.slice(0, 50) + '…' : item.preview;
+                    secondaryText = `Code: ${item.code} · ${isSend ? 'Sent' : 'Retrieved'} · ${getRelativeTime(item.timestamp)}`;
+                    iconName = 'file-text';
+                } else if (hasFiles) {
+                    primaryText = item.fileNames.length === 1
+                        ? item.fileNames[0]
+                        : `${item.fileNames.length} files`;
+                    secondaryText = `Code: ${item.code} · ${isSend ? 'Sent' : 'Retrieved'} · ${getRelativeTime(item.timestamp)}`;
+                    iconName = item.fileNames.length === 1 ? 'file' : 'files';
+                }
+
+                const el = document.createElement('div');
+                el.setAttribute('role', 'listitem');
+                el.className = 'flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors cursor-pointer';
+                el.title = `Click to retrieve code ${item.code}`;
+                el.addEventListener('click', () => retrieveFromHistory(item.code));
+                el.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <div class="w-8 h-8 ${isSend ? 'bg-indigo-500/20' : 'bg-purple-500/20'} rounded-lg flex items-center justify-center shrink-0">
+                            <i data-lucide="${iconName}" class="w-4 h-4 ${isSend ? 'text-indigo-400' : 'text-purple-400'}"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="${hasPreview ? 'text-slate-200 text-xs italic' : 'text-white font-mono font-bold text-sm tracking-wider'} truncate" data-history-primary></p>
+                            <p class="text-slate-500 text-xs truncate" data-history-secondary></p>
+                        </div>
+                    </div>
+                    <span class="text-xs px-2 py-1 rounded-full shrink-0 ml-2 ${isSend ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}">${isSend ? 'Send' : 'Receive'}</span>
+                `;
+                el.querySelector('[data-history-primary]').textContent = primaryText;
+                el.querySelector('[data-history-secondary]').textContent = secondaryText;
+                listEl.appendChild(el);
+            });
+
+            lucide.createIcons();
+        }
+
+        window.clearHistory = () => {
+            localStorage.removeItem(HISTORY_KEY);
+            renderHistory();
+        };
+
+        // Render history on load
+        renderHistory();
+
+        // --- KEYBOARD EVENT HANDLERS (Prevent Enter from triggering actions) ---
+        document.getElementById('text-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.stopPropagation();
+                // Allow default so Enter creates a new line in the textarea
+            }
+        });
+
+        document.getElementById('retrieve-code-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
             }
         });
 
