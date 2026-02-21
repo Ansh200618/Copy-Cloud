@@ -579,6 +579,19 @@
                     </div>
                 </div>
 
+                <!-- RECENT HISTORY SECTION -->
+                <div id="recent-history-section" class="glass-panel rounded-3xl p-6 shadow-xl animate-fade-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i data-lucide="history" class="text-purple-400 w-5 h-5"></i> Recent Activity
+                        </h3>
+                        <button onclick="clearHistory()" id="clear-history-btn" aria-label="Clear all recent activity history" class="text-slate-500 hover:text-rose-400 text-xs transition-colors hidden">Clear All</button>
+                    </div>
+                    <div id="history-list" role="list" class="space-y-2">
+                        <p id="history-empty" class="text-slate-500 text-sm text-center py-4">No recent activity yet</p>
+                    </div>
+                </div>
+
             </div>
 
             <div class="lg:col-span-4 space-y-6 w-full">
@@ -985,6 +998,7 @@
                 });
                 
                 showNotification("Uploaded Successfully!", "success");
+                addToHistory(code, 'send');
 
             } catch (error) {
                 console.error("Upload Error:", error);
@@ -1034,6 +1048,7 @@
                 } else {
                     displayRetrievedContent(data, codeInput);
                     showNotification("Content Found!", "success");
+                    addToHistory(codeInput, 'retrieve');
                 }
 
             } catch (error) {
@@ -1352,6 +1367,101 @@
             if (e.key === 'Escape') {
                 window.closeLegalModal();
                 window.closeComingSoonModal();
+            }
+        });
+
+        // --- HISTORY MANAGEMENT ---
+        const HISTORY_KEY = 'copyCloudHistory';
+        const MAX_HISTORY = 10;
+
+        function getHistory() {
+            try {
+                return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+            } catch(e) {
+                return [];
+            }
+        }
+
+        function addToHistory(code, type) {
+            const history = getHistory();
+            history.unshift({ code, type, timestamp: Date.now() });
+            if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY, history.length - MAX_HISTORY);
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+            renderHistory();
+        }
+
+        function getRelativeTime(timestamp) {
+            const diff = Date.now() - timestamp;
+            const mins = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            if (mins < 1) return 'Just now';
+            if (mins < 60) return `${mins} min${mins > 1 ? 's' : ''} ago`;
+            if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            return `${days} day${days > 1 ? 's' : ''} ago`;
+        }
+
+        function renderHistory() {
+            const history = getHistory();
+            const listEl = document.getElementById('history-list');
+            const emptyEl = document.getElementById('history-empty');
+            const clearBtn = document.getElementById('clear-history-btn');
+
+            if (!history.length) {
+                listEl.innerHTML = '';
+                listEl.appendChild(emptyEl);
+                emptyEl.classList.remove('hidden');
+                clearBtn.classList.add('hidden');
+                return;
+            }
+
+            emptyEl.classList.add('hidden');
+            clearBtn.classList.remove('hidden');
+            listEl.innerHTML = '';
+
+            history.forEach(item => {
+                const isSend = item.type === 'send';
+                const el = document.createElement('div');
+                el.setAttribute('role', 'listitem');
+                el.className = 'flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors';
+                el.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 ${isSend ? 'bg-indigo-500/20' : 'bg-purple-500/20'} rounded-lg flex items-center justify-center shrink-0">
+                            <i data-lucide="${isSend ? 'upload' : 'download'}" class="w-4 h-4 ${isSend ? 'text-indigo-400' : 'text-purple-400'}"></i>
+                        </div>
+                        <div>
+                            <p class="text-white font-mono font-bold text-sm tracking-wider" data-history-code></p>
+                            <p class="text-slate-500 text-xs">${isSend ? 'Sent' : 'Retrieved'} · ${getRelativeTime(item.timestamp)}</p>
+                        </div>
+                    </div>
+                    <span class="text-xs px-2 py-1 rounded-full ${isSend ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}">${isSend ? 'Send' : 'Receive'}</span>
+                `;
+                el.querySelector('[data-history-code]').textContent = item.code;
+                listEl.appendChild(el);
+            });
+
+            lucide.createIcons();
+        }
+
+        window.clearHistory = () => {
+            localStorage.removeItem(HISTORY_KEY);
+            renderHistory();
+        };
+
+        // Render history on load
+        renderHistory();
+
+        // --- KEYBOARD EVENT HANDLERS (Prevent Enter from triggering actions) ---
+        document.getElementById('text-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.stopPropagation();
+                // Allow default so Enter creates a new line in the textarea
+            }
+        });
+
+        document.getElementById('retrieve-code-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
             }
         });
 
