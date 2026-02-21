@@ -70,6 +70,20 @@
     ]
     </script>
 
+    <!-- Prevent flash of unstyled content when restoring saved theme -->
+    <script>
+        (function () {
+            try {
+                const s = JSON.parse(localStorage.getItem('copyCloudTheme') || 'null');
+                if (s) {
+                    const dark = s.mode === 'dark' ? true : s.mode === 'light' ? false : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (!dark) document.documentElement.classList.add('light-mode');
+                    if (s.accent && s.accent !== 'indigo') document.documentElement.setAttribute('data-accent', s.accent);
+                }
+            } catch (e) {}
+        })();
+    </script>
+
     <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -105,6 +119,144 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
+
+        /* =============================================
+           THEME SYSTEM – Accent Colors & Day/Night Mode
+           ============================================= */
+
+        /* Default accent = indigo */
+        :root {
+            --accent-from: #6366f1;
+            --accent-to:   #9333ea;
+            --accent-500:  #818cf8;
+            --accent-400:  #a5b4fc;
+            --accent-300:  #c7d2fe;
+            --accent-rgb:  99, 102, 241;
+        }
+
+        html[data-accent="purple"]  { --accent-from:#9333ea; --accent-to:#7c3aed; --accent-500:#a855f7; --accent-400:#c084fc; --accent-300:#d8b4fe; --accent-rgb:147,51,234; }
+        html[data-accent="blue"]    { --accent-from:#2563eb; --accent-to:#6d28d9; --accent-500:#3b82f6; --accent-400:#60a5fa; --accent-300:#93c5fd; --accent-rgb:59,130,246; }
+        html[data-accent="emerald"] { --accent-from:#059669; --accent-to:#0891b2; --accent-500:#10b981; --accent-400:#34d399; --accent-300:#6ee7b7; --accent-rgb:5,150,105; }
+        html[data-accent="rose"]    { --accent-from:#e11d48; --accent-to:#9333ea; --accent-500:#f43f5e; --accent-400:#fb7185; --accent-300:#fda4af; --accent-rgb:225,29,72; }
+        html[data-accent="amber"]   { --accent-from:#d97706; --accent-to:#ea580c; --accent-500:#f59e0b; --accent-400:#fbbf24; --accent-300:#fcd34d; --accent-rgb:217,119,6; }
+        html[data-accent="teal"]    { --accent-from:#0d9488; --accent-to:#2563eb; --accent-500:#14b8a6; --accent-400:#2dd4bf; --accent-300:#5eead4; --accent-rgb:13,148,136; }
+        html[data-accent="pink"]    { --accent-from:#db2777; --accent-to:#9333ea; --accent-500:#ec4899; --accent-400:#f472b6; --accent-300:#f9a8d4; --accent-rgb:219,39,119; }
+
+        /* Accent overrides – recolor all hardcoded indigo/purple Tailwind classes */
+        html:not([data-accent="indigo"]) .from-indigo-500,
+        html:not([data-accent="indigo"]) .from-indigo-600  { --tw-gradient-from: var(--accent-from) !important; }
+        html:not([data-accent="indigo"]) .via-indigo-600   { --tw-gradient-via:  var(--accent-from) !important; }
+        html:not([data-accent="indigo"]) .to-purple-500,
+        html:not([data-accent="indigo"]) .to-purple-600    { --tw-gradient-to:   var(--accent-to)   !important; }
+        html:not([data-accent="indigo"]) .bg-indigo-600,
+        html:not([data-accent="indigo"]) .bg-indigo-500    { background-color: var(--accent-from)  !important; }
+        html:not([data-accent="indigo"]) .bg-indigo-600\/90 { background-color: rgba(var(--accent-rgb),0.9) !important; }
+        html:not([data-accent="indigo"]) .hover\:bg-indigo-500:hover { background-color: var(--accent-500) !important; }
+        html:not([data-accent="indigo"]) .hover\:bg-indigo-600:hover { background-color: var(--accent-from) !important; }
+        html:not([data-accent="indigo"]) .text-indigo-400  { color: var(--accent-400) !important; }
+        html:not([data-accent="indigo"]) .text-indigo-300  { color: var(--accent-300) !important; }
+        html:not([data-accent="indigo"]) .text-indigo-200  { color: var(--accent-400) !important; }
+        html:not([data-accent="indigo"]) .border-indigo-500\/20 { border-color: rgba(var(--accent-rgb),0.2) !important; }
+        html:not([data-accent="indigo"]) .border-indigo-500\/30 { border-color: rgba(var(--accent-rgb),0.3) !important; }
+        html:not([data-accent="indigo"]) .border-indigo-400\/50 { border-color: rgba(var(--accent-rgb),0.5) !important; }
+        html:not([data-accent="indigo"]) .ring-1.ring-indigo-400\/50 { --tw-ring-color: rgba(var(--accent-rgb),0.5) !important; }
+        html:not([data-accent="indigo"]) .bg-indigo-500\/10 { background-color: rgba(var(--accent-rgb),0.1) !important; }
+        html:not([data-accent="indigo"]) .bg-indigo-500\/20 { background-color: rgba(var(--accent-rgb),0.2) !important; }
+        html:not([data-accent="indigo"]) .shadow-indigo-500\/20 { --tw-shadow-color: rgba(var(--accent-rgb),0.2) !important; }
+        html:not([data-accent="indigo"]) .shadow-indigo-500\/25 { --tw-shadow-color: rgba(var(--accent-rgb),0.25) !important; }
+        html:not([data-accent="indigo"]) .shadow-indigo-600\/20 { --tw-shadow-color: rgba(var(--accent-rgb),0.2) !important; }
+        html:not([data-accent="indigo"]) .shadow-indigo-600\/40 { --tw-shadow-color: rgba(var(--accent-rgb),0.4) !important; }
+        html:not([data-accent="indigo"]) .focus\:border-indigo-500\/50:focus { border-color: rgba(var(--accent-rgb),0.5) !important; }
+        html:not([data-accent="indigo"]) .drop-shadow-\[0_0_15px_rgba\(129\,140\,248\,0\.5\)\] { filter: drop-shadow(0 0 15px rgba(var(--accent-rgb),0.5)) !important; }
+        html:not([data-accent="indigo"]) .hover\:border-indigo-500\/30:hover { border-color: rgba(var(--accent-rgb),0.3) !important; }
+        html:not([data-accent="indigo"]) .hover\:bg-indigo-500\/10:hover { background-color: rgba(var(--accent-rgb),0.1) !important; }
+
+        /* =================
+           LIGHT MODE
+           ================= */
+        html.light-mode { color-scheme: light; }
+        html.light-mode body { background-color: #f1f5f9 !important; color: #1e293b !important; }
+        html.light-mode #bg-overlay-main { background: linear-gradient(to bottom right,#dde3ed,#f1f5f9,#dde3ed) !important; }
+        html.light-mode #bg-noise-overlay { opacity: 0.03 !important; }
+        html.light-mode .glass-panel {
+            background-color: rgba(255,255,255,0.88) !important;
+            border-color: rgba(0,0,0,0.08) !important;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.07) !important;
+        }
+        html.light-mode .bg-slate-900\/50 { background-color: rgba(248,250,252,0.92) !important; }
+        html.light-mode .text-white       { color: #0f172a !important; }
+        html.light-mode .text-slate-200   { color: #1e293b !important; }
+        html.light-mode .text-slate-300   { color: #334155 !important; }
+        html.light-mode .text-slate-400   { color: #64748b !important; }
+        html.light-mode .text-slate-500   { color: #94a3b8 !important; }
+        html.light-mode .placeholder-slate-600::placeholder { color: #94a3b8 !important; }
+        html.light-mode .placeholder-slate-700::placeholder { color: #cbd5e1 !important; }
+        html.light-mode .border-white\/5  { border-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .border-white\/10 { border-color: rgba(0,0,0,0.1)  !important; }
+        html.light-mode .bg-white\/5      { background-color: rgba(0,0,0,0.04) !important; }
+        html.light-mode .bg-white\/10     { background-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .hover\:bg-white\/5:hover  { background-color: rgba(0,0,0,0.04) !important; }
+        html.light-mode .hover\:bg-white\/10:hover { background-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .bg-black\/10 { background-color: rgba(0,0,0,0.03) !important; }
+        html.light-mode .bg-black\/20 { background-color: rgba(0,0,0,0.04) !important; }
+        html.light-mode .bg-black\/30 { background-color: rgba(0,0,0,0.06) !important; }
+        html.light-mode .bg-black\/40 { background-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .bg-black\/50 { background-color: rgba(0,0,0,0.12) !important; }
+        /* Keep modal backdrops dark */
+        html.light-mode #upload-progress-modal { background-color: rgba(0,0,0,0.88) !important; }
+        html.light-mode #legal-modal           { background-color: rgba(0,0,0,0.75) !important; }
+        html.light-mode #coming-soon-modal     { background-color: rgba(0,0,0,0.75) !important; }
+        /* Keep modal inner panels dark */
+        html.light-mode #upload-progress-modal > div,
+        html.light-mode #legal-modal > div,
+        html.light-mode #coming-soon-modal > div { background-color: #0f172a !important; border-color: rgba(255,255,255,0.1) !important; }
+        html.light-mode #upload-progress-modal .text-white,
+        html.light-mode #legal-modal .text-white,
+        html.light-mode #coming-soon-modal .text-white { color: #ffffff !important; }
+        html.light-mode #legal-modal .text-slate-400,
+        html.light-mode #coming-soon-modal .text-slate-400 { color: #94a3b8 !important; }
+        html.light-mode #legal-modal .border-white\/10,
+        html.light-mode #coming-soon-modal .border-white\/10 { border-color: rgba(255,255,255,0.1) !important; }
+        html.light-mode #legal-modal .bg-white\/5,
+        html.light-mode #coming-soon-modal .bg-white\/5 { background-color: rgba(255,255,255,0.05) !important; }
+        html.light-mode #legal-modal .bg-white\/10,
+        html.light-mode #coming-soon-modal .bg-white\/10 { background-color: rgba(255,255,255,0.1) !important; }
+        html.light-mode #legal-modal .hover\:bg-white\/10:hover,
+        html.light-mode #coming-soon-modal .hover\:bg-white\/10:hover { background-color: rgba(255,255,255,0.1) !important; }
+        /* Inputs */
+        html.light-mode #retrieve-code-input {
+            background-color: #ffffff !important; color: #0f172a !important;
+            border-color: rgba(0,0,0,0.12) !important;
+        }
+        html.light-mode #retrieve-code-input::placeholder { color: #cbd5e1 !important; }
+        html.light-mode #text-input {
+            background-color: rgba(255,255,255,0.8) !important; color: #1e293b !important;
+            border-color: rgba(0,0,0,0.12) !important;
+        }
+        html.light-mode #text-input:focus { background-color: #ffffff !important; }
+        /* Retrieved content box */
+        html.light-mode #retrieved-content-area .rounded-xl.border-white\/10.overflow-hidden {
+            background-color: #f8fafc !important; border-color: rgba(0,0,0,0.1) !important;
+        }
+        html.light-mode #retrieved-text-content { color: #1e293b !important; }
+        /* Retrieve button */
+        html.light-mode #retrieve-btn {
+            background-color: var(--accent-from) !important; color: #ffffff !important;
+        }
+        html.light-mode #retrieve-btn:hover { background-color: var(--accent-500) !important; }
+        /* History items */
+        html.light-mode [role="listitem"] {
+            background-color: rgba(0,0,0,0.04) !important;
+            border-color: rgba(0,0,0,0.07) !important;
+        }
+        html.light-mode [role="listitem"]:hover { background-color: rgba(0,0,0,0.07) !important; }
+        /* Footer */
+        html.light-mode footer { border-color: rgba(0,0,0,0.08) !important; }
+        html.light-mode footer .border-t { border-color: rgba(0,0,0,0.08) !important; }
+        /* Scrollbar */
+        html.light-mode .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.04) !important; }
+        html.light-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15) !important; }
+        html.light-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25) !important; }
     </style>
 </head>
 <body class="bg-[#0f172a] text-slate-200 min-h-screen selection:bg-indigo-500/30 overflow-x-hidden flex flex-col">
@@ -112,8 +264,8 @@
     <div id="notification-area" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none w-full max-w-sm px-4"></div>
 
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-950 via-[#0f172a] to-slate-950 opacity-100"></div>
-        <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E')"></div>
+        <div id="bg-overlay-main" class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-950 via-[#0f172a] to-slate-950 opacity-100"></div>
+        <div id="bg-noise-overlay" class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E')"></div>
     </div>
 
     <!-- PROGRESS MODAL -->
@@ -295,18 +447,6 @@
                         </div>
                     </div>
 
-                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-orange-500/30 hover:bg-white/10 transition-all">
-                        <div class="flex items-start gap-3">
-                            <div class="bg-orange-500/20 p-2 rounded-lg text-orange-400 shrink-0">
-                                <i data-lucide="moon" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">Dark/Light Theme Toggle</h4>
-                                <p class="text-slate-400 text-xs">Switch between themes</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-teal-500/30 hover:bg-white/10 transition-all">
                         <div class="flex items-start gap-3">
                             <div class="bg-teal-500/20 p-2 rounded-lg text-teal-400 shrink-0">
@@ -338,6 +478,102 @@
         </div>
     </div>
 
+    <!-- Appearance / Theme Modal -->
+    <div id="appearance-modal" class="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-md flex flex-col shadow-2xl animate-fade-in relative overflow-hidden">
+            <!-- Decorative top gradient bar -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 theme-accent-bar"></div>
+
+            <!-- Header -->
+            <div class="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="palette" class="text-indigo-400 w-5 h-5"></i> Appearance
+                </h3>
+                <button onclick="closeAppearanceModal()" class="text-slate-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6 space-y-7">
+
+                <!-- Theme Mode -->
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Theme Mode</p>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button id="mode-btn-auto" onclick="setThemeMode('auto')"
+                            class="theme-mode-btn flex flex-col items-center gap-2 p-4 rounded-xl text-sm font-medium transition-all border border-white/10 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10">
+                            <i data-lucide="monitor" class="w-5 h-5"></i>
+                            <span>Auto</span>
+                            <span class="text-[10px] text-slate-500 font-normal -mt-1">System default</span>
+                        </button>
+                        <button id="mode-btn-light" onclick="setThemeMode('light')"
+                            class="theme-mode-btn flex flex-col items-center gap-2 p-4 rounded-xl text-sm font-medium transition-all border border-white/10 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10">
+                            <i data-lucide="sun" class="w-5 h-5"></i>
+                            <span>Light</span>
+                            <span class="text-[10px] text-slate-500 font-normal -mt-1">Day mode</span>
+                        </button>
+                        <button id="mode-btn-dark" onclick="setThemeMode('dark')"
+                            class="theme-mode-btn flex flex-col items-center gap-2 p-4 rounded-xl text-sm font-medium transition-all border border-white/10 bg-white/5 text-slate-400 hover:text-white hover:bg-white/10">
+                            <i data-lucide="moon" class="w-5 h-5"></i>
+                            <span>Dark</span>
+                            <span class="text-[10px] text-slate-500 font-normal -mt-1">Night mode</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="h-px bg-white/10 w-full"></div>
+
+                <!-- Accent / Gradient Color -->
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">Accent &amp; Gradient Color</p>
+                    <p class="text-slate-500 text-xs mb-3">Applied to buttons, icons, and background gradient in all modes.</p>
+                    <div class="grid grid-cols-4 gap-3">
+                        <button onclick="setAccentColor('indigo')"  id="accent-btn-indigo"  title="Indigo"   class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#6366f1">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#6366f1,#9333ea)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Indigo</span>
+                        </button>
+                        <button onclick="setAccentColor('purple')"  id="accent-btn-purple"  title="Purple"   class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#a855f7">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#9333ea,#7c3aed)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Purple</span>
+                        </button>
+                        <button onclick="setAccentColor('blue')"    id="accent-btn-blue"    title="Blue"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#3b82f6">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#2563eb,#6d28d9)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Blue</span>
+                        </button>
+                        <button onclick="setAccentColor('emerald')" id="accent-btn-emerald" title="Emerald"  class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#10b981">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#059669,#0891b2)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Emerald</span>
+                        </button>
+                        <button onclick="setAccentColor('rose')"    id="accent-btn-rose"    title="Rose"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#f43f5e">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#e11d48,#9333ea)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Rose</span>
+                        </button>
+                        <button onclick="setAccentColor('amber')"   id="accent-btn-amber"   title="Amber"    class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#f59e0b">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#d97706,#ea580c)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Amber</span>
+                        </button>
+                        <button onclick="setAccentColor('teal')"    id="accent-btn-teal"    title="Teal"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#14b8a6">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#0d9488,#2563eb)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Teal</span>
+                        </button>
+                        <button onclick="setAccentColor('pink')"    id="accent-btn-pink"    title="Pink"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#ec4899">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#db2777,#9333ea)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Pink</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 border-t border-white/10 bg-white/5 flex justify-end">
+                <button onclick="closeAppearanceModal()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-indigo-500/20">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main App Container -->
     <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col min-h-screen">
         
@@ -352,17 +588,24 @@
                 </div>
             </div>
 
-            <nav class="flex w-full md:w-auto bg-slate-900/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 justify-center">
-                <button onclick="switchTab('send')" id="nav-send" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50">
-                    <i data-lucide="upload" class="w-4 h-4"></i> Send
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <nav class="flex flex-1 md:flex-none bg-slate-900/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 justify-center">
+                    <button onclick="switchTab('send')" id="nav-send" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50">
+                        <i data-lucide="upload" class="w-4 h-4"></i> Send
+                    </button>
+                    <button onclick="switchTab('retrieve')" id="nav-retrieve" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
+                        <i data-lucide="download" class="w-4 h-4"></i> Retrieve
+                    </button>
+                    <button onclick="switchTab('about')" id="nav-about" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
+                        <i data-lucide="info" class="w-4 h-4"></i> About
+                    </button>
+                </nav>
+                <!-- Appearance settings button -->
+                <button id="appearance-btn" onclick="openAppearanceModal()" title="Appearance Settings"
+                    class="p-2.5 bg-slate-900/50 backdrop-blur-md rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 transition-all shrink-0">
+                    <i id="appearance-btn-icon" data-lucide="moon" class="w-4 h-4"></i>
                 </button>
-                <button onclick="switchTab('retrieve')" id="nav-retrieve" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
-                    <i data-lucide="download" class="w-4 h-4"></i> Retrieve
-                </button>
-                <button onclick="switchTab('about')" id="nav-about" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
-                    <i data-lucide="info" class="w-4 h-4"></i> About
-                </button>
-            </nav>
+            </div>
         </header>
 
         <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -1430,6 +1673,7 @@
             if (e.key === 'Escape') {
                 window.closeLegalModal();
                 window.closeComingSoonModal();
+                closeAppearanceModal();
             }
         });
 
@@ -1577,6 +1821,134 @@
             // DOM is already ready, call immediately
             checkURLParameters();
         }
+
+        // =====================================================
+        //  THEME SYSTEM – Day / Night / Auto  +  Accent Color
+        // =====================================================
+        const THEME_KEY = 'copyCloudTheme';
+
+        let themeState = { mode: 'dark', accent: 'indigo' };
+
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function loadThemeState() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(THEME_KEY) || 'null');
+                if (saved) themeState = { ...themeState, ...saved };
+            } catch (e) {}
+        }
+
+        function saveThemeState() {
+            localStorage.setItem(THEME_KEY, JSON.stringify(themeState));
+        }
+
+        function applyTheme() {
+            const html = document.documentElement;
+            // Apply accent
+            html.setAttribute('data-accent', themeState.accent);
+            // Determine dark/light
+            const isDark = themeState.mode === 'dark'
+                ? true
+                : themeState.mode === 'light'
+                    ? false
+                    : systemDark.matches;
+            isDark ? html.classList.remove('light-mode') : html.classList.add('light-mode');
+            // Update header button icon
+            const icon = document.getElementById('appearance-btn-icon');
+            if (icon) {
+                const name = themeState.mode === 'auto' ? 'monitor' : (isDark ? 'moon' : 'sun');
+                icon.setAttribute('data-lucide', name);
+                lucide.createIcons();
+            }
+            // Update meta theme-color
+            const meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.content = isDark ? '#0f172a' : '#f1f5f9';
+            // Sync modal UI if open
+            updateAppearanceModalUI();
+        }
+
+        window.setThemeMode = (mode) => {
+            themeState.mode = mode;
+            saveThemeState();
+            applyTheme();
+        };
+
+        window.setAccentColor = (accent) => {
+            themeState.accent = accent;
+            saveThemeState();
+            applyTheme();
+        };
+
+        // Auto mode: re-apply when system preference changes
+        systemDark.addEventListener('change', () => {
+            if (themeState.mode === 'auto') applyTheme();
+        });
+
+        // --- Appearance Modal ---
+        window.openAppearanceModal = () => {
+            const modal = document.getElementById('appearance-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            updateAppearanceModalUI();
+            lucide.createIcons();
+        };
+
+        window.closeAppearanceModal = () => {
+            const modal = document.getElementById('appearance-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        document.getElementById('appearance-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'appearance-modal') closeAppearanceModal();
+        });
+
+        function updateAppearanceModalUI() {
+            const isDark = themeState.mode === 'dark'
+                ? true
+                : themeState.mode === 'light'
+                    ? false
+                    : systemDark.matches;
+
+            // Mode buttons – use classList to toggle active/inactive classes
+            const MODE_ACTIVE   = ['bg-indigo-600', 'border-indigo-400/50', 'text-white', 'shadow-lg', 'shadow-indigo-500/25', 'ring-1', 'ring-indigo-400/50'];
+            const MODE_INACTIVE = ['bg-white/5', 'border-white/10', 'text-slate-400'];
+            ['auto', 'light', 'dark'].forEach(m => {
+                const btn = document.getElementById(`mode-btn-${m}`);
+                if (!btn) return;
+                const active = themeState.mode === m;
+                const [add, remove] = active ? [MODE_ACTIVE, MODE_INACTIVE] : [MODE_INACTIVE, MODE_ACTIVE];
+                remove.forEach(c => btn.classList.remove(c));
+                add.forEach(c => btn.classList.add(c));
+            });
+
+            // Accent swatch buttons – toggle specific known border/scale classes
+            const SWATCH_ACTIVE   = ['border-white', 'scale-110', 'shadow-xl'];
+            const SWATCH_INACTIVE = ['border-transparent'];
+            ['indigo','purple','blue','emerald','rose','amber','teal','pink'].forEach(c => {
+                const btn = document.getElementById(`accent-btn-${c}`);
+                if (!btn) return;
+                const swatch = btn.querySelector('span:first-child');
+                if (!swatch) return;
+                const active = themeState.accent === c;
+                const [swAdd, swRemove] = active ? [SWATCH_ACTIVE, SWATCH_INACTIVE] : [SWATCH_INACTIVE, SWATCH_ACTIVE];
+                swRemove.forEach(cls => swatch.classList.remove(cls));
+                swAdd.forEach(cls => swatch.classList.add(cls));
+                const label = btn.querySelector('span:last-child');
+                if (label) {
+                    label.classList.toggle('text-white', active);
+                    label.classList.toggle('text-slate-400', !active);
+                }
+            });
+
+            // Update the accent bar at top of modal
+            const bar = document.querySelector('.theme-accent-bar');
+            if (bar) bar.style.background = `linear-gradient(to right, var(--accent-from), var(--accent-to))`;
+        }
+
+        // Initialise
+        loadThemeState();
+        applyTheme();
 
     </script>
     <script>
