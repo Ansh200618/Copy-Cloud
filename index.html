@@ -467,7 +467,7 @@
                             <div class="max-w-md mx-auto mb-6 flex items-center gap-2 bg-black/30 border border-white/10 rounded-xl px-4 py-2.5">
                                 <i data-lucide="link" class="w-4 h-4 text-slate-500 shrink-0"></i>
                                 <span id="generated-link-display" class="flex-1 text-slate-400 text-xs font-mono truncate text-left"></span>
-                                <button onclick="copyGeneratedLink()" title="Copy link" class="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+                                <button onclick="copyGeneratedLink()" title="Copy link" class="shrink-0 p-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors">
                                     <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                                 </button>
                             </div>
@@ -1470,9 +1470,10 @@
             const emptyEl = document.getElementById('history-empty');
             const clearBtn = document.getElementById('clear-history-btn');
 
+            // Remove only the dynamically-inserted items so #history-empty stays in the DOM
+            listEl.querySelectorAll('[role="listitem"]').forEach(el => el.remove());
+
             if (!history.length) {
-                listEl.innerHTML = '';
-                listEl.appendChild(emptyEl);
                 emptyEl.classList.remove('hidden');
                 clearBtn.classList.add('hidden');
                 return;
@@ -1480,7 +1481,6 @@
 
             emptyEl.classList.add('hidden');
             clearBtn.classList.remove('hidden');
-            listEl.innerHTML = '';
 
             history.forEach(item => {
                 const isSend = item.type === 'send';
