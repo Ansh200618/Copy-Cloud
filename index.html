@@ -842,7 +842,7 @@
                     </button>
                 </nav>
                 <!-- User greeting pill (shown when a name is saved) -->
-                <div id="user-greeting" class="hidden items-center gap-2 px-3 py-2 bg-slate-900/50 backdrop-blur-md rounded-xl border border-white/10 shrink-0">
+                <div id="user-greeting" style="display:none" class="items-center gap-2 px-3 py-2 bg-slate-900/50 backdrop-blur-md rounded-xl border border-white/10 shrink-0">
                     <i data-lucide="user-circle" class="w-4 h-4 shrink-0" style="color:var(--accent-400,#a5b4fc)"></i>
                     <span id="user-greeting-text" class="text-sm font-semibold text-white whitespace-nowrap"></span>
                 </div>
@@ -1204,6 +1204,10 @@
                     el.classList.add('hidden');
                 }
             });
+
+            // Hide Recent Activity when About is active
+            const historySection = document.getElementById('recent-history-section');
+            if (historySection) historySection.classList.toggle('hidden', tabName === 'about');
         };
 
         window.setInputType = (type) => {
@@ -2296,9 +2300,8 @@
             const text = document.getElementById('user-greeting-text');
             if (pill && name) {
                 if (text) text.textContent = `Hey, ${name}! 👋`;
-                pill.classList.remove('hidden');
-                pill.classList.add('flex');
-                lucide.createIcons();
+                pill.style.display = 'flex';
+                if (typeof lucide !== 'undefined') lucide.createIcons({ els: [pill] });
             }
         }
 
