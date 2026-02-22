@@ -826,7 +826,6 @@
                 <div class="text-center md:text-left">
                     <h1 class="text-2xl font-bold text-white tracking-tight">Copy Cloud</h1>
                     <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Secure Online Clipboard & Transfer</p>
-                    <p id="user-greeting" class="hidden text-xs font-medium mt-0.5" style="color:var(--accent-400,#a5b4fc)"></p>
                 </div>
             </div>
 
@@ -842,6 +841,11 @@
                         <i data-lucide="info" class="w-4 h-4"></i> About
                     </button>
                 </nav>
+                <!-- User greeting pill (shown when a name is saved) -->
+                <div id="user-greeting" class="hidden items-center gap-2 px-3 py-2 bg-slate-900/50 backdrop-blur-md rounded-xl border border-white/10 shrink-0">
+                    <i data-lucide="user-circle" class="w-4 h-4 shrink-0" style="color:var(--accent-400,#a5b4fc)"></i>
+                    <span id="user-greeting-text" class="text-sm font-semibold text-white whitespace-nowrap"></span>
+                </div>
                 <!-- Appearance settings button -->
                 <button id="appearance-btn" onclick="openAppearanceModal()" title="Appearance Settings"
                     class="p-2.5 bg-slate-900/50 backdrop-blur-md rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 transition-all shrink-0">
@@ -2288,10 +2292,13 @@
         const USER_KEY = 'copyCloudUser';
 
         function showUserGreeting(name) {
-            const el = document.getElementById('user-greeting');
-            if (el && name) {
-                el.textContent = `Hey, ${name}! 👋`;
-                el.classList.remove('hidden');
+            const pill = document.getElementById('user-greeting');
+            const text = document.getElementById('user-greeting-text');
+            if (pill && name) {
+                if (text) text.textContent = `Hey, ${name}! 👋`;
+                pill.classList.remove('hidden');
+                pill.classList.add('flex');
+                lucide.createIcons();
             }
         }
 
