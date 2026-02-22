@@ -195,6 +195,9 @@
         html:not([data-accent="indigo"]) .hover\:border-indigo-500\/30:hover { border-color: rgba(var(--accent-rgb),0.3) !important; }
         html:not([data-accent="indigo"]) .hover\:bg-indigo-500\/10:hover { background-color: rgba(var(--accent-rgb),0.1) !important; }
 
+        /* Logo always keeps its original indigo-to-purple gradient regardless of accent */
+        #app-logo { --tw-gradient-from: #6366f1 !important; --tw-gradient-to: #9333ea !important; }
+
         /* =================
            LIGHT MODE
            ================= */
@@ -745,7 +748,7 @@
         
         <header class="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
             <div class="flex items-center gap-4 self-center md:self-auto">
-                <div class="bg-gradient-to-tr from-indigo-500 to-purple-600 p-3.5 rounded-2xl shadow-lg shadow-indigo-500/20 border border-white/10">
+                <div id="app-logo" class="bg-gradient-to-tr from-indigo-500 to-purple-600 p-3.5 rounded-2xl shadow-lg shadow-indigo-500/20 border border-white/10">
                     <i data-lucide="clipboard" class="text-white w-6 h-6"></i>
                 </div>
                 <div class="text-center md:text-left">
