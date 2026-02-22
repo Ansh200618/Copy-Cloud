@@ -353,6 +353,11 @@
         .tex-density-slider::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--accent-from,#6366f1); border:2px solid white; cursor:pointer; }
         html.light-mode .tex-density-slider { background:rgba(0,0,0,0.15); }
 
+        /* --- Profile modal: stack stat cards on ultra-narrow screens (< 360 px) --- */
+        @media (max-width: 359px) {
+            .profile-stat-grid { grid-template-columns: 1fr !important; }
+        }
+
         /* --- Texture preview swatches in Appearance modal --- */
         .tex-swatch { background-color: #1e293b; }
         .tex-swatch[data-tex="dots"]     { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='11' cy='11' r='1.5' fill='white' fill-opacity='0.35'/></svg>"); background-size:22px 22px; }
@@ -821,7 +826,7 @@
 
     <!-- User Profile Modal -->
     <div id="user-profile-modal" class="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-md flex flex-col shadow-2xl relative overflow-hidden">
+        <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-md flex flex-col shadow-2xl relative overflow-hidden max-h-[90svh]">
             <!-- Accent bar -->
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
             <!-- Header -->
@@ -830,12 +835,12 @@
                     <i data-lucide="user-circle" class="w-5 h-5" style="color:var(--accent-400,#a5b4fc)"></i>
                     My Profile
                 </h2>
-                <button onclick="closeProfileModal()" class="text-slate-500 hover:text-white transition-colors p-1">
+                <button onclick="closeProfileModal()" aria-label="Close profile modal" class="text-slate-400 hover:text-white transition-colors p-3 -mr-2 rounded-xl focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
             <!-- Body -->
-            <div class="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
+            <div class="p-6 space-y-5 flex-1 overflow-y-auto">
                 <!-- Avatar + Name -->
                 <div class="flex items-center gap-4">
                     <div id="profile-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shrink-0"></div>
@@ -844,7 +849,7 @@
                         <div id="profile-name-display" class="flex items-center gap-2">
                             <span id="profile-name-text" class="text-white font-bold text-lg truncate"></span>
                             <button onclick="startEditProfileName()" title="Edit name"
-                                class="text-slate-500 hover:text-white transition-colors shrink-0">
+                                class="inline-flex items-center justify-center text-slate-400 hover:text-white transition-colors shrink-0 p-2.5 -ml-1 rounded-xl min-w-[44px] min-h-[44px] focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95">
                                 <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
@@ -866,16 +871,16 @@
                 <div>
                     <div class="flex gap-1 bg-white/5 p-1 rounded-xl mb-4">
                         <button onclick="setStatsPeriod('today')" id="stats-tab-today"
-                            class="stats-tab flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all bg-indigo-600 text-white shadow">Today</button>
+                            class="stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all bg-indigo-600 text-white shadow focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95" style="min-height:44px">Today</button>
                         <button onclick="setStatsPeriod('month')" id="stats-tab-month"
-                            class="stats-tab flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-400 hover:text-white">Month</button>
+                            class="stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95" style="min-height:44px">Month</button>
                         <button onclick="setStatsPeriod('year')" id="stats-tab-year"
-                            class="stats-tab flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-400 hover:text-white">Year</button>
+                            class="stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95" style="min-height:44px">Year</button>
                         <button onclick="setStatsPeriod('all')" id="stats-tab-all"
-                            class="stats-tab flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-400 hover:text-white">All Time</button>
+                            class="stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95" style="min-height:44px">All Time</button>
                     </div>
                     <!-- Stat cards -->
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-3 profile-stat-grid">
                         <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-4 flex flex-col gap-1">
                             <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Files Sent</p>
                             <p id="stat-sent" class="text-white text-2xl font-bold">0</p>
@@ -894,7 +899,7 @@
             <!-- Footer -->
             <div class="px-6 py-4 border-t border-white/10 flex justify-end">
                 <button onclick="closeProfileModal()"
-                    class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-xl transition-colors shadow-lg shadow-indigo-500/20">Done</button>
+                    class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-xl transition-colors shadow-lg shadow-indigo-500/20 focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95" style="min-height:44px">Done</button>
             </div>
         </div>
     </div>
@@ -2507,9 +2512,9 @@
                 const btn = document.getElementById(`stats-tab-${p}`);
                 if (!btn) return;
                 if (p === period) {
-                    btn.className = 'stats-tab flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all bg-indigo-600 text-white shadow';
+                    btn.className = 'stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all bg-indigo-600 text-white shadow focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95';
                 } else {
-                    btn.className = 'stats-tab flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-400 hover:text-white';
+                    btn.className = 'stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95';
                 }
             });
             renderProfileStats();
