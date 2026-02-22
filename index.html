@@ -226,10 +226,15 @@
         /* Buttons and links that carry text-white are on coloured backgrounds → keep white */
         html.light-mode button.text-white,
         html.light-mode a.text-white      { color: #ffffff !important; }
+        /* Ghost/outline buttons (bg-white/5) have a near-white bg in light mode → need dark text */
+        html.light-mode button.text-white.bg-white\/5,
+        html.light-mode button.text-white.bg-white\/10 { color: #1e293b !important; }
         html.light-mode .text-slate-200   { color: #1e293b !important; }
         html.light-mode .text-slate-300   { color: #334155 !important; }
         html.light-mode .text-slate-400   { color: #64748b !important; }
-        html.light-mode .text-slate-500   { color: #94a3b8 !important; }
+        html.light-mode .text-slate-500   { color: #475569 !important; }
+        /* Secure code display: deep navy + remove glow in light mode */
+        html.light-mode #generated-code-display { color: #1e1b4b !important; filter: none !important; }
         html.light-mode .placeholder-slate-600::placeholder { color: #94a3b8 !important; }
         html.light-mode .placeholder-slate-700::placeholder { color: #cbd5e1 !important; }
         html.light-mode .border-white\/5  { border-color: rgba(0,0,0,0.07) !important; }
