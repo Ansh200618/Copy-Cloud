@@ -251,16 +251,12 @@
         /* Keep modal backdrops dark */
         html.light-mode #upload-progress-modal { background-color: rgba(0,0,0,0.88) !important; }
 
-        html.light-mode #welcome-modal         { background-color: rgba(0,0,0,0.80) !important; }
         html.light-mode #user-profile-modal    { background-color: rgba(0,0,0,0.80) !important; }
         /* Keep modal inner panels dark */
         html.light-mode #upload-progress-modal > div,
-        html.light-mode #welcome-modal > div,
         html.light-mode #user-profile-modal > div  { background-color: #0f172a !important; border-color: rgba(255,255,255,0.1) !important; }
         html.light-mode #upload-progress-modal .text-white,
-        html.light-mode #welcome-modal .text-white,
         html.light-mode #user-profile-modal .text-white { color: #ffffff !important; }
-        html.light-mode #welcome-modal .text-slate-400,
         html.light-mode #user-profile-modal .text-slate-400 { color: #94a3b8 !important; }
         /* Appearance modal – theme-aware panel */
         html.light-mode #appearance-modal > div { background-color: #ffffff !important; border-color: rgba(0,0,0,0.1) !important; }
@@ -276,6 +272,15 @@
         html.light-mode #coming-soon-modal > div { background-color: #ffffff !important; border-color: rgba(168,85,247,0.2) !important; }
         html.light-mode #coming-soon-modal .text-white { color: #0f172a !important; }
         html.light-mode #coming-soon-modal button.text-white { color: #ffffff !important; }
+        /* Welcome modal – theme-aware panel */
+        html.light-mode #welcome-modal > div { background-color: #ffffff !important; border-color: rgba(0,0,0,0.1) !important; }
+        html.light-mode #welcome-modal .text-white { color: #0f172a !important; }
+        html.light-mode #welcome-modal button.text-white { color: #ffffff !important; }
+        html.light-mode #welcome-modal .text-slate-400 { color: #475569 !important; }
+        html.light-mode #welcome-modal .text-slate-500 { color: #64748b !important; }
+        html.light-mode #welcome-modal .text-slate-600 { color: #64748b !important; }
+        html.light-mode #welcome-modal #welcome-name-input { background-color: #f1f5f9 !important; border-color: rgba(0,0,0,0.12) !important; color: #0f172a !important; }
+        html.light-mode #welcome-modal .hover\:text-white:hover { color: #0f172a !important; }
         /* Appearance modal – hover contrast fixes (hover:text-white / group-hover:text-white on light bg) */
         html.light-mode #appearance-modal .theme-mode-btn { color: #334155 !important; }
         html.light-mode #appearance-modal .theme-mode-btn:hover { color: #0f172a !important; }
