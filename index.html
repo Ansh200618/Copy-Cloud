@@ -70,6 +70,31 @@
     ]
     </script>
 
+    <!-- Prevent flash of unstyled content when restoring saved theme -->
+    <script>
+        (function () {
+            try {
+                const s = JSON.parse(localStorage.getItem('copyCloudTheme') || 'null');
+                if (s) {
+                    const dark = s.mode === 'dark' ? true : s.mode === 'light' ? false : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (!dark) document.documentElement.classList.add('light-mode');
+                    const a = s.accent || 'indigo';
+                    if (a !== 'indigo') document.documentElement.setAttribute('data-accent', a);
+                    // Set background CSS vars immediately so body/overlay paint with correct colors
+                    const DARK_BODY_BG = {indigo:'#0b0d1e',purple:'#100819',blue:'#080e1f',emerald:'#041412',rose:'#1c0710',amber:'#181005',teal:'#041614',pink:'#190614',crimson:'#1f0808',cyan:'#041318',gold:'#1a1500',violet:'#110819'};
+                    const LIGHT_BODY_BG = {indigo:'#f0f2ff',purple:'#f7f0ff',blue:'#eff6ff',emerald:'#ecfdf5',rose:'#fff1f2',amber:'#fefce8',teal:'#f0fdfa',pink:'#fdf2f8',crimson:'#fff5f5',cyan:'#ecfeff',gold:'#fffef0',violet:'#f5f3ff'};
+                    const DARK_OVERLAY  = {indigo:'linear-gradient(135deg,#0b0d1e,#0f172a,#090b1c)',purple:'linear-gradient(135deg,#100819,#0f102a,#0d0617)',blue:'linear-gradient(135deg,#080e1f,#091422,#060c1d)',emerald:'linear-gradient(135deg,#041412,#06180f,#031210)',rose:'linear-gradient(135deg,#1c0710,#16091c,#190508)',amber:'linear-gradient(135deg,#181005,#1b1408,#140e04)',teal:'linear-gradient(135deg,#041614,#051c18,#031110)',pink:'linear-gradient(135deg,#190614,#14091e,#160312)',crimson:'linear-gradient(135deg,#1f0808,#200a0d,#1a0506)',cyan:'linear-gradient(135deg,#041318,#051b28,#030f15)',gold:'linear-gradient(135deg,#1a1500,#1e1908,#151100)',violet:'linear-gradient(135deg,#110819,#0e0a20,#0f0617)'};
+                    const LIGHT_OVERLAY = {indigo:'linear-gradient(135deg,#e8eaff,#f5f6ff,#e8eaff)',purple:'linear-gradient(135deg,#f0e4ff,#f9f5ff,#f0e4ff)',blue:'linear-gradient(135deg,#dbeafe,#eff6ff,#dbeafe)',emerald:'linear-gradient(135deg,#d1fae5,#f0fdf6,#d1fae5)',rose:'linear-gradient(135deg,#ffe4e6,#fff5f6,#ffe4e6)',amber:'linear-gradient(135deg,#fef3c7,#fefce8,#fef3c7)',teal:'linear-gradient(135deg,#ccfbf1,#f0fdfa,#ccfbf1)',pink:'linear-gradient(135deg,#fce7f3,#fdf8fb,#fce7f3)',crimson:'linear-gradient(135deg,#ffe4e6,#fff5f5,#ffe4e6)',cyan:'linear-gradient(135deg,#cffafe,#ecfeff,#cffafe)',gold:'linear-gradient(135deg,#fef9c3,#fffef0,#fef9c3)',violet:'linear-gradient(135deg,#ede9fe,#f5f3ff,#ede9fe)'};
+                    const h = document.documentElement;
+                    h.style.setProperty('--page-bg',    dark ? (DARK_BODY_BG[a]||DARK_BODY_BG.indigo)   : (LIGHT_BODY_BG[a]||LIGHT_BODY_BG.indigo));
+                    h.style.setProperty('--overlay-bg', dark ? (DARK_OVERLAY[a]||DARK_OVERLAY.indigo) : (LIGHT_OVERLAY[a]||LIGHT_OVERLAY.indigo));
+                    if (s.texture && s.texture !== 'none') h.setAttribute('data-texture', s.texture);
+                    if (s.textureDensity) h.style.setProperty('--tex-scale', s.textureDensity);
+                }
+            } catch (e) {}
+        })();
+    </script>
+
     <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -80,6 +105,10 @@
 
     <style>
         body { font-family: 'Inter', sans-serif; }
+
+        /* Text selection uses the active accent colour with white text */
+        ::selection      { background-color: rgba(var(--accent-rgb), 0.40); color: #ffffff; }
+        ::-moz-selection { background-color: rgba(var(--accent-rgb), 0.40); color: #ffffff; }
         
         /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
@@ -105,15 +134,304 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
+
+        /* Dynamic background driven by --page-bg / --overlay-bg CSS vars
+           (set by FOUC script + applyTheme). !important beats Tailwind CDN classes. */
+        body { background-color: var(--page-bg, #0f172a) !important; }
+        #bg-overlay-main { background: var(--overlay-bg, linear-gradient(135deg,#0b0d1e,#0f172a,#090b1c)) !important; }
+
+        /* =============================================
+           THEME SYSTEM – Accent Colors & Day/Night Mode
+           ============================================= */
+
+        /* Default accent = indigo */
+        :root {
+            --accent-from: #6366f1;
+            --accent-to:   #9333ea;
+            --accent-500:  #818cf8;
+            --accent-400:  #a5b4fc;
+            --accent-300:  #c7d2fe;
+            --accent-rgb:  99, 102, 241;
+        }
+
+        html[data-accent="purple"]  { --accent-from:#9333ea; --accent-to:#7c3aed; --accent-500:#a855f7; --accent-400:#c084fc; --accent-300:#d8b4fe; --accent-rgb:147,51,234; }
+        html[data-accent="blue"]    { --accent-from:#2563eb; --accent-to:#6d28d9; --accent-500:#3b82f6; --accent-400:#60a5fa; --accent-300:#93c5fd; --accent-rgb:59,130,246; }
+        html[data-accent="emerald"] { --accent-from:#059669; --accent-to:#0891b2; --accent-500:#10b981; --accent-400:#34d399; --accent-300:#6ee7b7; --accent-rgb:5,150,105; }
+        html[data-accent="rose"]    { --accent-from:#e11d48; --accent-to:#9333ea; --accent-500:#f43f5e; --accent-400:#fb7185; --accent-300:#fda4af; --accent-rgb:225,29,72; }
+        html[data-accent="amber"]   { --accent-from:#d97706; --accent-to:#ea580c; --accent-500:#f59e0b; --accent-400:#fbbf24; --accent-300:#fcd34d; --accent-rgb:217,119,6; }
+        html[data-accent="teal"]    { --accent-from:#0d9488; --accent-to:#2563eb; --accent-500:#14b8a6; --accent-400:#2dd4bf; --accent-300:#5eead4; --accent-rgb:13,148,136; }
+        html[data-accent="pink"]    { --accent-from:#db2777; --accent-to:#9333ea; --accent-500:#ec4899; --accent-400:#f472b6; --accent-300:#f9a8d4; --accent-rgb:219,39,119; }
+        html[data-accent="crimson"] { --accent-from:#dc2626; --accent-to:#9f1239; --accent-500:#ef4444; --accent-400:#fca5a5; --accent-300:#fecaca; --accent-rgb:220,38,38; }
+        html[data-accent="cyan"]    { --accent-from:#0ea5e9; --accent-to:#2563eb; --accent-500:#38bdf8; --accent-400:#7dd3fc; --accent-300:#bae6fd; --accent-rgb:14,165,233; }
+        html[data-accent="gold"]    { --accent-from:#eab308; --accent-to:#b45309; --accent-500:#f59e0b; --accent-400:#fcd34d; --accent-300:#fde68a; --accent-rgb:234,179,8; }
+        html[data-accent="violet"]  { --accent-from:#7c3aed; --accent-to:#c026d3; --accent-500:#a855f7; --accent-400:#c084fc; --accent-300:#d8b4fe; --accent-rgb:124,58,237; }
+
+        /* Accent overrides – recolor all hardcoded indigo/purple Tailwind classes */
+        html:not([data-accent="indigo"]) .from-indigo-500,
+        html:not([data-accent="indigo"]) .from-indigo-600  { --tw-gradient-from: var(--accent-from) !important; }
+        html:not([data-accent="indigo"]) .via-indigo-600   { --tw-gradient-via:  var(--accent-from) !important; }
+        html:not([data-accent="indigo"]) .to-purple-500,
+        html:not([data-accent="indigo"]) .to-purple-600    { --tw-gradient-to:   var(--accent-to)   !important; }
+        html:not([data-accent="indigo"]) .bg-indigo-600,
+        html:not([data-accent="indigo"]) .bg-indigo-500    { background-color: var(--accent-from)  !important; }
+        html:not([data-accent="indigo"]) .bg-indigo-600\/90 { background-color: rgba(var(--accent-rgb),0.9) !important; }
+        html:not([data-accent="indigo"]) .hover\:bg-indigo-500:hover { background-color: var(--accent-500) !important; }
+        html:not([data-accent="indigo"]) .hover\:bg-indigo-600:hover { background-color: var(--accent-from) !important; }
+        html:not([data-accent="indigo"]) .text-indigo-400  { color: var(--accent-400) !important; }
+        html:not([data-accent="indigo"]) .text-indigo-300  { color: var(--accent-300) !important; }
+        html:not([data-accent="indigo"]) .text-indigo-200  { color: var(--accent-400) !important; }
+        html:not([data-accent="indigo"]) .border-indigo-500\/20 { border-color: rgba(var(--accent-rgb),0.2) !important; }
+        html:not([data-accent="indigo"]) .border-indigo-500\/30 { border-color: rgba(var(--accent-rgb),0.3) !important; }
+        html:not([data-accent="indigo"]) .border-indigo-400\/50 { border-color: rgba(var(--accent-rgb),0.5) !important; }
+        html:not([data-accent="indigo"]) .ring-1.ring-indigo-400\/50 { --tw-ring-color: rgba(var(--accent-rgb),0.5) !important; }
+        html:not([data-accent="indigo"]) .bg-indigo-500\/10 { background-color: rgba(var(--accent-rgb),0.1) !important; }
+        html:not([data-accent="indigo"]) .bg-indigo-500\/20 { background-color: rgba(var(--accent-rgb),0.2) !important; }
+        html:not([data-accent="indigo"]) .shadow-indigo-500\/20 { --tw-shadow-color: rgba(var(--accent-rgb),0.2) !important; }
+        html:not([data-accent="indigo"]) .shadow-indigo-500\/25 { --tw-shadow-color: rgba(var(--accent-rgb),0.25) !important; }
+        html:not([data-accent="indigo"]) .shadow-indigo-600\/20 { --tw-shadow-color: rgba(var(--accent-rgb),0.2) !important; }
+        html:not([data-accent="indigo"]) .shadow-indigo-600\/40 { --tw-shadow-color: rgba(var(--accent-rgb),0.4) !important; }
+        html:not([data-accent="indigo"]) .focus\:border-indigo-500\/50:focus { border-color: rgba(var(--accent-rgb),0.5) !important; }
+        html:not([data-accent="indigo"]) .drop-shadow-\[0_0_15px_rgba\(129\,140\,248\,0\.5\)\] { filter: drop-shadow(0 0 15px rgba(var(--accent-rgb),0.5)) !important; }
+        html:not([data-accent="indigo"]) .hover\:border-indigo-500\/30:hover { border-color: rgba(var(--accent-rgb),0.3) !important; }
+        html:not([data-accent="indigo"]) .hover\:bg-indigo-500\/10:hover { background-color: rgba(var(--accent-rgb),0.1) !important; }
+
+        /* Logo always keeps its original indigo-to-purple gradient regardless of accent */
+        #app-logo {
+            background-image: linear-gradient(to top right, #6366f1, #9333ea) !important;
+            --tw-gradient-from: #6366f1 !important;
+            --tw-gradient-to:   #9333ea !important;
+            --tw-shadow-color:  rgba(99,102,241,0.2) !important;
+            border-color: rgba(255,255,255,0.1) !important;
+        }
+        /* Clipboard icon always white — target both <i> and the SVG Lucide injects */
+        #app-logo i,
+        #app-logo svg,
+        #app-logo svg path,
+        #app-logo svg polyline,
+        #app-logo svg rect { color: #ffffff !important; stroke: #ffffff !important; }
+
+        /* =================
+           LIGHT MODE
+           ================= */
+        html.light-mode { color-scheme: light; }
+        html.light-mode body { color: #1e293b !important; }
+        html.light-mode #bg-noise-overlay { opacity: 0.03 !important; }
+        html.light-mode .glass-panel {
+            background-color: rgba(255,255,255,0.88) !important;
+            border-color: rgba(0,0,0,0.08) !important;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.07) !important;
+        }
+        html.light-mode .bg-slate-900\/50 { background-color: rgba(248,250,252,0.92) !important; }
+        html.light-mode .text-white       { color: #0f172a !important; }
+        /* Buttons and links that carry text-white are on coloured backgrounds → keep white */
+        html.light-mode button.text-white,
+        html.light-mode a.text-white      { color: #ffffff !important; }
+        /* Ghost/outline buttons (bg-white/5) have a near-white bg in light mode → need dark text */
+        html.light-mode button.text-white.bg-white\/5,
+        html.light-mode button.text-white.bg-white\/10 { color: #1e293b !important; }
+        html.light-mode .text-slate-200   { color: #1e293b !important; }
+        html.light-mode .text-slate-300   { color: #334155 !important; }
+        html.light-mode .text-slate-400   { color: #64748b !important; }
+        html.light-mode .text-slate-500   { color: #475569 !important; }
+        /* Secure code display: deep navy + remove glow in light mode */
+        html.light-mode #generated-code-display { color: #1e1b4b !important; filter: none !important; }
+        html.light-mode .placeholder-slate-600::placeholder { color: #94a3b8 !important; }
+        html.light-mode .placeholder-slate-700::placeholder { color: #cbd5e1 !important; }
+        html.light-mode .border-white\/5  { border-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .border-white\/10 { border-color: rgba(0,0,0,0.1)  !important; }
+        html.light-mode .bg-white\/5      { background-color: rgba(0,0,0,0.04) !important; }
+        html.light-mode .bg-white\/10     { background-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .hover\:bg-white\/5:hover  { background-color: rgba(0,0,0,0.04) !important; }
+        html.light-mode .hover\:bg-white\/10:hover { background-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .bg-black\/10 { background-color: rgba(0,0,0,0.03) !important; }
+        html.light-mode .bg-black\/20 { background-color: rgba(0,0,0,0.04) !important; }
+        html.light-mode .bg-black\/30 { background-color: rgba(0,0,0,0.06) !important; }
+        html.light-mode .bg-black\/40 { background-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .bg-black\/50 { background-color: rgba(0,0,0,0.12) !important; }
+        /* Keep modal backdrops dark */
+        html.light-mode #upload-progress-modal { background-color: rgba(0,0,0,0.88) !important; }
+        html.light-mode #legal-modal           { background-color: rgba(0,0,0,0.75) !important; }
+        html.light-mode #coming-soon-modal     { background-color: rgba(0,0,0,0.75) !important; }
+        html.light-mode #welcome-modal         { background-color: rgba(0,0,0,0.80) !important; }
+        html.light-mode #user-profile-modal    { background-color: rgba(0,0,0,0.80) !important; }
+        /* Keep modal inner panels dark */
+        html.light-mode #upload-progress-modal > div,
+        html.light-mode #legal-modal > div,
+        html.light-mode #coming-soon-modal > div,
+        html.light-mode #welcome-modal > div,
+        html.light-mode #user-profile-modal > div  { background-color: #0f172a !important; border-color: rgba(255,255,255,0.1) !important; }
+        html.light-mode #upload-progress-modal .text-white,
+        html.light-mode #legal-modal .text-white,
+        html.light-mode #coming-soon-modal .text-white,
+        html.light-mode #welcome-modal .text-white,
+        html.light-mode #user-profile-modal .text-white { color: #ffffff !important; }
+        html.light-mode #legal-modal .text-slate-400,
+        html.light-mode #coming-soon-modal .text-slate-400,
+        html.light-mode #welcome-modal .text-slate-400,
+        html.light-mode #user-profile-modal .text-slate-400 { color: #94a3b8 !important; }
+        html.light-mode #legal-modal .border-white\/10,
+        html.light-mode #coming-soon-modal .border-white\/10 { border-color: rgba(255,255,255,0.1) !important; }
+        html.light-mode #legal-modal .bg-white\/5,
+        html.light-mode #coming-soon-modal .bg-white\/5 { background-color: rgba(255,255,255,0.05) !important; }
+        html.light-mode #legal-modal .bg-white\/10,
+        html.light-mode #coming-soon-modal .bg-white\/10 { background-color: rgba(255,255,255,0.1) !important; }
+        html.light-mode #legal-modal .hover\:bg-white\/10:hover,
+        html.light-mode #coming-soon-modal .hover\:bg-white\/10:hover { background-color: rgba(255,255,255,0.1) !important; }
+        /* Inputs */
+        html.light-mode #retrieve-code-input {
+            background-color: #ffffff !important; color: #0f172a !important;
+            border-color: rgba(0,0,0,0.12) !important;
+        }
+        html.light-mode #retrieve-code-input::placeholder { color: #cbd5e1 !important; }
+        html.light-mode #text-input {
+            background-color: rgba(255,255,255,0.8) !important; color: #1e293b !important;
+            border-color: rgba(0,0,0,0.12) !important;
+        }
+        html.light-mode #text-input:focus { background-color: #ffffff !important; }
+        /* Retrieved content box */
+        html.light-mode #retrieved-content-area .rounded-xl.border-white\/10.overflow-hidden {
+            background-color: #f8fafc !important; border-color: rgba(0,0,0,0.1) !important;
+        }
+        html.light-mode #retrieved-text-content { color: #1e293b !important; }
+        /* Retrieve empty state */
+        #retrieve-empty-state {
+            background-color: var(--page-bg, #0b1120);
+            border: 1.5px dashed rgba(var(--accent-rgb, 99,102,241), 0.28);
+            box-shadow: inset 0 2px 16px rgba(0,0,0,0.10);
+        }
+        /* Retrieve button */
+        html.light-mode #retrieve-btn {
+            background-color: var(--accent-from) !important; color: #ffffff !important;
+        }
+        html.light-mode #retrieve-btn:hover { background-color: var(--accent-500) !important; }
+        /* History items */
+        html.light-mode [role="listitem"] {
+            background-color: rgba(0,0,0,0.04) !important;
+            border-color: rgba(0,0,0,0.07) !important;
+        }
+        html.light-mode [role="listitem"]:hover { background-color: rgba(0,0,0,0.07) !important; }
+        /* Footer */
+        html.light-mode footer { border-color: rgba(0,0,0,0.08) !important; }
+        html.light-mode footer .border-t { border-color: rgba(0,0,0,0.08) !important; }
+        /* Scrollbar */
+        html.light-mode .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.04) !important; }
+        html.light-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15) !important; }
+        html.light-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25) !important; }
+
+        /* =============================================
+           BACKGROUND TEXTURES
+           =============================================
+           Appearance modal scrollable body */
+        .appearance-modal-body { max-height: 70vh; }
+
+        /* Appearance modal – modern selected state for theme mode buttons */
+        .mode-btn-active {
+            background-color: rgba(var(--accent-rgb, 99,102,241), 0.12) !important;
+            border-color: var(--accent-from, #6366f1) !important;
+        }
+
+        /* Accent swatch hover glow – colour-matched soft ring */
+        .accent-color-btn span:first-child {
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .accent-color-btn:hover span:first-child,
+        .accent-color-btn:focus-visible span:first-child {
+            box-shadow: 0 0 0 3px rgba(var(--accent-rgb, 99,102,241), 0.40),
+                        0 4px 16px rgba(0,0,0,0.30);
+        }
+
+        :root { --tex-scale: 1; }
+
+        #bg-texture-overlay {
+            position: absolute; inset: 0; pointer-events: none;
+            background-repeat: repeat; opacity: 0;
+        }
+
+        /* --- Dark-mode texture rules (white patterns) – background-size scaled by --tex-scale --- */
+        html[data-texture="dots"]     #bg-texture-overlay { opacity:1; background-size:calc(22px * var(--tex-scale)) calc(22px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='11' cy='11' r='1.5' fill='white' fill-opacity='0.18'/></svg>"); }
+        html[data-texture="grid"]     #bg-texture-overlay { opacity:1; background-size:calc(24px * var(--tex-scale)) calc(24px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><path d='M 24 0 L 0 0 0 24' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.12'/></svg>"); }
+        html[data-texture="waves"]    #bg-texture-overlay { opacity:1; background-size:calc(56px * var(--tex-scale)) calc(22px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='22'><path d='M0 11 Q14 3 28 11 Q42 19 56 11' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.13'/></svg>"); }
+        html[data-texture="diagonal"] #bg-texture-overlay { opacity:1; background-size:calc(16px * var(--tex-scale)) calc(16px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='0' y1='16' x2='16' y2='0' stroke='white' stroke-width='1' stroke-opacity='0.11'/></svg>"); }
+        html[data-texture="diamonds"] #bg-texture-overlay { opacity:1; background-size:calc(26px * var(--tex-scale)) calc(26px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><path d='M13 0L26 13L13 26L0 13Z' fill='none' stroke='white' stroke-width='0.75' stroke-opacity='0.12'/></svg>"); }
+        html[data-texture="circles"]  #bg-texture-overlay { opacity:1; background-size:calc(44px * var(--tex-scale)) calc(44px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.09'/></svg>"); }
+        html[data-texture="crosshatch"] #bg-texture-overlay { opacity:1; background-size:calc(20px * var(--tex-scale)) calc(20px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><line x1='0' y1='0' x2='20' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.12'/><line x1='20' y1='0' x2='0' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.12'/></svg>"); }
+        html[data-texture="hexagons"]   #bg-texture-overlay { opacity:1; background-size:calc(40px * var(--tex-scale)) calc(35px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='35'><polygon points='20,3 32,10 32,24 20,31 8,24 8,10' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.14'/></svg>"); }
+        html[data-texture="triangles"]  #bg-texture-overlay { opacity:1; background-size:calc(28px * var(--tex-scale)) calc(24px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.13'/></svg>"); }
+        html[data-texture="stars"]      #bg-texture-overlay { opacity:1; background-size:calc(44px * var(--tex-scale)) calc(44px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.13'/></svg>"); }
+        html[data-texture="zigzag"]     #bg-texture-overlay { opacity:1; background-size:calc(40px * var(--tex-scale)) calc(20px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.12'/></svg>"); }
+
+        /* --- Light-mode texture overrides (dark patterns) --- */
+        html.light-mode[data-texture="dots"]     #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='11' cy='11' r='1.5' fill='%23475569' fill-opacity='0.22'/></svg>"); }
+        html.light-mode[data-texture="grid"]     #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><path d='M 24 0 L 0 0 0 24' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.16'/></svg>"); }
+        html.light-mode[data-texture="waves"]    #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='22'><path d='M0 11 Q14 3 28 11 Q42 19 56 11' fill='none' stroke='%23475569' stroke-width='1.5' stroke-opacity='0.16'/></svg>"); }
+        html.light-mode[data-texture="diagonal"] #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='0' y1='16' x2='16' y2='0' stroke='%23475569' stroke-width='1' stroke-opacity='0.14'/></svg>"); }
+        html.light-mode[data-texture="diamonds"] #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><path d='M13 0L26 13L13 26L0 13Z' fill='none' stroke='%23475569' stroke-width='0.75' stroke-opacity='0.15'/></svg>"); }
+        html.light-mode[data-texture="circles"]  #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.12'/></svg>"); }
+        html.light-mode[data-texture="crosshatch"] #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><line x1='0' y1='0' x2='20' y2='20' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.15'/><line x1='20' y1='0' x2='0' y2='20' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.15'/></svg>"); }
+        html.light-mode[data-texture="hexagons"]   #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='35'><polygon points='20,3 32,10 32,24 20,31 8,24 8,10' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.16'/></svg>"); }
+        html.light-mode[data-texture="triangles"]  #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.16'/></svg>"); }
+        html.light-mode[data-texture="stars"]      #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.15'/></svg>"); }
+        html.light-mode[data-texture="zigzag"]     #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='%23475569' stroke-width='1.5' stroke-opacity='0.14'/></svg>"); }
+
+        /* --- Premium CopyCloud textures (dark) --- */
+        html[data-texture="clouddoodle"] #bg-texture-overlay { opacity:1; background-size:calc(160px * var(--tex-scale)) calc(160px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><path d='M8,18 C6,18 5,15 7,15 C7,12 9,11 12,12 C13,10 16,9 18,11 C20,9 23,11 23,13 C25,13 25,18 8,18Z' fill='none' stroke='white' stroke-width='0.9' stroke-opacity='0.22'/><rect x='98' y='13' width='12' height='14' rx='1.5' fill='none' stroke='white' stroke-width='0.9' stroke-opacity='0.20'/><path d='M101,13 L101,11 L107,11 L107,13' fill='none' stroke='white' stroke-width='0.9' stroke-opacity='0.20'/><rect x='32' y='80' width='12' height='10' rx='1.5' fill='none' stroke='white' stroke-width='0.9' stroke-opacity='0.18'/><path d='M34,80 C34,75 43,75 43,80' fill='none' stroke='white' stroke-width='0.9' stroke-opacity='0.18'/><path d='M118,74 L132,63 L129,77 L124,70Z M124,70 L132,63' fill='none' stroke='white' stroke-width='0.9' stroke-linejoin='round' stroke-opacity='0.20'/><path d='M66,108 L74,108 L78,112 L78,122 L66,122Z M74,108 L74,112 L78,112' fill='none' stroke='white' stroke-width='0.9' stroke-opacity='0.18'/><path d='M8,134 C8,131 13,131 13,134 C13,137 8,137 8,134Z' fill='none' stroke='white' stroke-width='0.9' stroke-opacity='0.20'/><path d='M12,134 C12,131 17,131 17,134 C17,137 12,137 12,134Z' fill='none' stroke='white' stroke-width='0.9' stroke-opacity='0.20'/><path d='M136,131 C134,131 133,129 135,129 C135,127 137,126 139,127 C141,126 143,128 143,129 C144,129 144,131 136,131Z' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.16'/></svg>"); }
+        html[data-texture="topography"]  #bg-texture-overlay { opacity:1; background-size:calc(120px * var(--tex-scale)) calc(80px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='80'><path d='M0,14 C20,7 40,21 60,14 C80,7 100,21 120,14' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.18'/><path d='M0,20 C22,15 42,25 62,20 C82,15 102,25 120,20' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.12'/><path d='M0,36 C25,28 45,44 70,36 C90,29 105,43 120,36' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.18'/><path d='M0,42 C27,36 47,50 72,42 C92,36 107,50 120,42' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.12'/><path d='M0,58 C30,50 50,66 75,58 C95,51 110,65 120,58' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.18'/><path d='M0,64 C32,58 52,70 77,64 C97,58 112,70 120,64' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.12'/><path d='M0,76 C15,71 35,79 55,76 C75,71 95,79 120,76' fill='none' stroke='white' stroke-width='0.6' stroke-opacity='0.14'/></svg>"); }
+        html[data-texture="cybernodes"]  #bg-texture-overlay { opacity:1; background-size:calc(80px * var(--tex-scale)) calc(80px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><circle cx='10' cy='10' r='2' fill='white' fill-opacity='0.25'/><circle cx='40' cy='25' r='2' fill='white' fill-opacity='0.25'/><circle cx='70' cy='10' r='2' fill='white' fill-opacity='0.25'/><circle cx='20' cy='55' r='2' fill='white' fill-opacity='0.25'/><circle cx='60' cy='45' r='2' fill='white' fill-opacity='0.25'/><circle cx='40' cy='70' r='2' fill='white' fill-opacity='0.25'/><polyline points='10,10 10,25 40,25' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.18'/><polyline points='40,25 70,25 70,10' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.18'/><polyline points='10,10 10,55 20,55' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.18'/><polyline points='20,55 60,55 60,45' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.18'/><polyline points='40,25 40,70' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.18'/><polyline points='60,45 60,70 40,70' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.18'/><circle cx='10' cy='25' r='1' fill='white' fill-opacity='0.15'/><circle cx='70' cy='25' r='1' fill='white' fill-opacity='0.15'/><circle cx='60' cy='55' r='1' fill='white' fill-opacity='0.15'/><circle cx='60' cy='70' r='1' fill='white' fill-opacity='0.15'/></svg>"); }
+        html[data-texture="datastream"]  #bg-texture-overlay { opacity:1; background-size:calc(40px * var(--tex-scale)) calc(60px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='60'><rect x='3' y='2' width='2' height='8' rx='1' fill='white' fill-opacity='0.18'/><rect x='3' y='14' width='2' height='5' rx='1' fill='white' fill-opacity='0.12'/><rect x='3' y='24' width='2' height='10' rx='1' fill='white' fill-opacity='0.16'/><rect x='3' y='40' width='2' height='6' rx='1' fill='white' fill-opacity='0.20'/><rect x='3' y='52' width='2' height='7' rx='1' fill='white' fill-opacity='0.14'/><rect x='13' y='0' width='2' height='5' rx='1' fill='white' fill-opacity='0.14'/><rect x='13' y='10' width='2' height='9' rx='1' fill='white' fill-opacity='0.20'/><rect x='13' y='24' width='2' height='4' rx='1' fill='white' fill-opacity='0.16'/><rect x='13' y='33' width='2' height='11' rx='1' fill='white' fill-opacity='0.12'/><rect x='13' y='51' width='2' height='8' rx='1' fill='white' fill-opacity='0.18'/><rect x='23' y='5' width='2' height='7' rx='1' fill='white' fill-opacity='0.20'/><rect x='23' y='18' width='2' height='11' rx='1' fill='white' fill-opacity='0.14'/><rect x='23' y='35' width='2' height='5' rx='1' fill='white' fill-opacity='0.18'/><rect x='23' y='46' width='2' height='9' rx='1' fill='white' fill-opacity='0.12'/><rect x='33' y='1' width='2' height='10' rx='1' fill='white' fill-opacity='0.16'/><rect x='33' y='16' width='2' height='6' rx='1' fill='white' fill-opacity='0.22'/><rect x='33' y='28' width='2' height='9' rx='1' fill='white' fill-opacity='0.14'/><rect x='33' y='44' width='2' height='7' rx='1' fill='white' fill-opacity='0.18'/></svg>"); }
+
+        /* --- Premium CopyCloud textures (light-mode overrides) --- */
+        html.light-mode[data-texture="clouddoodle"] #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><path d='M8,18 C6,18 5,15 7,15 C7,12 9,11 12,12 C13,10 16,9 18,11 C20,9 23,11 23,13 C25,13 25,18 8,18Z' fill='none' stroke='%23475569' stroke-width='0.9' stroke-opacity='0.22'/><rect x='98' y='13' width='12' height='14' rx='1.5' fill='none' stroke='%23475569' stroke-width='0.9' stroke-opacity='0.20'/><path d='M101,13 L101,11 L107,11 L107,13' fill='none' stroke='%23475569' stroke-width='0.9' stroke-opacity='0.20'/><rect x='32' y='80' width='12' height='10' rx='1.5' fill='none' stroke='%23475569' stroke-width='0.9' stroke-opacity='0.18'/><path d='M34,80 C34,75 43,75 43,80' fill='none' stroke='%23475569' stroke-width='0.9' stroke-opacity='0.18'/><path d='M118,74 L132,63 L129,77 L124,70Z M124,70 L132,63' fill='none' stroke='%23475569' stroke-width='0.9' stroke-linejoin='round' stroke-opacity='0.20'/><path d='M66,108 L74,108 L78,112 L78,122 L66,122Z M74,108 L74,112 L78,112' fill='none' stroke='%23475569' stroke-width='0.9' stroke-opacity='0.18'/><path d='M8,134 C8,131 13,131 13,134 C13,137 8,137 8,134Z' fill='none' stroke='%23475569' stroke-width='0.9' stroke-opacity='0.20'/><path d='M12,134 C12,131 17,131 17,134 C17,137 12,137 12,134Z' fill='none' stroke='%23475569' stroke-width='0.9' stroke-opacity='0.20'/><path d='M136,131 C134,131 133,129 135,129 C135,127 137,126 139,127 C141,126 143,128 143,129 C144,129 144,131 136,131Z' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.16'/></svg>"); }
+        html.light-mode[data-texture="topography"]  #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='80'><path d='M0,14 C20,7 40,21 60,14 C80,7 100,21 120,14' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.20'/><path d='M0,20 C22,15 42,25 62,20 C82,15 102,25 120,20' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.14'/><path d='M0,36 C25,28 45,44 70,36 C90,29 105,43 120,36' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.20'/><path d='M0,42 C27,36 47,50 72,42 C92,36 107,50 120,42' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.14'/><path d='M0,58 C30,50 50,66 75,58 C95,51 110,65 120,58' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.20'/><path d='M0,64 C32,58 52,70 77,64 C97,58 112,70 120,64' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.14'/><path d='M0,76 C15,71 35,79 55,76 C75,71 95,79 120,76' fill='none' stroke='%23475569' stroke-width='0.6' stroke-opacity='0.16'/></svg>"); }
+        html.light-mode[data-texture="cybernodes"]  #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><circle cx='10' cy='10' r='2' fill='%23475569' fill-opacity='0.28'/><circle cx='40' cy='25' r='2' fill='%23475569' fill-opacity='0.28'/><circle cx='70' cy='10' r='2' fill='%23475569' fill-opacity='0.28'/><circle cx='20' cy='55' r='2' fill='%23475569' fill-opacity='0.28'/><circle cx='60' cy='45' r='2' fill='%23475569' fill-opacity='0.28'/><circle cx='40' cy='70' r='2' fill='%23475569' fill-opacity='0.28'/><polyline points='10,10 10,25 40,25' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.20'/><polyline points='40,25 70,25 70,10' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.20'/><polyline points='10,10 10,55 20,55' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.20'/><polyline points='20,55 60,55 60,45' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.20'/><polyline points='40,25 40,70' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.20'/><polyline points='60,45 60,70 40,70' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.20'/><circle cx='10' cy='25' r='1' fill='%23475569' fill-opacity='0.16'/><circle cx='70' cy='25' r='1' fill='%23475569' fill-opacity='0.16'/><circle cx='60' cy='55' r='1' fill='%23475569' fill-opacity='0.16'/><circle cx='60' cy='70' r='1' fill='%23475569' fill-opacity='0.16'/></svg>"); }
+        html.light-mode[data-texture="datastream"]  #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='60'><rect x='3' y='2' width='2' height='8' rx='1' fill='%23475569' fill-opacity='0.18'/><rect x='3' y='14' width='2' height='5' rx='1' fill='%23475569' fill-opacity='0.12'/><rect x='3' y='24' width='2' height='10' rx='1' fill='%23475569' fill-opacity='0.16'/><rect x='3' y='40' width='2' height='6' rx='1' fill='%23475569' fill-opacity='0.22'/><rect x='3' y='52' width='2' height='7' rx='1' fill='%23475569' fill-opacity='0.14'/><rect x='13' y='0' width='2' height='5' rx='1' fill='%23475569' fill-opacity='0.14'/><rect x='13' y='10' width='2' height='9' rx='1' fill='%23475569' fill-opacity='0.22'/><rect x='13' y='24' width='2' height='4' rx='1' fill='%23475569' fill-opacity='0.16'/><rect x='13' y='33' width='2' height='11' rx='1' fill='%23475569' fill-opacity='0.12'/><rect x='13' y='51' width='2' height='8' rx='1' fill='%23475569' fill-opacity='0.18'/><rect x='23' y='5' width='2' height='7' rx='1' fill='%23475569' fill-opacity='0.22'/><rect x='23' y='18' width='2' height='11' rx='1' fill='%23475569' fill-opacity='0.14'/><rect x='23' y='35' width='2' height='5' rx='1' fill='%23475569' fill-opacity='0.18'/><rect x='23' y='46' width='2' height='9' rx='1' fill='%23475569' fill-opacity='0.12'/><rect x='33' y='1' width='2' height='10' rx='1' fill='%23475569' fill-opacity='0.16'/><rect x='33' y='16' width='2' height='6' rx='1' fill='%23475569' fill-opacity='0.24'/><rect x='33' y='28' width='2' height='9' rx='1' fill='%23475569' fill-opacity='0.14'/><rect x='33' y='44' width='2' height='7' rx='1' fill='%23475569' fill-opacity='0.18'/></svg>"); }
+
+        /* --- Texture density slider styling --- */
+        .tex-density-slider { -webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:2px; background:rgba(255,255,255,0.12); outline:none; cursor:pointer; }
+        .tex-density-slider::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:16px; height:16px; border-radius:50%; background:var(--accent-from,#6366f1); border:2px solid white; cursor:pointer; box-shadow:0 0 6px rgba(var(--accent-rgb,99,102,241),0.5); transition:transform 0.15s; }
+        .tex-density-slider::-webkit-slider-thumb:hover { transform:scale(1.2); }
+        .tex-density-slider::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--accent-from,#6366f1); border:2px solid white; cursor:pointer; }
+        html.light-mode .tex-density-slider { background:rgba(0,0,0,0.15); }
+
+        /* --- Profile modal: stack stat cards on ultra-narrow screens (< 360 px) --- */
+        @media (max-width: 359px) {
+            .profile-stat-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* --- Texture preview swatches in Appearance modal --- */
+        .tex-swatch { background-color: #1e293b; }
+        .tex-swatch[data-tex="dots"]     { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='11' cy='11' r='1.5' fill='white' fill-opacity='0.35'/></svg>"); background-size:22px 22px; }
+        .tex-swatch[data-tex="grid"]     { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><path d='M 24 0 L 0 0 0 24' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.3'/></svg>"); background-size:24px 24px; }
+        .tex-swatch[data-tex="waves"]    { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='22'><path d='M0 11 Q14 3 28 11 Q42 19 56 11' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.3'/></svg>"); background-size:56px 22px; }
+        .tex-swatch[data-tex="diagonal"] { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='0' y1='16' x2='16' y2='0' stroke='white' stroke-width='1' stroke-opacity='0.28'/></svg>"); background-size:16px 16px; }
+        .tex-swatch[data-tex="diamonds"] { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><path d='M13 0L26 13L13 26L0 13Z' fill='none' stroke='white' stroke-width='0.75' stroke-opacity='0.3'/></svg>"); background-size:26px 26px; }
+        .tex-swatch[data-tex="circles"]    { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.25'/></svg>"); background-size:44px 44px; }
+        .tex-swatch[data-tex="crosshatch"] { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><line x1='0' y1='0' x2='20' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.38'/><line x1='20' y1='0' x2='0' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.38'/></svg>"); background-size:20px 20px; }
+        .tex-swatch[data-tex="hexagons"]   { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='35'><polygon points='20,3 32,10 32,24 20,31 8,24 8,10' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.35'/></svg>"); background-size:40px 35px; }
+        .tex-swatch[data-tex="triangles"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.35'/></svg>"); background-size:28px 24px; }
+        .tex-swatch[data-tex="stars"]      { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.35'/></svg>"); background-size:44px 44px; }
+        .tex-swatch[data-tex="zigzag"]     { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.35'/></svg>"); background-size:40px 20px; }
+        /* Premium swatch previews */
+        .tex-swatch[data-tex="clouddoodle"] { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M3,14 C1,14 0,11 2,11 C2,9 4,8 7,9 C8,7 11,6 13,8 C15,7 17,8 17,10 C19,10 19,14 3,14Z' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.38'/><rect x='38' y='5' width='10' height='12' rx='1.5' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.35'/><path d='M40,5 L40,3 L46,3 L46,5' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.35'/><rect x='10' y='32' width='10' height='8' rx='1.5' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.30'/><path d='M12,32 C12,28 19,28 19,32' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.30'/><path d='M40,46 L52,36 L49,50 L44,43Z M44,43 L52,36' fill='none' stroke='white' stroke-width='1' stroke-linejoin='round' stroke-opacity='0.36'/></svg>"); background-size:64px 64px; }
+        .tex-swatch[data-tex="topography"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='44'><path d='M0,8 C10,4 20,12 30,8 C40,4 50,12 60,8' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.40'/><path d='M0,11 C11,8 21,14 31,11 C41,8 51,14 60,11' fill='none' stroke='white' stroke-width='0.6' stroke-opacity='0.28'/><path d='M0,22 C12,16 22,28 33,22 C44,16 54,28 60,22' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.40'/><path d='M0,25 C13,21 23,29 34,25 C45,21 55,29 60,25' fill='none' stroke='white' stroke-width='0.6' stroke-opacity='0.28'/><path d='M0,36 C10,32 20,40 30,36 C40,32 50,40 60,36' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.35'/><path d='M0,39 C11,37 21,41 31,39 C41,37 51,41 60,39' fill='none' stroke='white' stroke-width='0.6' stroke-opacity='0.25'/></svg>"); background-size:60px 44px; }
+        .tex-swatch[data-tex="cybernodes"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='6' cy='6' r='2' fill='white' fill-opacity='0.40'/><circle cx='22' cy='14' r='2' fill='white' fill-opacity='0.40'/><circle cx='38' cy='6' r='2' fill='white' fill-opacity='0.40'/><circle cx='10' cy='30' r='2' fill='white' fill-opacity='0.40'/><circle cx='34' cy='24' r='2' fill='white' fill-opacity='0.40'/><circle cx='22' cy='40' r='2' fill='white' fill-opacity='0.40'/><polyline points='6,6 6,14 22,14' fill='none' stroke='white' stroke-width='0.7' stroke-opacity='0.30'/><polyline points='22,14 38,14 38,6' fill='none' stroke='white' stroke-width='0.7' stroke-opacity='0.30'/><polyline points='6,6 6,30 10,30' fill='none' stroke='white' stroke-width='0.7' stroke-opacity='0.30'/><polyline points='10,30 34,30 34,24' fill='none' stroke='white' stroke-width='0.7' stroke-opacity='0.30'/><polyline points='22,14 22,40' fill='none' stroke='white' stroke-width='0.7' stroke-opacity='0.30'/><polyline points='34,24 34,40 22,40' fill='none' stroke='white' stroke-width='0.7' stroke-opacity='0.30'/></svg>"); background-size:44px 44px; }
+        .tex-swatch[data-tex="datastream"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='60'><rect x='3' y='2' width='2' height='8' rx='1' fill='white' fill-opacity='0.36'/><rect x='3' y='14' width='2' height='5' rx='1' fill='white' fill-opacity='0.24'/><rect x='3' y='24' width='2' height='10' rx='1' fill='white' fill-opacity='0.32'/><rect x='3' y='40' width='2' height='6' rx='1' fill='white' fill-opacity='0.40'/><rect x='3' y='52' width='2' height='7' rx='1' fill='white' fill-opacity='0.28'/><rect x='13' y='0' width='2' height='5' rx='1' fill='white' fill-opacity='0.28'/><rect x='13' y='10' width='2' height='9' rx='1' fill='white' fill-opacity='0.40'/><rect x='13' y='24' width='2' height='4' rx='1' fill='white' fill-opacity='0.32'/><rect x='13' y='33' width='2' height='11' rx='1' fill='white' fill-opacity='0.24'/><rect x='13' y='51' width='2' height='8' rx='1' fill='white' fill-opacity='0.36'/><rect x='23' y='5' width='2' height='7' rx='1' fill='white' fill-opacity='0.40'/><rect x='23' y='18' width='2' height='11' rx='1' fill='white' fill-opacity='0.28'/><rect x='23' y='35' width='2' height='5' rx='1' fill='white' fill-opacity='0.36'/><rect x='23' y='46' width='2' height='9' rx='1' fill='white' fill-opacity='0.24'/><rect x='33' y='1' width='2' height='10' rx='1' fill='white' fill-opacity='0.32'/><rect x='33' y='16' width='2' height='6' rx='1' fill='white' fill-opacity='0.44'/><rect x='33' y='28' width='2' height='9' rx='1' fill='white' fill-opacity='0.28'/><rect x='33' y='44' width='2' height='7' rx='1' fill='white' fill-opacity='0.36'/></svg>"); background-size:40px 60px; }
+
+        /* Welcome back countdown bar */
+        @keyframes wbCountdown { from { width: 100%; } to { width: 0%; } }
+        .wb-countdown-bar { animation: wbCountdown 4s linear forwards; }
+
+        /* Welcome modal name input */
+        #welcome-name-input:focus { outline: none; }
     </style>
 </head>
-<body class="bg-[#0f172a] text-slate-200 min-h-screen selection:bg-indigo-500/30 overflow-x-hidden flex flex-col">
+<body class="bg-[#0f172a] text-slate-200 min-h-screen overflow-x-hidden flex flex-col">
 
     <div id="notification-area" class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none w-full max-w-sm px-4"></div>
 
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-950 via-[#0f172a] to-slate-950 opacity-100"></div>
-        <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E')"></div>
+        <div id="bg-overlay-main" class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-950 via-[#0f172a] to-slate-950 opacity-100"></div>
+        <div id="bg-noise-overlay" class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E')"></div>
+        <div id="bg-texture-overlay" class="absolute inset-0"></div>
     </div>
 
     <!-- PROGRESS MODAL -->
@@ -230,7 +548,19 @@
                             </div>
                             <div>
                                 <h4 class="text-white font-semibold text-sm mb-1">End-to-End Encryption</h4>
-                                <p class="text-slate-400 text-xs">Extra security layer for sensitive data</p>
+                                <p class="text-slate-400 text-xs">Client-side encryption before upload — no one can read your data except you</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-pink-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-pink-500/20 p-2 rounded-lg text-pink-400 shrink-0">
+                                <i data-lucide="key" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">Password-Protected Clips</h4>
+                                <p class="text-slate-400 text-xs">Lock your content with a passphrase — only those with the password can retrieve it</p>
                             </div>
                         </div>
                     </div>
@@ -242,19 +572,7 @@
                             </div>
                             <div>
                                 <h4 class="text-white font-semibold text-sm mb-1">Custom Expiration Times</h4>
-                                <p class="text-slate-400 text-xs">Choose 1h, 12h, 7d, or custom duration</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-pink-500/30 hover:bg-white/10 transition-all">
-                        <div class="flex items-start gap-3">
-                            <div class="bg-pink-500/20 p-2 rounded-lg text-pink-400 shrink-0">
-                                <i data-lucide="shield" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">Password Protection</h4>
-                                <p class="text-slate-400 text-xs">Secure content with a password</p>
+                                <p class="text-slate-400 text-xs">Choose exactly how long your clip lives — 1h, 6h, 12h, 7d, or never</p>
                             </div>
                         </div>
                     </div>
@@ -262,11 +580,11 @@
                     <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-emerald-500/30 hover:bg-white/10 transition-all">
                         <div class="flex items-start gap-3">
                             <div class="bg-emerald-500/20 p-2 rounded-lg text-emerald-400 shrink-0">
-                                <i data-lucide="qr-code" class="w-5 h-5"></i>
+                                <i data-lucide="puzzle" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">QR Code Sharing</h4>
-                                <p class="text-slate-400 text-xs">Easy code sharing with QR codes</p>
+                                <h4 class="text-white font-semibold text-sm mb-1">Browser Extension</h4>
+                                <p class="text-slate-400 text-xs">One-click send & receive directly from Chrome or Firefox — no tab switching needed</p>
                             </div>
                         </div>
                     </div>
@@ -274,47 +592,23 @@
                     <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-blue-500/30 hover:bg-white/10 transition-all">
                         <div class="flex items-start gap-3">
                             <div class="bg-blue-500/20 p-2 rounded-lg text-blue-400 shrink-0">
-                                <i data-lucide="bar-chart" class="w-5 h-5"></i>
+                                <i data-lucide="smartphone" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">Usage Statistics</h4>
-                                <p class="text-slate-400 text-xs">Track your sharing activity</p>
+                                <h4 class="text-white font-semibold text-sm mb-1">PWA &amp; Offline Support</h4>
+                                <p class="text-slate-400 text-xs">Install Copy Cloud on your home screen and access recent clips even without internet</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-yellow-500/30 hover:bg-white/10 transition-all">
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-amber-500/30 hover:bg-white/10 transition-all">
                         <div class="flex items-start gap-3">
-                            <div class="bg-yellow-500/20 p-2 rounded-lg text-yellow-400 shrink-0">
-                                <i data-lucide="file-text" class="w-5 h-5"></i>
+                            <div class="bg-amber-500/20 p-2 rounded-lg text-amber-400 shrink-0">
+                                <i data-lucide="bell" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">Rich Text Editor</h4>
-                                <p class="text-slate-400 text-xs">Format text with styles and colors</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-orange-500/30 hover:bg-white/10 transition-all">
-                        <div class="flex items-start gap-3">
-                            <div class="bg-orange-500/20 p-2 rounded-lg text-orange-400 shrink-0">
-                                <i data-lucide="moon" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">Dark/Light Theme Toggle</h4>
-                                <p class="text-slate-400 text-xs">Switch between themes</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-teal-500/30 hover:bg-white/10 transition-all">
-                        <div class="flex items-start gap-3">
-                            <div class="bg-teal-500/20 p-2 rounded-lg text-teal-400 shrink-0">
-                                <i data-lucide="folder-plus" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">Enhanced Multi-File Upload</h4>
-                                <p class="text-slate-400 text-xs">Upload multiple files seamlessly</p>
+                                <h4 class="text-white font-semibold text-sm mb-1">Push Notifications</h4>
+                                <p class="text-slate-400 text-xs">Get notified instantly when someone retrieves your shared clip or your file is downloaded</p>
                             </div>
                         </div>
                     </div>
@@ -338,12 +632,344 @@
         </div>
     </div>
 
+    <!-- Appearance / Theme Modal -->
+    <div id="appearance-modal" class="fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-md flex flex-col shadow-2xl animate-fade-in relative overflow-hidden">
+            <!-- Decorative top gradient bar -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500 theme-accent-bar"></div>
+
+            <!-- Header -->
+            <div class="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="palette" class="text-indigo-400 w-5 h-5"></i> Appearance
+                </h3>
+                <button onclick="closeAppearanceModal()" class="text-slate-400 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6 space-y-7 overflow-y-auto custom-scrollbar appearance-modal-body">
+
+                <!-- Theme Mode -->
+                <div>
+                    <p class="text-xs font-semibold text-slate-300 uppercase tracking-widest mb-3">Theme Mode</p>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button id="mode-btn-auto" onclick="setThemeMode('auto')"
+                            class="theme-mode-btn flex flex-col items-center gap-2 p-4 rounded-xl text-sm font-medium transition-all border border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10">
+                            <i data-lucide="monitor" class="w-5 h-5"></i>
+                            <span>Auto</span>
+                            <span class="text-[10px] text-slate-400 font-normal -mt-1">System default</span>
+                        </button>
+                        <button id="mode-btn-light" onclick="setThemeMode('light')"
+                            class="theme-mode-btn flex flex-col items-center gap-2 p-4 rounded-xl text-sm font-medium transition-all border border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10">
+                            <i data-lucide="sun" class="w-5 h-5"></i>
+                            <span>Light</span>
+                            <span class="text-[10px] text-slate-400 font-normal -mt-1">Day mode</span>
+                        </button>
+                        <button id="mode-btn-dark" onclick="setThemeMode('dark')"
+                            class="theme-mode-btn flex flex-col items-center gap-2 p-4 rounded-xl text-sm font-medium transition-all border border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10">
+                            <i data-lucide="moon" class="w-5 h-5"></i>
+                            <span>Dark</span>
+                            <span class="text-[10px] text-slate-400 font-normal -mt-1">Night mode</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="h-px bg-white/10 w-full"></div>
+
+                <!-- Accent / Gradient Color -->
+                <div>
+                    <p class="text-xs font-semibold text-slate-300 uppercase tracking-widest mb-1">Accent &amp; Gradient Color</p>
+                    <p class="text-slate-400 text-xs mb-3">Applied to buttons, icons, and background gradient in all modes.</p>
+                    <div class="grid grid-cols-4 gap-3">
+                        <button onclick="setAccentColor('indigo')"  id="accent-btn-indigo"  title="Indigo"   class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#6366f1">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#818cf8,#4338ca)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Indigo</span>
+                        </button>
+                        <button onclick="setAccentColor('purple')"  id="accent-btn-purple"  title="Purple"   class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#a855f7">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#c084fc,#7e22ce)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Purple</span>
+                        </button>
+                        <button onclick="setAccentColor('blue')"    id="accent-btn-blue"    title="Blue"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#3b82f6">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#60a5fa,#1d4ed8)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Blue</span>
+                        </button>
+                        <button onclick="setAccentColor('emerald')" id="accent-btn-emerald" title="Emerald"  class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#10b981">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#34d399,#065f46)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Emerald</span>
+                        </button>
+                        <button onclick="setAccentColor('rose')"    id="accent-btn-rose"    title="Rose"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#f43f5e">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#fb7185,#9f1239)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Rose</span>
+                        </button>
+                        <button onclick="setAccentColor('amber')"   id="accent-btn-amber"   title="Amber"    class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#f59e0b">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#fcd34d,#92400e)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Amber</span>
+                        </button>
+                        <button onclick="setAccentColor('teal')"    id="accent-btn-teal"    title="Teal"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#14b8a6">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#2dd4bf,#134e4a)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Teal</span>
+                        </button>
+                        <button onclick="setAccentColor('pink')"    id="accent-btn-pink"    title="Pink"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#ec4899">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#f472b6,#831843)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Pink</span>
+                        </button>
+                        <button onclick="setAccentColor('crimson')" id="accent-btn-crimson" title="Crimson"  class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#dc2626">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#f87171,#7f1d1d)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Crimson</span>
+                        </button>
+                        <button onclick="setAccentColor('cyan')"    id="accent-btn-cyan"    title="Cyan"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#0ea5e9">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#38bdf8,#0c4a6e)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Cyan</span>
+                        </button>
+                        <button onclick="setAccentColor('gold')"    id="accent-btn-gold"    title="Gold"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#eab308">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#fde047,#713f12)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Gold</span>
+                        </button>
+                        <button onclick="setAccentColor('violet')"  id="accent-btn-violet"  title="Violet"   class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#7c3aed">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#a78bfa,#4c1d95)"></span>
+                            <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Violet</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="h-px bg-white/10 w-full"></div>
+
+                <!-- Background Texture -->
+                <div>
+                    <p class="text-xs font-semibold text-slate-300 uppercase tracking-widest mb-1">Background Texture</p>
+                    <p class="text-slate-400 text-xs mb-3">Decorative pattern overlaid on the background.</p>
+                    <div class="grid grid-cols-4 gap-3">
+                        <button onclick="setTexture('none')" id="tex-btn-none" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent bg-slate-800 flex items-center justify-center text-slate-500 group-hover:text-white transition-all" data-tex="none">
+                                <i data-lucide="ban" class="w-4 h-4"></i>
+                            </span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">None</span>
+                        </button>
+                        <button onclick="setTexture('dots')" id="tex-btn-dots" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="dots"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Dots</span>
+                        </button>
+                        <button onclick="setTexture('grid')" id="tex-btn-grid" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="grid"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Grid</span>
+                        </button>
+                        <button onclick="setTexture('waves')" id="tex-btn-waves" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="waves"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Waves</span>
+                        </button>
+                        <button onclick="setTexture('diagonal')" id="tex-btn-diagonal" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="diagonal"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Diagonal</span>
+                        </button>
+                        <button onclick="setTexture('diamonds')" id="tex-btn-diamonds" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="diamonds"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Diamonds</span>
+                        </button>
+                        <button onclick="setTexture('circles')" id="tex-btn-circles" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="circles"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Circles</span>
+                        </button>
+                        <button onclick="setTexture('crosshatch')" id="tex-btn-crosshatch" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="crosshatch"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Crosshatch</span>
+                        </button>
+                        <button onclick="setTexture('hexagons')" id="tex-btn-hexagons" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="hexagons"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Hexagons</span>
+                        </button>
+                        <button onclick="setTexture('triangles')" id="tex-btn-triangles" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="triangles"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Triangles</span>
+                        </button>
+                        <button onclick="setTexture('stars')" id="tex-btn-stars" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="stars"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Stars</span>
+                        </button>
+                        <button onclick="setTexture('zigzag')" id="tex-btn-zigzag" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="zigzag"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Zigzag</span>
+                        </button>
+                        <button onclick="setTexture('clouddoodle')" id="tex-btn-clouddoodle" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="clouddoodle"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Clouds</span>
+                        </button>
+                        <button onclick="setTexture('topography')" id="tex-btn-topography" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="topography"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Topo</span>
+                        </button>
+                        <button onclick="setTexture('cybernodes')" id="tex-btn-cybernodes" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="cybernodes"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Nodes</span>
+                        </button>
+                        <button onclick="setTexture('datastream')" id="tex-btn-datastream" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="datastream"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Stream</span>
+                        </button>
+                    </div>
+
+                    <!-- Texture Density Slider (hidden when no texture selected) -->
+                    <div id="tex-density-row" class="mt-4 hidden">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Texture Density</p>
+                            <span id="tex-density-label" class="text-xs text-slate-400 font-mono">Normal</span>
+                        </div>
+                        <input id="tex-density-slider" type="range" min="0.4" max="2.5" step="0.1" value="1"
+                            oninput="setTextureDensity(this.value)"
+                            class="tex-density-slider w-full">
+                        <div class="flex justify-between mt-1.5">
+                            <span class="text-[10px] text-slate-500">Tight</span>
+                            <span class="text-[10px] text-slate-500">Loose</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 border-t border-white/10 bg-white/5 flex justify-end">
+                <button onclick="closeAppearanceModal()" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-indigo-500/20">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Modal (first-time name prompt + returning welcome-back) -->
+    <div id="welcome-modal" class="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-sm flex flex-col shadow-2xl animate-fade-in relative overflow-hidden">
+            <!-- Accent bar -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+
+            <!-- First-time: name prompt -->
+            <div id="welcome-setup" class="p-8 flex flex-col items-center text-center gap-5">
+                <div class="bg-gradient-to-tr from-indigo-500 to-purple-600 p-4 rounded-2xl shadow-lg shadow-indigo-500/30">
+                    <i data-lucide="clipboard" class="text-white w-7 h-7"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-1">Welcome to Copy Cloud!</h2>
+                    <p class="text-slate-400 text-sm">Your fast, secure clipboard between devices.</p>
+                </div>
+                <div class="w-full">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2 text-left">What should we call you?</label>
+                    <input id="welcome-name-input" type="text" maxlength="30" placeholder="Enter your name…"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm focus:border-indigo-500/50 transition-colors"
+                        onkeydown="if(event.key==='Enter') saveUserName()">
+                </div>
+                <div class="flex gap-3 w-full">
+                    <button onclick="saveUserName(true)" class="flex-1 py-3 text-slate-400 hover:text-white text-sm transition-colors">Skip</button>
+                    <button onclick="saveUserName()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2">
+                        Get Started <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Returning: welcome back -->
+            <div id="welcome-back" class="p-8 hidden flex-col items-center text-center gap-4">
+                <div class="text-5xl mb-1">👋</div>
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Welcome back</p>
+                    <h2 id="welcome-back-name" class="text-2xl font-bold text-white"></h2>
+                    <p class="text-slate-500 text-xs mt-2">Great to see you again. Ready to share?</p>
+                </div>
+                <button onclick="closeWelcomeModal()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-500/20">
+                    Let's Go! 🚀
+                </button>
+                <!-- Auto-dismiss countdown bar -->
+                <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden -mt-1">
+                    <div id="welcome-countdown" class="wb-countdown-bar h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                </div>
+                <p class="text-slate-600 text-[10px] -mt-2">Auto-dismissing in 4 seconds…</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="user-profile-modal" class="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-md flex flex-col shadow-2xl relative overflow-hidden max-h-[90svh]">
+            <!-- Accent bar -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 pt-7 pb-4 border-b border-white/10">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i data-lucide="user-circle" class="w-5 h-5" style="color:var(--accent-400,#a5b4fc)"></i>
+                    My Profile
+                </h2>
+                <button onclick="closeProfileModal()" aria-label="Close profile modal" class="text-slate-400 hover:text-white transition-colors p-3 -mr-2 rounded-xl focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <!-- Body -->
+            <div class="p-6 space-y-5 flex-1 overflow-y-auto">
+                <!-- Avatar + Name -->
+                <div class="flex items-center gap-4">
+                    <div id="profile-avatar" class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shrink-0"></div>
+                    <div class="flex-1 min-w-0">
+                        <!-- Display row -->
+                        <div id="profile-name-display" class="flex items-center gap-2">
+                            <span id="profile-name-text" class="text-white font-bold text-lg truncate"></span>
+                            <button onclick="startEditProfileName()" title="Edit name"
+                                class="inline-flex items-center justify-center text-slate-400 hover:text-white transition-colors shrink-0 p-2.5 -ml-1 rounded-xl min-w-[44px] min-h-[44px] focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95">
+                                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                        <p class="text-slate-500 text-xs mt-0.5">Copy Cloud Member</p>
+                    </div>
+                </div>
+                <!-- Inline name edit (hidden by default) -->
+                <div id="profile-name-edit" class="hidden flex items-center gap-2">
+                    <input id="profile-name-input" type="text" maxlength="30" placeholder="Enter name…"
+                        class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white placeholder-slate-500 text-sm focus:border-indigo-500/50 focus:outline-none transition-colors"
+                        onkeydown="handleProfileNameKey(event)">
+                    <button onclick="saveProfileName()"
+                        class="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-xl transition-colors shrink-0">Save</button>
+                    <button onclick="cancelEditProfileName()"
+                        class="px-3 py-2 bg-white/5 hover:bg-white/10 text-slate-400 text-sm rounded-xl transition-colors shrink-0">✕</button>
+                </div>
+
+                <!-- Stats period tabs -->
+                <div>
+                    <div class="flex gap-1 bg-white/5 p-1 rounded-xl mb-4">
+                        <button onclick="setStatsPeriod('today')" id="stats-tab-today"
+                            class="stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all bg-indigo-600 text-white shadow focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95" style="min-height:44px">Today</button>
+                        <button onclick="setStatsPeriod('month')" id="stats-tab-month"
+                            class="stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95" style="min-height:44px">Month</button>
+                        <button onclick="setStatsPeriod('year')" id="stats-tab-year"
+                            class="stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95" style="min-height:44px">Year</button>
+                        <button onclick="setStatsPeriod('all')" id="stats-tab-all"
+                            class="stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95" style="min-height:44px">All Time</button>
+                    </div>
+                    <!-- Stat cards -->
+                    <div class="grid grid-cols-2 gap-3 profile-stat-grid">
+                        <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-4 flex flex-col gap-1">
+                            <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Files Sent</p>
+                            <p id="stat-sent" class="text-white text-2xl font-bold">0</p>
+                        </div>
+                        <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 flex flex-col gap-1">
+                            <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Retrievals</p>
+                            <p id="stat-retrieved" class="text-white text-2xl font-bold">0</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col gap-1 col-span-2">
+                            <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Most Sent File Type</p>
+                            <p id="stat-top-type" class="text-white text-base font-semibold truncate">—</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-white/10 flex justify-end">
+                <button onclick="closeProfileModal()"
+                    class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-xl transition-colors shadow-lg shadow-indigo-500/20 focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95" style="min-height:44px">Done</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main App Container -->
     <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col min-h-screen">
         
         <header class="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
             <div class="flex items-center gap-4 self-center md:self-auto">
-                <div class="bg-gradient-to-tr from-indigo-500 to-purple-600 p-3.5 rounded-2xl shadow-lg shadow-indigo-500/20 border border-white/10">
+                <div id="app-logo" class="bg-gradient-to-tr from-indigo-500 to-purple-600 p-3.5 rounded-2xl shadow-lg shadow-indigo-500/20 border border-white/10">
                     <i data-lucide="clipboard" class="text-white w-6 h-6"></i>
                 </div>
                 <div class="text-center md:text-left">
@@ -352,17 +978,38 @@
                 </div>
             </div>
 
-            <nav class="flex w-full md:w-auto bg-slate-900/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 justify-center">
-                <button onclick="switchTab('send')" id="nav-send" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50">
-                    <i data-lucide="upload" class="w-4 h-4"></i> Send
-                </button>
-                <button onclick="switchTab('retrieve')" id="nav-retrieve" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
-                    <i data-lucide="download" class="w-4 h-4"></i> Retrieve
-                </button>
-                <button onclick="switchTab('about')" id="nav-about" class="nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
-                    <i data-lucide="info" class="w-4 h-4"></i> About
-                </button>
-            </nav>
+            <!-- Controls: on mobile = two stacked rows; on desktop = single row -->
+            <div class="flex flex-col gap-2 w-full md:w-auto md:flex-row md:items-center">
+                <!-- Row 1 on mobile (right-aligned): greeting pill + appearance btn -->
+                <!-- On desktop these come AFTER the nav via md:order-2 -->
+                <div class="flex items-center gap-2 justify-end md:order-2 shrink-0">
+                    <!-- User greeting pill (shown when a name is saved) — click to open profile -->
+                    <button id="user-greeting" style="display:none" onclick="openProfileModal()"
+                        title="View your profile & stats"
+                        class="items-center gap-2 px-3 py-2 bg-slate-900/50 backdrop-blur-md rounded-xl border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
+                        <i data-lucide="user-circle" class="w-4 h-4 shrink-0" style="color:var(--accent-400,#a5b4fc)"></i>
+                        <span id="user-greeting-text" class="text-sm font-semibold text-white whitespace-nowrap"></span>
+                    </button>
+                    <!-- Appearance settings button -->
+                    <button id="appearance-btn" onclick="openAppearanceModal()" title="Appearance Settings"
+                        class="p-2.5 bg-slate-900/50 backdrop-blur-md rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 transition-all shrink-0">
+                        <i id="appearance-btn-icon" data-lucide="moon" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <!-- Row 2 on mobile: full-width nav -->
+                <!-- On desktop this comes FIRST via md:order-1 -->
+                <nav class="flex md:order-1 bg-slate-900/50 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 justify-center">
+                    <button onclick="switchTab('send')" id="nav-send" class="nav-btn flex-1 md:flex-none justify-center flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50">
+                        <i data-lucide="upload" class="w-4 h-4"></i> Send
+                    </button>
+                    <button onclick="switchTab('retrieve')" id="nav-retrieve" class="nav-btn flex-1 md:flex-none justify-center flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
+                        <i data-lucide="download" class="w-4 h-4"></i> Retrieve
+                    </button>
+                    <button onclick="switchTab('about')" id="nav-about" class="nav-btn flex-1 md:flex-none justify-center flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5">
+                        <i data-lucide="info" class="w-4 h-4"></i> About
+                    </button>
+                </nav>
+            </div>
         </header>
 
         <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -504,6 +1151,15 @@
                                 <i id="retrieve-icon" data-lucide="search" class="w-6 h-6"></i>
                                 <i id="retrieve-spinner" data-lucide="refresh-cw" class="w-6 h-6 animate-spin-custom hidden"></i>
                             </button>
+                        </div>
+
+                        <!-- Empty state: shown before any retrieval -->
+                        <div id="retrieve-empty-state" class="rounded-2xl p-8 flex flex-col items-center justify-center gap-3 min-h-[180px] transition-all duration-300">
+                            <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-1">
+                                <i data-lucide="inbox" class="w-6 h-6 text-slate-400"></i>
+                            </div>
+                            <p class="text-sm font-medium text-slate-400 text-center leading-relaxed">Your retrieved file or text will appear here.</p>
+                            <p class="text-xs text-slate-500 text-center">Enter a 6-character code above and press Retrieve.</p>
                         </div>
 
                         <div id="retrieved-content-area" class="hidden animate-fade-in">
@@ -701,10 +1357,10 @@
         // UI STATE FUNCTIONS
         window.switchTab = (tabName) => {
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5";
+                btn.className = "nav-btn flex-1 md:flex-none justify-center flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5";
             });
             const activeBtn = document.getElementById(`nav-${tabName}`);
-            activeBtn.className = "nav-btn flex-1 md:flex-none justify-center md:justify-start flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50";
+            activeBtn.className = "nav-btn flex-1 md:flex-none justify-center flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 ring-1 ring-indigo-400/50";
 
             ['send', 'retrieve', 'about'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
@@ -715,6 +1371,10 @@
                     el.classList.add('hidden');
                 }
             });
+
+            // Hide Recent Activity when About is active
+            const historySection = document.getElementById('recent-history-section');
+            if (historySection) historySection.classList.toggle('hidden', tabName === 'about');
         };
 
         window.setInputType = (type) => {
@@ -1087,6 +1747,7 @@
             document.getElementById('retrieve-icon').classList.add('hidden');
             document.getElementById('retrieve-spinner').classList.remove('hidden');
             document.getElementById('retrieved-content-area').classList.add('hidden');
+            document.getElementById('retrieve-empty-state').classList.remove('hidden');
 
             try {
                 // Fetch from Database
@@ -1130,6 +1791,7 @@
             currentRetrievedContent = data;
             const area = document.getElementById('retrieved-content-area');
             area.classList.remove('hidden');
+            document.getElementById('retrieve-empty-state').classList.add('hidden');
 
             document.getElementById('retrieved-type-text').textContent = data.type;
             document.getElementById('retrieved-date').textContent = new Date(data.created_at).toLocaleString();
@@ -1430,6 +2092,7 @@
             if (e.key === 'Escape') {
                 window.closeLegalModal();
                 window.closeComingSoonModal();
+                closeAppearanceModal();
             }
         });
 
@@ -1447,8 +2110,20 @@
 
         function addToHistory(code, type, extra = {}) {
             const history = getHistory();
-            history.unshift({ code, type, ...extra, timestamp: Date.now() });
-            if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY, history.length - MAX_HISTORY);
+            // Find existing entry with same code AND same type
+            const existingIdx = history.findIndex(h => h.code === code && h.type === type);
+            if (existingIdx !== -1) {
+                // Deduplicate: bring to top, refresh data, bump retrieve counter
+                const existing = history.splice(existingIdx, 1)[0];
+                const updated = { ...existing, ...extra, timestamp: Date.now() };
+                if (type === 'retrieve') updated.retrieveCount = (existing.retrieveCount || 1) + 1;
+                history.unshift(updated);
+            } else {
+                const entry = { code, type, ...extra, timestamp: Date.now() };
+                if (type === 'retrieve') entry.retrieveCount = 1;
+                history.unshift(entry);
+                if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY, history.length - MAX_HISTORY);
+            }
             localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
             renderHistory();
         }
@@ -1509,6 +2184,11 @@
                 el.className = 'flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors cursor-pointer';
                 el.title = `Click to retrieve code ${item.code}`;
                 el.addEventListener('click', () => retrieveFromHistory(item.code));
+
+                const countBadge = (!isSend && item.retrieveCount > 1)
+                    ? `<span class="text-xs px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono font-bold shrink-0">×${item.retrieveCount}</span>`
+                    : '';
+
                 el.innerHTML = `
                     <div class="flex items-center gap-3 overflow-hidden">
                         <div class="w-8 h-8 ${isSend ? 'bg-indigo-500/20' : 'bg-purple-500/20'} rounded-lg flex items-center justify-center shrink-0">
@@ -1519,7 +2199,10 @@
                             <p class="text-slate-500 text-xs truncate" data-history-secondary></p>
                         </div>
                     </div>
-                    <span class="text-xs px-2 py-1 rounded-full shrink-0 ml-2 ${isSend ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}">${isSend ? 'Send' : 'Receive'}</span>
+                    <div class="flex items-center gap-1.5 shrink-0 ml-2">
+                        <span class="text-xs px-2 py-1 rounded-full ${isSend ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}">${isSend ? 'Send' : 'Receive'}</span>
+                        ${countBadge}
+                    </div>
                 `;
                 el.querySelector('[data-history-primary]').textContent = primaryText;
                 el.querySelector('[data-history-secondary]').textContent = secondaryText;
@@ -1577,6 +2260,398 @@
             // DOM is already ready, call immediately
             checkURLParameters();
         }
+
+        // =====================================================
+        //  THEME SYSTEM – Day / Night / Auto  +  Accent Color
+        // =====================================================
+        const THEME_KEY = 'copyCloudTheme';
+        const DEFAULT_TEXTURE_DENSITY = 1;
+        const TEX_DENSITY_THRESHOLDS = [0.6, 0.85, 1.15, 1.8];
+        const TEX_DENSITY_LABELS     = ['Very Tight', 'Tight', 'Normal', 'Loose', 'Very Loose'];
+
+        let themeState = { mode: 'dark', accent: 'indigo', texture: 'none', textureDensity: DEFAULT_TEXTURE_DENSITY };
+
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+        // Per-accent background palettes
+        const DARK_BODY_BG  = {indigo:'#0b0d1e',purple:'#100819',blue:'#080e1f',emerald:'#041412',rose:'#1c0710',amber:'#181005',teal:'#041614',pink:'#190614'};
+        const LIGHT_BODY_BG = {indigo:'#f0f2ff',purple:'#f7f0ff',blue:'#eff6ff',emerald:'#ecfdf5',rose:'#fff1f2',amber:'#fefce8',teal:'#f0fdfa',pink:'#fdf2f8'};
+        const DARK_OVERLAY  = {indigo:'linear-gradient(135deg,#0b0d1e,#0f172a,#090b1c)',purple:'linear-gradient(135deg,#100819,#0f102a,#0d0617)',blue:'linear-gradient(135deg,#080e1f,#091422,#060c1d)',emerald:'linear-gradient(135deg,#041412,#06180f,#031210)',rose:'linear-gradient(135deg,#1c0710,#16091c,#190508)',amber:'linear-gradient(135deg,#181005,#1b1408,#140e04)',teal:'linear-gradient(135deg,#041614,#051c18,#031110)',pink:'linear-gradient(135deg,#190614,#14091e,#160312)'};
+        const LIGHT_OVERLAY = {indigo:'linear-gradient(135deg,#e8eaff,#f5f6ff,#e8eaff)',purple:'linear-gradient(135deg,#f0e4ff,#f9f5ff,#f0e4ff)',blue:'linear-gradient(135deg,#dbeafe,#eff6ff,#dbeafe)',emerald:'linear-gradient(135deg,#d1fae5,#f0fdf6,#d1fae5)',rose:'linear-gradient(135deg,#ffe4e6,#fff5f6,#ffe4e6)',amber:'linear-gradient(135deg,#fef3c7,#fefce8,#fef3c7)',teal:'linear-gradient(135deg,#ccfbf1,#f0fdfa,#ccfbf1)',pink:'linear-gradient(135deg,#fce7f3,#fdf8fb,#fce7f3)'};
+
+        function loadThemeState() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(THEME_KEY) || 'null');
+                if (saved) themeState = { ...themeState, ...saved };
+            } catch (e) {}
+        }
+
+        function saveThemeState() {
+            localStorage.setItem(THEME_KEY, JSON.stringify(themeState));
+        }
+
+        function applyTheme() {
+            const html = document.documentElement;
+            // Apply accent
+            html.setAttribute('data-accent', themeState.accent);
+            // Determine dark/light
+            const isDark = themeState.mode === 'dark'
+                ? true
+                : themeState.mode === 'light'
+                    ? false
+                    : systemDark.matches;
+            isDark ? html.classList.remove('light-mode') : html.classList.add('light-mode');
+            // Apply texture
+            if (themeState.texture && themeState.texture !== 'none') {
+                html.setAttribute('data-texture', themeState.texture);
+            } else {
+                html.removeAttribute('data-texture');
+            }
+            // Apply texture density scale
+            html.style.setProperty('--tex-scale', themeState.textureDensity || DEFAULT_TEXTURE_DENSITY);
+            // Apply accent-tinted background via CSS vars (beats Tailwind via !important in <style>)
+            const a = themeState.accent;
+            html.style.setProperty('--page-bg',    isDark ? (DARK_BODY_BG[a]  || DARK_BODY_BG.indigo)  : (LIGHT_BODY_BG[a]  || LIGHT_BODY_BG.indigo));
+            html.style.setProperty('--overlay-bg', isDark ? (DARK_OVERLAY[a]  || DARK_OVERLAY.indigo)  : (LIGHT_OVERLAY[a]  || LIGHT_OVERLAY.indigo));
+            // Update header button icon
+            const icon = document.getElementById('appearance-btn-icon');
+            if (icon) {
+                const name = themeState.mode === 'auto' ? 'monitor' : (isDark ? 'moon' : 'sun');
+                icon.setAttribute('data-lucide', name);
+                lucide.createIcons();
+            }
+            // Update meta theme-color
+            const meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.content = isDark ? (DARK_BODY_BG[a] || '#0f172a') : (LIGHT_BODY_BG[a] || '#f1f5f9');
+            // Sync modal UI if open
+            updateAppearanceModalUI();
+        }
+
+        window.setThemeMode = (mode) => {
+            themeState.mode = mode;
+            saveThemeState();
+            applyTheme();
+        };
+
+        window.setAccentColor = (accent) => {
+            themeState.accent = accent;
+            saveThemeState();
+            applyTheme();
+        };
+
+        window.setTexture = (texture) => {
+            themeState.texture = texture;
+            saveThemeState();
+            applyTheme();
+        };
+
+        window.setTextureDensity = (val) => {
+            themeState.textureDensity = parseFloat(val);
+            saveThemeState();
+            document.documentElement.style.setProperty('--tex-scale', themeState.textureDensity);
+            updateAppearanceModalUI();
+        };
+
+        // Auto mode: re-apply when system preference changes
+        systemDark.addEventListener('change', () => {
+            if (themeState.mode === 'auto') applyTheme();
+        });
+
+        // --- Appearance Modal ---
+        window.openAppearanceModal = () => {
+            const modal = document.getElementById('appearance-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            updateAppearanceModalUI();
+            lucide.createIcons();
+        };
+
+        window.closeAppearanceModal = () => {
+            const modal = document.getElementById('appearance-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        document.getElementById('appearance-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'appearance-modal') closeAppearanceModal();
+        });
+
+        function updateAppearanceModalUI() {
+            const isDark = themeState.mode === 'dark'
+                ? true
+                : themeState.mode === 'light'
+                    ? false
+                    : systemDark.matches;
+
+            // Mode buttons – use classList to toggle active/inactive classes
+            const MODE_ACTIVE   = ['mode-btn-active', 'text-white'];
+            const MODE_INACTIVE = ['bg-white/5', 'border-white/10', 'text-slate-300'];
+            ['auto', 'light', 'dark'].forEach(m => {
+                const btn = document.getElementById(`mode-btn-${m}`);
+                if (!btn) return;
+                const active = themeState.mode === m;
+                const [add, remove] = active ? [MODE_ACTIVE, MODE_INACTIVE] : [MODE_INACTIVE, MODE_ACTIVE];
+                remove.forEach(c => btn.classList.remove(c));
+                add.forEach(c => btn.classList.add(c));
+            });
+
+            // Accent swatch buttons – toggle specific known border/scale classes
+            const SWATCH_ACTIVE   = ['border-white', 'scale-110', 'shadow-xl'];
+            const SWATCH_INACTIVE = ['border-transparent'];
+            ['indigo','purple','blue','emerald','rose','amber','teal','pink','crimson','cyan','gold','violet'].forEach(c => {
+                const btn = document.getElementById(`accent-btn-${c}`);
+                if (!btn) return;
+                const swatch = btn.querySelector('span:first-child');
+                if (!swatch) return;
+                const active = themeState.accent === c;
+                const [swAdd, swRemove] = active ? [SWATCH_ACTIVE, SWATCH_INACTIVE] : [SWATCH_INACTIVE, SWATCH_ACTIVE];
+                swRemove.forEach(cls => swatch.classList.remove(cls));
+                swAdd.forEach(cls => swatch.classList.add(cls));
+                const label = btn.querySelector('span:last-child');
+                if (label) {
+                    label.classList.toggle('text-white', active);
+                    label.classList.toggle('text-slate-300', !active);
+                }
+            });
+
+            // Texture buttons – highlight active one
+            const TEX_KEYS = ['none','dots','grid','waves','diagonal','diamonds','circles','crosshatch','hexagons','triangles','stars','zigzag','clouddoodle','topography','cybernodes','datastream'];
+            TEX_KEYS.forEach(t => {
+                const btn = document.getElementById(`tex-btn-${t}`);
+                if (!btn) return;
+                const active = (themeState.texture || 'none') === t;
+                const swatch = btn.querySelector('.tex-swatch');
+                if (swatch) {
+                    if (active) {
+                        swatch.classList.add('border-white', 'scale-110');
+                        swatch.classList.remove('border-transparent');
+                    } else {
+                        swatch.classList.remove('border-white', 'scale-110');
+                        swatch.classList.add('border-transparent');
+                    }
+                }
+                const label = btn.querySelector('span:last-child');
+                if (label) {
+                    label.classList.toggle('text-white', active);
+                    label.classList.toggle('text-slate-300', !active);
+                }
+            });
+
+            // Texture density slider – show only when a texture is active
+            const densityRow = document.getElementById('tex-density-row');
+            const densitySlider = document.getElementById('tex-density-slider');
+            const densityLabel = document.getElementById('tex-density-label');
+            const hasTexture = themeState.texture && themeState.texture !== 'none';
+            if (densityRow) densityRow.classList.toggle('hidden', !hasTexture);
+            if (densitySlider && hasTexture) {
+                const d = parseFloat(themeState.textureDensity || DEFAULT_TEXTURE_DENSITY);
+                densitySlider.value = d;
+                if (densityLabel) {
+                    const idx = TEX_DENSITY_THRESHOLDS.findIndex(t => d <= t);
+                    densityLabel.textContent = TEX_DENSITY_LABELS[idx === -1 ? TEX_DENSITY_LABELS.length - 1 : idx];
+                }
+            }
+
+            // Update the accent bar at top of modal
+            const bar = document.querySelector('.theme-accent-bar');
+            if (bar) bar.style.background = `linear-gradient(to right, var(--accent-from), var(--accent-to))`;
+        }
+
+        // Initialise
+        loadThemeState();
+        applyTheme();
+
+        // --- WELCOME / USER NAME ---
+        const USER_KEY = 'copyCloudUser';
+
+        function showUserGreeting(name) {
+            const pill = document.getElementById('user-greeting');
+            const text = document.getElementById('user-greeting-text');
+            if (pill && name) {
+                if (text) text.textContent = `Hey, ${name}! 👋`;
+                pill.style.display = 'flex';
+                if (typeof lucide !== 'undefined') lucide.createIcons({ els: [pill] });
+            }
+        }
+
+        window.saveUserName = (skip = false) => {
+            const input = document.getElementById('welcome-name-input');
+            const name = skip ? '' : (input ? input.value.trim() : '');
+            localStorage.setItem(USER_KEY, name);
+            showUserGreeting(name);
+            closeWelcomeModal();
+        };
+
+        window.closeWelcomeModal = () => {
+            const modal = document.getElementById('welcome-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        };
+
+        function initWelcome() {
+            const stored = localStorage.getItem(USER_KEY);
+            const modal  = document.getElementById('welcome-modal');
+            if (!modal) return;
+
+            if (stored === null) {
+                // First ever visit — show name prompt
+                document.getElementById('welcome-setup').classList.remove('hidden');
+                document.getElementById('welcome-back').classList.add('hidden');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                lucide.createIcons();
+                const inp = document.getElementById('welcome-name-input');
+                if (inp) setTimeout(() => inp.focus(), 120);
+            } else {
+                // Returning visit
+                const name = stored || '';
+                showUserGreeting(name);
+                document.getElementById('welcome-setup').classList.add('hidden');
+                const wb = document.getElementById('welcome-back');
+                wb.classList.remove('hidden');
+                wb.classList.add('flex');
+                const nameEl = document.getElementById('welcome-back-name');
+                if (nameEl) nameEl.textContent = name || 'there';
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                lucide.createIcons();
+                // Restart countdown bar animation
+                const bar = document.getElementById('welcome-countdown');
+                if (bar) { bar.classList.remove('wb-countdown-bar'); void bar.offsetWidth; /* Force reflow to restart CSS animation */ bar.classList.add('wb-countdown-bar'); }
+                // Auto-dismiss after 4 s
+                setTimeout(closeWelcomeModal, 4000);
+            }
+        }
+
+        // Run after lucide icons are ready
+        setTimeout(initWelcome, 0);
+
+        // --- USER PROFILE MODAL ---
+        let currentStatsPeriod = 'today';
+
+        function computeStats(period) {
+            const history = getHistory();
+            const now = Date.now();
+            const d = new Date();
+            let since;
+            if (period === 'today') {
+                since = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+            } else if (period === 'month') {
+                since = new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+            } else if (period === 'year') {
+                since = new Date(d.getFullYear(), 0, 1).getTime();
+            } else {
+                since = 0;
+            }
+
+            const filtered = history.filter(h => h.timestamp >= since);
+            const sends     = filtered.filter(h => h.type === 'send');
+            const retrieves = filtered.filter(h => h.type === 'retrieve');
+
+            // Most sent file type: collect all extensions from send entries with fileNames
+            const extCount = {};
+            sends.forEach(h => {
+                if (Array.isArray(h.fileNames)) {
+                    h.fileNames.forEach(fn => {
+                        const ext = fn.includes('.') ? fn.split('.').pop().toLowerCase() : 'unknown';
+                        extCount[ext] = (extCount[ext] || 0) + 1;
+                    });
+                } else if (h.preview != null) {
+                    extCount['text'] = (extCount['text'] || 0) + 1;
+                }
+            });
+            const extKeys = Object.keys(extCount);
+            const topType = extKeys.length
+                ? extKeys.reduce((a, b) => extCount[a] >= extCount[b] ? a : b)
+                : null;
+
+            return { sends: sends.length, retrieves: retrieves.length, topType };
+        }
+
+        function renderProfileStats() {
+            const stats = computeStats(currentStatsPeriod);
+            document.getElementById('stat-sent').textContent      = stats.sends;
+            document.getElementById('stat-retrieved').textContent = stats.retrieves;
+            document.getElementById('stat-top-type').textContent  = stats.topType ? `.${stats.topType}` : '—';
+        }
+
+        window.setStatsPeriod = (period) => {
+            currentStatsPeriod = period;
+            ['today', 'month', 'year', 'all'].forEach(p => {
+                const btn = document.getElementById(`stats-tab-${p}`);
+                if (!btn) return;
+                if (p === period) {
+                    btn.className = 'stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all bg-indigo-600 text-white shadow focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95';
+                } else {
+                    btn.className = 'stats-tab flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all text-slate-300 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:outline-none active:scale-95';
+                }
+            });
+            renderProfileStats();
+        };
+
+        window.openProfileModal = () => {
+            const modal = document.getElementById('user-profile-modal');
+            if (!modal) return;
+            // Populate name
+            const name = localStorage.getItem(USER_KEY) || '';
+            const avatarEl = document.getElementById('profile-avatar');
+            const nameText = document.getElementById('profile-name-text');
+            if (avatarEl) avatarEl.textContent = name ? name.charAt(0).toUpperCase() : '?';
+            if (nameText) nameText.textContent  = name || '(no name set)';
+            // Reset to display mode
+            document.getElementById('profile-name-display').classList.remove('hidden');
+            document.getElementById('profile-name-edit').classList.add('hidden');
+            // Stats
+            currentStatsPeriod = 'today';
+            setStatsPeriod('today');
+            // Show
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            if (typeof lucide !== 'undefined') lucide.createIcons({ els: [modal] });
+        };
+
+        window.closeProfileModal = () => {
+            const modal = document.getElementById('user-profile-modal');
+            if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+        };
+
+        window.startEditProfileName = () => {
+            const input = document.getElementById('profile-name-input');
+            if (input) input.value = localStorage.getItem(USER_KEY) || '';
+            document.getElementById('profile-name-display').classList.add('hidden');
+            document.getElementById('profile-name-edit').classList.remove('hidden');
+            if (input) setTimeout(() => input.focus(), 50);
+        };
+
+        window.handleProfileNameKey = (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); saveProfileName(); }
+            if (e.key === 'Escape') { e.preventDefault(); cancelEditProfileName(); }
+        };
+
+        window.cancelEditProfileName = () => {
+            document.getElementById('profile-name-display').classList.remove('hidden');
+            document.getElementById('profile-name-edit').classList.add('hidden');
+        };
+
+        window.saveProfileName = () => {
+            const input = document.getElementById('profile-name-input');
+            const newName = input ? input.value.trim() : '';
+            localStorage.setItem(USER_KEY, newName);
+            // Update pill
+            showUserGreeting(newName);
+            // Update modal display
+            const avatarEl = document.getElementById('profile-avatar');
+            const nameText = document.getElementById('profile-name-text');
+            if (avatarEl) avatarEl.textContent = newName ? newName.charAt(0).toUpperCase() : '?';
+            if (nameText) nameText.textContent  = newName || '(no name set)';
+            cancelEditProfileName();
+        };
+
+        document.getElementById('user-profile-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'user-profile-modal') closeProfileModal();
+        });
 
     </script>
     <script>
