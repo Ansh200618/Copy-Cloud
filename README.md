@@ -16,7 +16,7 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **📝 Text & Files** - Support for unlimited text and files up to 40MB
 - **🔒 Auto-Expiry** - All content automatically deletes after 24 hours for privacy
 - **📷 QR Code Generation** - Scan QR codes to quickly access shared content
-- **💜 Purple Gradient UI** - Modern design with indigo-to-purple gradient theme
+- **🎨 Appearance System** - Day/Night/Auto theme modes, 12 accent color presets, 11 background textures — all persisted across sessions
 - **🌐 Real-time Database** - PostgreSQL database with real-time subscriptions
 
 ---
@@ -144,6 +144,10 @@ Online-Clipboard/
 - **Custom Scrollbars**: Sleek custom-styled scrollbars
 - **Notification System**: Toast notifications for user feedback
 - **Loading States**: Visual feedback during data transfer
+- **Day / Night / Auto Theme**: Full light and dark modes; Auto tracks system preference live
+- **12 Accent Color Presets**: Indigo, Purple, Blue, Emerald, Rose, Amber, Teal, Pink, Crimson, Cyan, Gold, Violet — all apply to buttons, icons, and background gradient
+- **11 Background Textures**: None, Dots, Grid, Waves, Diagonal, Diamonds, Circles, Crosshatch, Hexagons, Triangles, Stars, Zigzag — pure SVG, no external assets
+- **Accent-Tinted Backgrounds**: Body and overlay colors shift with the chosen accent in both light and dark modes
 
 ---
 
@@ -236,11 +240,11 @@ This project is open source and available under the [MIT License](LICENSE).
 - [ ] End-to-end encryption option
 - [ ] Custom expiration times (1h, 12h, 7d)
 - [ ] Password protection for sensitive content
-- [ ] QR code generation for easy code sharing
-- [ ] Usage statistics dashboard
-- [ ] Multi-file upload support
+- [x] QR code generation for easy code sharing ✅
+- [x] Usage statistics dashboard ✅
+- [x] Multi-file upload support ✅
 - [ ] Rich text editor
-- [ ] Dark/Light theme toggle
+- [x] Dark/Light theme toggle ✅
 
 ---
 
