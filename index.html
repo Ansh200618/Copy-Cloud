@@ -196,7 +196,19 @@
         html:not([data-accent="indigo"]) .hover\:bg-indigo-500\/10:hover { background-color: rgba(var(--accent-rgb),0.1) !important; }
 
         /* Logo always keeps its original indigo-to-purple gradient regardless of accent */
-        #app-logo { --tw-gradient-from: #6366f1 !important; --tw-gradient-to: #9333ea !important; }
+        #app-logo {
+            background-image: linear-gradient(to top right, #6366f1, #9333ea) !important;
+            --tw-gradient-from: #6366f1 !important;
+            --tw-gradient-to:   #9333ea !important;
+            --tw-shadow-color:  rgba(99,102,241,0.2) !important;
+            border-color: rgba(255,255,255,0.1) !important;
+        }
+        /* Clipboard icon always white — target both <i> and the SVG Lucide injects */
+        #app-logo i,
+        #app-logo svg,
+        #app-logo svg path,
+        #app-logo svg polyline,
+        #app-logo svg rect { color: #ffffff !important; stroke: #ffffff !important; }
 
         /* =================
            LIGHT MODE
@@ -235,15 +247,19 @@
         html.light-mode #upload-progress-modal { background-color: rgba(0,0,0,0.88) !important; }
         html.light-mode #legal-modal           { background-color: rgba(0,0,0,0.75) !important; }
         html.light-mode #coming-soon-modal     { background-color: rgba(0,0,0,0.75) !important; }
+        html.light-mode #welcome-modal         { background-color: rgba(0,0,0,0.80) !important; }
         /* Keep modal inner panels dark */
         html.light-mode #upload-progress-modal > div,
         html.light-mode #legal-modal > div,
-        html.light-mode #coming-soon-modal > div { background-color: #0f172a !important; border-color: rgba(255,255,255,0.1) !important; }
+        html.light-mode #coming-soon-modal > div,
+        html.light-mode #welcome-modal > div   { background-color: #0f172a !important; border-color: rgba(255,255,255,0.1) !important; }
         html.light-mode #upload-progress-modal .text-white,
         html.light-mode #legal-modal .text-white,
-        html.light-mode #coming-soon-modal .text-white { color: #ffffff !important; }
+        html.light-mode #coming-soon-modal .text-white,
+        html.light-mode #welcome-modal .text-white { color: #ffffff !important; }
         html.light-mode #legal-modal .text-slate-400,
-        html.light-mode #coming-soon-modal .text-slate-400 { color: #94a3b8 !important; }
+        html.light-mode #coming-soon-modal .text-slate-400,
+        html.light-mode #welcome-modal .text-slate-400 { color: #94a3b8 !important; }
         html.light-mode #legal-modal .border-white\/10,
         html.light-mode #coming-soon-modal .border-white\/10 { border-color: rgba(255,255,255,0.1) !important; }
         html.light-mode #legal-modal .bg-white\/5,
@@ -346,6 +362,13 @@
         .tex-swatch[data-tex="triangles"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.35'/></svg>"); background-size:28px 24px; }
         .tex-swatch[data-tex="stars"]      { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.35'/></svg>"); background-size:44px 44px; }
         .tex-swatch[data-tex="zigzag"]     { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.35'/></svg>"); background-size:40px 20px; }
+
+        /* Welcome back countdown bar */
+        @keyframes wbCountdown { from { width: 100%; } to { width: 0%; } }
+        .wb-countdown-bar { animation: wbCountdown 4s linear forwards; }
+
+        /* Welcome modal name input */
+        #welcome-name-input:focus { outline: none; }
     </style>
 </head>
 <body class="bg-[#0f172a] text-slate-200 min-h-screen overflow-x-hidden flex flex-col">
@@ -743,6 +766,55 @@
         </div>
     </div>
 
+    <!-- Welcome Modal (first-time name prompt + returning welcome-back) -->
+    <div id="welcome-modal" class="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-sm flex flex-col shadow-2xl animate-fade-in relative overflow-hidden">
+            <!-- Accent bar -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+
+            <!-- First-time: name prompt -->
+            <div id="welcome-setup" class="p-8 flex flex-col items-center text-center gap-5">
+                <div class="bg-gradient-to-tr from-indigo-500 to-purple-600 p-4 rounded-2xl shadow-lg shadow-indigo-500/30">
+                    <i data-lucide="clipboard" class="text-white w-7 h-7"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-1">Welcome to Copy Cloud!</h2>
+                    <p class="text-slate-400 text-sm">Your fast, secure clipboard between devices.</p>
+                </div>
+                <div class="w-full">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2 text-left">What should we call you?</label>
+                    <input id="welcome-name-input" type="text" maxlength="30" placeholder="Enter your name…"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm focus:border-indigo-500/50 transition-colors"
+                        onkeydown="if(event.key==='Enter') saveUserName()">
+                </div>
+                <div class="flex gap-3 w-full">
+                    <button onclick="saveUserName(true)" class="flex-1 py-3 text-slate-400 hover:text-white text-sm transition-colors">Skip</button>
+                    <button onclick="saveUserName()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2">
+                        Get Started <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Returning: welcome back -->
+            <div id="welcome-back" class="p-8 hidden flex-col items-center text-center gap-4">
+                <div class="text-5xl mb-1">👋</div>
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Welcome back</p>
+                    <h2 id="welcome-back-name" class="text-2xl font-bold text-white"></h2>
+                    <p class="text-slate-500 text-xs mt-2">Great to see you again. Ready to share?</p>
+                </div>
+                <button onclick="closeWelcomeModal()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-500/20">
+                    Let's Go! 🚀
+                </button>
+                <!-- Auto-dismiss countdown bar -->
+                <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden -mt-1">
+                    <div id="welcome-countdown" class="wb-countdown-bar h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                </div>
+                <p class="text-slate-600 text-[10px] -mt-2">Auto-dismissing in 4 seconds…</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Main App Container -->
     <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col min-h-screen">
         
@@ -754,6 +826,7 @@
                 <div class="text-center md:text-left">
                     <h1 class="text-2xl font-bold text-white tracking-tight">Copy Cloud</h1>
                     <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Secure Online Clipboard & Transfer</p>
+                    <p id="user-greeting" class="hidden text-xs font-medium mt-0.5" style="color:var(--accent-400,#a5b4fc)"></p>
                 </div>
             </div>
 
@@ -2210,6 +2283,71 @@
         // Initialise
         loadThemeState();
         applyTheme();
+
+        // --- WELCOME / USER NAME ---
+        const USER_KEY = 'copyCloudUser';
+
+        function showUserGreeting(name) {
+            const el = document.getElementById('user-greeting');
+            if (el && name) {
+                el.textContent = `Hey, ${name}! 👋`;
+                el.classList.remove('hidden');
+            }
+        }
+
+        window.saveUserName = (skip = false) => {
+            const input = document.getElementById('welcome-name-input');
+            const name = skip ? '' : (input ? input.value.trim() : '');
+            localStorage.setItem(USER_KEY, name);
+            showUserGreeting(name);
+            closeWelcomeModal();
+        };
+
+        window.closeWelcomeModal = () => {
+            const modal = document.getElementById('welcome-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        };
+
+        function initWelcome() {
+            const stored = localStorage.getItem(USER_KEY);
+            const modal  = document.getElementById('welcome-modal');
+            if (!modal) return;
+
+            if (stored === null) {
+                // First ever visit — show name prompt
+                document.getElementById('welcome-setup').classList.remove('hidden');
+                document.getElementById('welcome-back').classList.add('hidden');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                lucide.createIcons();
+                const inp = document.getElementById('welcome-name-input');
+                if (inp) setTimeout(() => inp.focus(), 120);
+            } else {
+                // Returning visit
+                const name = stored || '';
+                showUserGreeting(name);
+                document.getElementById('welcome-setup').classList.add('hidden');
+                const wb = document.getElementById('welcome-back');
+                wb.classList.remove('hidden');
+                wb.classList.add('flex');
+                const nameEl = document.getElementById('welcome-back-name');
+                if (nameEl) nameEl.textContent = name || 'there';
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                lucide.createIcons();
+                // Restart countdown bar animation
+                const bar = document.getElementById('welcome-countdown');
+                if (bar) { bar.classList.remove('wb-countdown-bar'); void bar.offsetWidth; /* Force reflow to restart CSS animation */ bar.classList.add('wb-countdown-bar'); }
+                // Auto-dismiss after 4 s
+                setTimeout(closeWelcomeModal, 4000);
+            }
+        }
+
+        // Run after lucide icons are ready
+        setTimeout(initWelcome, 0);
 
     </script>
     <script>
