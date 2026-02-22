@@ -2492,8 +2492,8 @@
         function showUserGreeting(name) {
             const pill = document.getElementById('user-greeting');
             const text = document.getElementById('user-greeting-text');
-            if (pill && name) {
-                if (text) text.textContent = `Hey, ${name}! 👋`;
+            if (pill) {
+                if (text) text.textContent = name ? `Hey, ${name}! 👋` : 'Set Name';
                 pill.style.display = 'flex';
                 if (typeof lucide !== 'undefined') lucide.createIcons({ els: [pill] });
             }
