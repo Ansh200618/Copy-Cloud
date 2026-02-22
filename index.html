@@ -272,6 +272,33 @@
         html.light-mode #legal-modal button.text-white { color: #ffffff !important; }
         html.light-mode #legal-modal .text-indigo-200,
         html.light-mode #legal-modal .text-indigo-100 { color: #3730a3 !important; }
+        /* Coming Soon modal – theme-aware panel */
+        html.light-mode #coming-soon-modal > div { background-color: #ffffff !important; border-color: rgba(168,85,247,0.2) !important; }
+        html.light-mode #coming-soon-modal .text-white { color: #0f172a !important; }
+        html.light-mode #coming-soon-modal button.text-white { color: #ffffff !important; }
+        /* Appearance modal – hover contrast fixes (hover:text-white / group-hover:text-white on light bg) */
+        html.light-mode #appearance-modal .theme-mode-btn { color: #334155 !important; }
+        html.light-mode #appearance-modal .theme-mode-btn:hover { color: #0f172a !important; }
+        html.light-mode #appearance-modal .accent-color-btn:hover span:last-child { color: #475569 !important; }
+        html.light-mode #appearance-modal .tex-btn:hover span:last-child,
+        html.light-mode #appearance-modal .tex-btn:hover .tex-swatch { color: #475569 !important; }
+        /* Texture preview swatches – light mode: light base + dark SVG patterns */
+        html.light-mode .tex-swatch { background-color: #e2e8f0 !important; }
+        html.light-mode .tex-swatch[data-tex="dots"]       { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='11' cy='11' r='1.5' fill='%23475569' fill-opacity='0.35'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="grid"]       { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><path d='M 24 0 L 0 0 0 24' fill='none' stroke='%23475569' stroke-width='0.5' stroke-opacity='0.3'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="waves"]      { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='22'><path d='M0 11 Q14 3 28 11 Q42 19 56 11' fill='none' stroke='%23475569' stroke-width='1.5' stroke-opacity='0.3'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="diagonal"]   { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='0' y1='16' x2='16' y2='0' stroke='%23475569' stroke-width='1' stroke-opacity='0.28'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="diamonds"]   { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><path d='M13 0L26 13L13 26L0 13Z' fill='none' stroke='%23475569' stroke-width='0.75' stroke-opacity='0.3'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="circles"]    { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.25'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="crosshatch"] { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><line x1='0' y1='0' x2='20' y2='20' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.38'/><line x1='20' y1='0' x2='0' y2='20' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.38'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="hexagons"]   { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='35'><polygon points='20,3 32,10 32,24 20,31 8,24 8,10' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.35'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="triangles"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.35'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="stars"]      { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.35'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="zigzag"]     { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='%23475569' stroke-width='1.5' stroke-opacity='0.35'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="clouddoodle"] { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M3,14 C1,14 0,11 2,11 C2,9 4,8 7,9 C8,7 11,6 13,8 C15,7 17,8 17,10 C19,10 19,14 3,14Z' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.38'/><rect x='38' y='5' width='10' height='12' rx='1.5' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.35'/><path d='M40,5 L40,3 L46,3 L46,5' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.35'/><rect x='10' y='32' width='10' height='8' rx='1.5' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.30'/><path d='M12,32 C12,28 19,28 19,32' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.30'/><path d='M40,46 L52,36 L49,50 L44,43Z M44,43 L52,36' fill='none' stroke='%23475569' stroke-width='1' stroke-linejoin='round' stroke-opacity='0.36'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="topography"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='44'><path d='M0,8 C10,4 20,12 30,8 C40,4 50,12 60,8' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.40'/><path d='M0,11 C11,8 21,14 31,11 C41,8 51,14 60,11' fill='none' stroke='%23475569' stroke-width='0.6' stroke-opacity='0.28'/><path d='M0,22 C12,16 22,28 33,22 C44,16 54,28 60,22' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.40'/><path d='M0,25 C13,21 23,29 34,25 C45,21 55,29 60,25' fill='none' stroke='%23475569' stroke-width='0.6' stroke-opacity='0.28'/><path d='M0,36 C10,32 20,40 30,36 C40,32 50,40 60,36' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.35'/><path d='M0,39 C11,37 21,41 31,39 C41,37 51,41 60,39' fill='none' stroke='%23475569' stroke-width='0.6' stroke-opacity='0.25'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="cybernodes"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='6' cy='6' r='2' fill='%23475569' fill-opacity='0.40'/><circle cx='22' cy='14' r='2' fill='%23475569' fill-opacity='0.40'/><circle cx='38' cy='6' r='2' fill='%23475569' fill-opacity='0.40'/><circle cx='10' cy='30' r='2' fill='%23475569' fill-opacity='0.40'/><circle cx='34' cy='24' r='2' fill='%23475569' fill-opacity='0.40'/><circle cx='22' cy='40' r='2' fill='%23475569' fill-opacity='0.40'/><polyline points='6,6 6,14 22,14' fill='none' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.30'/><polyline points='22,14 38,14 38,6' fill='none' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.30'/><polyline points='6,6 6,30 10,30' fill='none' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.30'/><polyline points='10,30 34,30 34,24' fill='none' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.30'/><polyline points='22,14 22,40' fill='none' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.30'/><polyline points='34,24 34,40 22,40' fill='none' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.30'/></svg>") !important; }
+        html.light-mode .tex-swatch[data-tex="datastream"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='60'><rect x='3' y='2' width='2' height='8' rx='1' fill='%23475569' fill-opacity='0.36'/><rect x='3' y='14' width='2' height='5' rx='1' fill='%23475569' fill-opacity='0.24'/><rect x='3' y='24' width='2' height='10' rx='1' fill='%23475569' fill-opacity='0.32'/><rect x='3' y='40' width='2' height='6' rx='1' fill='%23475569' fill-opacity='0.40'/><rect x='3' y='52' width='2' height='7' rx='1' fill='%23475569' fill-opacity='0.28'/><rect x='13' y='0' width='2' height='5' rx='1' fill='%23475569' fill-opacity='0.28'/><rect x='13' y='10' width='2' height='9' rx='1' fill='%23475569' fill-opacity='0.40'/><rect x='13' y='24' width='2' height='4' rx='1' fill='%23475569' fill-opacity='0.32'/><rect x='13' y='33' width='2' height='11' rx='1' fill='%23475569' fill-opacity='0.24'/><rect x='13' y='51' width='2' height='8' rx='1' fill='%23475569' fill-opacity='0.36'/><rect x='23' y='5' width='2' height='7' rx='1' fill='%23475569' fill-opacity='0.40'/><rect x='23' y='18' width='2' height='11' rx='1' fill='%23475569' fill-opacity='0.28'/><rect x='23' y='35' width='2' height='5' rx='1' fill='%23475569' fill-opacity='0.36'/><rect x='23' y='46' width='2' height='9' rx='1' fill='%23475569' fill-opacity='0.24'/><rect x='33' y='1' width='2' height='10' rx='1' fill='%23475569' fill-opacity='0.32'/><rect x='33' y='16' width='2' height='6' rx='1' fill='%23475569' fill-opacity='0.44'/><rect x='33' y='28' width='2' height='9' rx='1' fill='%23475569' fill-opacity='0.28'/><rect x='33' y='44' width='2' height='7' rx='1' fill='%23475569' fill-opacity='0.36'/></svg>") !important; }
         /* Inputs */
         html.light-mode #retrieve-code-input {
             background-color: #ffffff !important; color: #0f172a !important;
@@ -679,51 +706,51 @@
                     <p class="text-slate-400 text-xs mb-3">Applied to buttons, icons, and background gradient in all modes.</p>
                     <div class="grid grid-cols-4 gap-3">
                         <button onclick="setAccentColor('indigo')"  id="accent-btn-indigo"  title="Indigo"   class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#6366f1">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#818cf8,#4338ca)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#818cf8,#4f46e5)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Indigo</span>
                         </button>
                         <button onclick="setAccentColor('purple')"  id="accent-btn-purple"  title="Purple"   class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#a855f7">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#c084fc,#7e22ce)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#c084fc,#9333ea)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Purple</span>
                         </button>
                         <button onclick="setAccentColor('blue')"    id="accent-btn-blue"    title="Blue"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#3b82f6">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#60a5fa,#1d4ed8)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#60a5fa,#2563eb)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Blue</span>
                         </button>
                         <button onclick="setAccentColor('emerald')" id="accent-btn-emerald" title="Emerald"  class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#10b981">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#34d399,#065f46)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#34d399,#059669)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Emerald</span>
                         </button>
                         <button onclick="setAccentColor('rose')"    id="accent-btn-rose"    title="Rose"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#f43f5e">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#fb7185,#9f1239)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#fb7185,#e11d48)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Rose</span>
                         </button>
                         <button onclick="setAccentColor('amber')"   id="accent-btn-amber"   title="Amber"    class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#f59e0b">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#fcd34d,#92400e)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#fbbf24,#d97706)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Amber</span>
                         </button>
                         <button onclick="setAccentColor('teal')"    id="accent-btn-teal"    title="Teal"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#14b8a6">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#2dd4bf,#134e4a)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#2dd4bf,#0d9488)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Teal</span>
                         </button>
                         <button onclick="setAccentColor('pink')"    id="accent-btn-pink"    title="Pink"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#ec4899">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#f472b6,#831843)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#f472b6,#db2777)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Pink</span>
                         </button>
                         <button onclick="setAccentColor('crimson')" id="accent-btn-crimson" title="Crimson"  class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#dc2626">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#f87171,#7f1d1d)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#f87171,#dc2626)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Crimson</span>
                         </button>
                         <button onclick="setAccentColor('cyan')"    id="accent-btn-cyan"    title="Cyan"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#0ea5e9">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#38bdf8,#0c4a6e)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#38bdf8,#0ea5e9)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Cyan</span>
                         </button>
                         <button onclick="setAccentColor('gold')"    id="accent-btn-gold"    title="Gold"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#eab308">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#fde047,#713f12)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#fde047,#eab308)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Gold</span>
                         </button>
                         <button onclick="setAccentColor('violet')"  id="accent-btn-violet"  title="Violet"   class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#7c3aed">
-                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#a78bfa,#4c1d95)"></span>
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block shadow-lg transition-all duration-150" style="background:linear-gradient(145deg,#a78bfa,#7c3aed)"></span>
                             <span class="text-[10px] text-slate-300 group-hover:text-white transition-colors">Violet</span>
                         </button>
                     </div>
