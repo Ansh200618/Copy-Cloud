@@ -81,10 +81,10 @@
                     const a = s.accent || 'indigo';
                     if (a !== 'indigo') document.documentElement.setAttribute('data-accent', a);
                     // Set background CSS vars immediately so body/overlay paint with correct colors
-                    const DARK_BODY_BG = {indigo:'#0b0d1e',purple:'#100819',blue:'#080e1f',emerald:'#041412',rose:'#1c0710',amber:'#181005',teal:'#041614',pink:'#190614'};
-                    const LIGHT_BODY_BG = {indigo:'#f0f2ff',purple:'#f7f0ff',blue:'#eff6ff',emerald:'#ecfdf5',rose:'#fff1f2',amber:'#fefce8',teal:'#f0fdfa',pink:'#fdf2f8'};
-                    const DARK_OVERLAY  = {indigo:'linear-gradient(135deg,#0b0d1e,#0f172a,#090b1c)',purple:'linear-gradient(135deg,#100819,#0f102a,#0d0617)',blue:'linear-gradient(135deg,#080e1f,#091422,#060c1d)',emerald:'linear-gradient(135deg,#041412,#06180f,#031210)',rose:'linear-gradient(135deg,#1c0710,#16091c,#190508)',amber:'linear-gradient(135deg,#181005,#1b1408,#140e04)',teal:'linear-gradient(135deg,#041614,#051c18,#031110)',pink:'linear-gradient(135deg,#190614,#14091e,#160312)'};
-                    const LIGHT_OVERLAY = {indigo:'linear-gradient(135deg,#e8eaff,#f5f6ff,#e8eaff)',purple:'linear-gradient(135deg,#f0e4ff,#f9f5ff,#f0e4ff)',blue:'linear-gradient(135deg,#dbeafe,#eff6ff,#dbeafe)',emerald:'linear-gradient(135deg,#d1fae5,#f0fdf6,#d1fae5)',rose:'linear-gradient(135deg,#ffe4e6,#fff5f6,#ffe4e6)',amber:'linear-gradient(135deg,#fef3c7,#fefce8,#fef3c7)',teal:'linear-gradient(135deg,#ccfbf1,#f0fdfa,#ccfbf1)',pink:'linear-gradient(135deg,#fce7f3,#fdf8fb,#fce7f3)'};
+                    const DARK_BODY_BG = {indigo:'#0b0d1e',purple:'#100819',blue:'#080e1f',emerald:'#041412',rose:'#1c0710',amber:'#181005',teal:'#041614',pink:'#190614',crimson:'#1f0808',cyan:'#041318',gold:'#1a1500',violet:'#110819'};
+                    const LIGHT_BODY_BG = {indigo:'#f0f2ff',purple:'#f7f0ff',blue:'#eff6ff',emerald:'#ecfdf5',rose:'#fff1f2',amber:'#fefce8',teal:'#f0fdfa',pink:'#fdf2f8',crimson:'#fff5f5',cyan:'#ecfeff',gold:'#fffef0',violet:'#f5f3ff'};
+                    const DARK_OVERLAY  = {indigo:'linear-gradient(135deg,#0b0d1e,#0f172a,#090b1c)',purple:'linear-gradient(135deg,#100819,#0f102a,#0d0617)',blue:'linear-gradient(135deg,#080e1f,#091422,#060c1d)',emerald:'linear-gradient(135deg,#041412,#06180f,#031210)',rose:'linear-gradient(135deg,#1c0710,#16091c,#190508)',amber:'linear-gradient(135deg,#181005,#1b1408,#140e04)',teal:'linear-gradient(135deg,#041614,#051c18,#031110)',pink:'linear-gradient(135deg,#190614,#14091e,#160312)',crimson:'linear-gradient(135deg,#1f0808,#200a0d,#1a0506)',cyan:'linear-gradient(135deg,#041318,#051b28,#030f15)',gold:'linear-gradient(135deg,#1a1500,#1e1908,#151100)',violet:'linear-gradient(135deg,#110819,#0e0a20,#0f0617)'};
+                    const LIGHT_OVERLAY = {indigo:'linear-gradient(135deg,#e8eaff,#f5f6ff,#e8eaff)',purple:'linear-gradient(135deg,#f0e4ff,#f9f5ff,#f0e4ff)',blue:'linear-gradient(135deg,#dbeafe,#eff6ff,#dbeafe)',emerald:'linear-gradient(135deg,#d1fae5,#f0fdf6,#d1fae5)',rose:'linear-gradient(135deg,#ffe4e6,#fff5f6,#ffe4e6)',amber:'linear-gradient(135deg,#fef3c7,#fefce8,#fef3c7)',teal:'linear-gradient(135deg,#ccfbf1,#f0fdfa,#ccfbf1)',pink:'linear-gradient(135deg,#fce7f3,#fdf8fb,#fce7f3)',crimson:'linear-gradient(135deg,#ffe4e6,#fff5f5,#ffe4e6)',cyan:'linear-gradient(135deg,#cffafe,#ecfeff,#cffafe)',gold:'linear-gradient(135deg,#fef9c3,#fffef0,#fef9c3)',violet:'linear-gradient(135deg,#ede9fe,#f5f3ff,#ede9fe)'};
                     const h = document.documentElement;
                     h.style.setProperty('--page-bg',    dark ? (DARK_BODY_BG[a]||DARK_BODY_BG.indigo)   : (LIGHT_BODY_BG[a]||LIGHT_BODY_BG.indigo));
                     h.style.setProperty('--overlay-bg', dark ? (DARK_OVERLAY[a]||DARK_OVERLAY.indigo) : (LIGHT_OVERLAY[a]||LIGHT_OVERLAY.indigo));
@@ -160,6 +160,10 @@
         html[data-accent="amber"]   { --accent-from:#d97706; --accent-to:#ea580c; --accent-500:#f59e0b; --accent-400:#fbbf24; --accent-300:#fcd34d; --accent-rgb:217,119,6; }
         html[data-accent="teal"]    { --accent-from:#0d9488; --accent-to:#2563eb; --accent-500:#14b8a6; --accent-400:#2dd4bf; --accent-300:#5eead4; --accent-rgb:13,148,136; }
         html[data-accent="pink"]    { --accent-from:#db2777; --accent-to:#9333ea; --accent-500:#ec4899; --accent-400:#f472b6; --accent-300:#f9a8d4; --accent-rgb:219,39,119; }
+        html[data-accent="crimson"] { --accent-from:#dc2626; --accent-to:#9f1239; --accent-500:#ef4444; --accent-400:#fca5a5; --accent-300:#fecaca; --accent-rgb:220,38,38; }
+        html[data-accent="cyan"]    { --accent-from:#0ea5e9; --accent-to:#2563eb; --accent-500:#38bdf8; --accent-400:#7dd3fc; --accent-300:#bae6fd; --accent-rgb:14,165,233; }
+        html[data-accent="gold"]    { --accent-from:#eab308; --accent-to:#b45309; --accent-500:#f59e0b; --accent-400:#fcd34d; --accent-300:#fde68a; --accent-rgb:234,179,8; }
+        html[data-accent="violet"]  { --accent-from:#7c3aed; --accent-to:#c026d3; --accent-500:#a855f7; --accent-400:#c084fc; --accent-300:#d8b4fe; --accent-rgb:124,58,237; }
 
         /* Accent overrides – recolor all hardcoded indigo/purple Tailwind classes */
         html:not([data-accent="indigo"]) .from-indigo-500,
@@ -203,6 +207,9 @@
         }
         html.light-mode .bg-slate-900\/50 { background-color: rgba(248,250,252,0.92) !important; }
         html.light-mode .text-white       { color: #0f172a !important; }
+        /* Buttons and links that carry text-white are on coloured backgrounds → keep white */
+        html.light-mode button.text-white,
+        html.light-mode a.text-white      { color: #ffffff !important; }
         html.light-mode .text-slate-200   { color: #1e293b !important; }
         html.light-mode .text-slate-300   { color: #334155 !important; }
         html.light-mode .text-slate-400   { color: #64748b !important; }
@@ -294,6 +301,11 @@
         html[data-texture="diagonal"] #bg-texture-overlay { opacity:1; background-size:16px 16px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='0' y1='16' x2='16' y2='0' stroke='white' stroke-width='1' stroke-opacity='0.11'/></svg>"); }
         html[data-texture="diamonds"] #bg-texture-overlay { opacity:1; background-size:26px 26px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><path d='M13 0L26 13L13 26L0 13Z' fill='none' stroke='white' stroke-width='0.75' stroke-opacity='0.12'/></svg>"); }
         html[data-texture="circles"]  #bg-texture-overlay { opacity:1; background-size:44px 44px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.09'/></svg>"); }
+        html[data-texture="crosshatch"] #bg-texture-overlay { opacity:1; background-size:20px 20px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><line x1='0' y1='0' x2='20' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.12'/><line x1='20' y1='0' x2='0' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.12'/></svg>"); }
+        html[data-texture="hexagons"]   #bg-texture-overlay { opacity:1; background-size:40px 35px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='35'><polygon points='20,3 32,10 32,24 20,31 8,24 8,10' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.14'/></svg>"); }
+        html[data-texture="triangles"]  #bg-texture-overlay { opacity:1; background-size:28px 24px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.13'/></svg>"); }
+        html[data-texture="stars"]      #bg-texture-overlay { opacity:1; background-size:44px 44px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.13'/></svg>"); }
+        html[data-texture="zigzag"]     #bg-texture-overlay { opacity:1; background-size:40px 20px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.12'/></svg>"); }
 
         /* --- Light-mode texture overrides (dark patterns) --- */
         html.light-mode[data-texture="dots"]     #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='11' cy='11' r='1.5' fill='%23475569' fill-opacity='0.22'/></svg>"); }
@@ -302,6 +314,11 @@
         html.light-mode[data-texture="diagonal"] #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='0' y1='16' x2='16' y2='0' stroke='%23475569' stroke-width='1' stroke-opacity='0.14'/></svg>"); }
         html.light-mode[data-texture="diamonds"] #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><path d='M13 0L26 13L13 26L0 13Z' fill='none' stroke='%23475569' stroke-width='0.75' stroke-opacity='0.15'/></svg>"); }
         html.light-mode[data-texture="circles"]  #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='%23475569' stroke-width='1' stroke-opacity='0.12'/></svg>"); }
+        html.light-mode[data-texture="crosshatch"] #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><line x1='0' y1='0' x2='20' y2='20' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.15'/><line x1='20' y1='0' x2='0' y2='20' stroke='%23475569' stroke-width='0.7' stroke-opacity='0.15'/></svg>"); }
+        html.light-mode[data-texture="hexagons"]   #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='35'><polygon points='20,3 32,10 32,24 20,31 8,24 8,10' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.16'/></svg>"); }
+        html.light-mode[data-texture="triangles"]  #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.16'/></svg>"); }
+        html.light-mode[data-texture="stars"]      #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.15'/></svg>"); }
+        html.light-mode[data-texture="zigzag"]     #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='%23475569' stroke-width='1.5' stroke-opacity='0.14'/></svg>"); }
 
         /* --- Texture preview swatches in Appearance modal --- */
         .tex-swatch { background-color: #1e293b; }
@@ -310,7 +327,12 @@
         .tex-swatch[data-tex="waves"]    { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='22'><path d='M0 11 Q14 3 28 11 Q42 19 56 11' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.3'/></svg>"); background-size:56px 22px; }
         .tex-swatch[data-tex="diagonal"] { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='0' y1='16' x2='16' y2='0' stroke='white' stroke-width='1' stroke-opacity='0.28'/></svg>"); background-size:16px 16px; }
         .tex-swatch[data-tex="diamonds"] { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><path d='M13 0L26 13L13 26L0 13Z' fill='none' stroke='white' stroke-width='0.75' stroke-opacity='0.3'/></svg>"); background-size:26px 26px; }
-        .tex-swatch[data-tex="circles"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.25'/></svg>"); background-size:44px 44px; }
+        .tex-swatch[data-tex="circles"]    { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.25'/></svg>"); background-size:44px 44px; }
+        .tex-swatch[data-tex="crosshatch"] { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><line x1='0' y1='0' x2='20' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.38'/><line x1='20' y1='0' x2='0' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.38'/></svg>"); background-size:20px 20px; }
+        .tex-swatch[data-tex="hexagons"]   { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='35'><polygon points='20,3 32,10 32,24 20,31 8,24 8,10' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.35'/></svg>"); background-size:40px 35px; }
+        .tex-swatch[data-tex="triangles"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.35'/></svg>"); background-size:28px 24px; }
+        .tex-swatch[data-tex="stars"]      { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.35'/></svg>"); background-size:44px 44px; }
+        .tex-swatch[data-tex="zigzag"]     { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.35'/></svg>"); background-size:40px 20px; }
     </style>
 </head>
 <body class="bg-[#0f172a] text-slate-200 min-h-screen overflow-x-hidden flex flex-col">
@@ -615,6 +637,22 @@
                         <button onclick="setAccentColor('pink')"    id="accent-btn-pink"    title="Pink"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#ec4899">
                             <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#db2777,#9333ea)"></span>
                             <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Pink</span>
+                        </button>
+                        <button onclick="setAccentColor('crimson')" id="accent-btn-crimson" title="Crimson"  class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#dc2626">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#dc2626,#9f1239)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Crimson</span>
+                        </button>
+                        <button onclick="setAccentColor('cyan')"    id="accent-btn-cyan"    title="Cyan"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#0ea5e9">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#0ea5e9,#2563eb)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Cyan</span>
+                        </button>
+                        <button onclick="setAccentColor('gold')"    id="accent-btn-gold"    title="Gold"     class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#eab308">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#eab308,#b45309)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Gold</span>
+                        </button>
+                        <button onclick="setAccentColor('violet')"  id="accent-btn-violet"  title="Violet"   class="accent-color-btn group relative flex flex-col items-center gap-1.5" data-color="#7c3aed">
+                            <span class="w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-lg" style="background:linear-gradient(135deg,#7c3aed,#c026d3)"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Violet</span>
                         </button>
                     </div>
                 </div>
