@@ -89,6 +89,7 @@
                     h.style.setProperty('--page-bg',    dark ? (DARK_BODY_BG[a]||DARK_BODY_BG.indigo)   : (LIGHT_BODY_BG[a]||LIGHT_BODY_BG.indigo));
                     h.style.setProperty('--overlay-bg', dark ? (DARK_OVERLAY[a]||DARK_OVERLAY.indigo) : (LIGHT_OVERLAY[a]||LIGHT_OVERLAY.indigo));
                     if (s.texture && s.texture !== 'none') h.setAttribute('data-texture', s.texture);
+                    if (s.textureDensity) h.style.setProperty('--tex-scale', s.textureDensity);
                 }
             } catch (e) {}
         })();
@@ -289,23 +290,25 @@
            Appearance modal scrollable body */
         .appearance-modal-body { max-height: 70vh; }
 
+        :root { --tex-scale: 1; }
+
         #bg-texture-overlay {
             position: absolute; inset: 0; pointer-events: none;
             background-repeat: repeat; opacity: 0;
         }
 
-        /* --- Dark-mode texture rules (white patterns) --- */
-        html[data-texture="dots"]     #bg-texture-overlay { opacity:1; background-size:22px 22px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='11' cy='11' r='1.5' fill='white' fill-opacity='0.18'/></svg>"); }
-        html[data-texture="grid"]     #bg-texture-overlay { opacity:1; background-size:24px 24px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><path d='M 24 0 L 0 0 0 24' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.12'/></svg>"); }
-        html[data-texture="waves"]    #bg-texture-overlay { opacity:1; background-size:56px 22px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='22'><path d='M0 11 Q14 3 28 11 Q42 19 56 11' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.13'/></svg>"); }
-        html[data-texture="diagonal"] #bg-texture-overlay { opacity:1; background-size:16px 16px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='0' y1='16' x2='16' y2='0' stroke='white' stroke-width='1' stroke-opacity='0.11'/></svg>"); }
-        html[data-texture="diamonds"] #bg-texture-overlay { opacity:1; background-size:26px 26px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><path d='M13 0L26 13L13 26L0 13Z' fill='none' stroke='white' stroke-width='0.75' stroke-opacity='0.12'/></svg>"); }
-        html[data-texture="circles"]  #bg-texture-overlay { opacity:1; background-size:44px 44px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.09'/></svg>"); }
-        html[data-texture="crosshatch"] #bg-texture-overlay { opacity:1; background-size:20px 20px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><line x1='0' y1='0' x2='20' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.12'/><line x1='20' y1='0' x2='0' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.12'/></svg>"); }
-        html[data-texture="hexagons"]   #bg-texture-overlay { opacity:1; background-size:40px 35px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='35'><polygon points='20,3 32,10 32,24 20,31 8,24 8,10' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.14'/></svg>"); }
-        html[data-texture="triangles"]  #bg-texture-overlay { opacity:1; background-size:28px 24px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.13'/></svg>"); }
-        html[data-texture="stars"]      #bg-texture-overlay { opacity:1; background-size:44px 44px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.13'/></svg>"); }
-        html[data-texture="zigzag"]     #bg-texture-overlay { opacity:1; background-size:40px 20px; background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.12'/></svg>"); }
+        /* --- Dark-mode texture rules (white patterns) – background-size scaled by --tex-scale --- */
+        html[data-texture="dots"]     #bg-texture-overlay { opacity:1; background-size:calc(22px * var(--tex-scale)) calc(22px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='11' cy='11' r='1.5' fill='white' fill-opacity='0.18'/></svg>"); }
+        html[data-texture="grid"]     #bg-texture-overlay { opacity:1; background-size:calc(24px * var(--tex-scale)) calc(24px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><path d='M 24 0 L 0 0 0 24' fill='none' stroke='white' stroke-width='0.5' stroke-opacity='0.12'/></svg>"); }
+        html[data-texture="waves"]    #bg-texture-overlay { opacity:1; background-size:calc(56px * var(--tex-scale)) calc(22px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='22'><path d='M0 11 Q14 3 28 11 Q42 19 56 11' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.13'/></svg>"); }
+        html[data-texture="diagonal"] #bg-texture-overlay { opacity:1; background-size:calc(16px * var(--tex-scale)) calc(16px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='0' y1='16' x2='16' y2='0' stroke='white' stroke-width='1' stroke-opacity='0.11'/></svg>"); }
+        html[data-texture="diamonds"] #bg-texture-overlay { opacity:1; background-size:calc(26px * var(--tex-scale)) calc(26px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='26'><path d='M13 0L26 13L13 26L0 13Z' fill='none' stroke='white' stroke-width='0.75' stroke-opacity='0.12'/></svg>"); }
+        html[data-texture="circles"]  #bg-texture-overlay { opacity:1; background-size:calc(44px * var(--tex-scale)) calc(44px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><circle cx='22' cy='22' r='18' fill='none' stroke='white' stroke-width='1' stroke-opacity='0.09'/></svg>"); }
+        html[data-texture="crosshatch"] #bg-texture-overlay { opacity:1; background-size:calc(20px * var(--tex-scale)) calc(20px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><line x1='0' y1='0' x2='20' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.12'/><line x1='20' y1='0' x2='0' y2='20' stroke='white' stroke-width='0.7' stroke-opacity='0.12'/></svg>"); }
+        html[data-texture="hexagons"]   #bg-texture-overlay { opacity:1; background-size:calc(40px * var(--tex-scale)) calc(35px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='35'><polygon points='20,3 32,10 32,24 20,31 8,24 8,10' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.14'/></svg>"); }
+        html[data-texture="triangles"]  #bg-texture-overlay { opacity:1; background-size:calc(28px * var(--tex-scale)) calc(24px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.13'/></svg>"); }
+        html[data-texture="stars"]      #bg-texture-overlay { opacity:1; background-size:calc(44px * var(--tex-scale)) calc(44px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='white' stroke-width='0.8' stroke-opacity='0.13'/></svg>"); }
+        html[data-texture="zigzag"]     #bg-texture-overlay { opacity:1; background-size:calc(40px * var(--tex-scale)) calc(20px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='white' stroke-width='1.5' stroke-opacity='0.12'/></svg>"); }
 
         /* --- Light-mode texture overrides (dark patterns) --- */
         html.light-mode[data-texture="dots"]     #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='11' cy='11' r='1.5' fill='%23475569' fill-opacity='0.22'/></svg>"); }
@@ -319,6 +322,13 @@
         html.light-mode[data-texture="triangles"]  #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='24'><polygon points='14,2 26,22 2,22' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.16'/></svg>"); }
         html.light-mode[data-texture="stars"]      #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44'><polygon points='22,8 26,17 35,18 28,24 30,33 22,28 14,33 16,24 9,18 18,17' fill='none' stroke='%23475569' stroke-width='0.8' stroke-opacity='0.15'/></svg>"); }
         html.light-mode[data-texture="zigzag"]     #bg-texture-overlay { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='20'><path d='M0 20 L20 0 L40 20' fill='none' stroke='%23475569' stroke-width='1.5' stroke-opacity='0.14'/></svg>"); }
+
+        /* --- Texture density slider styling --- */
+        .tex-density-slider { -webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:2px; background:rgba(255,255,255,0.12); outline:none; cursor:pointer; }
+        .tex-density-slider::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:16px; height:16px; border-radius:50%; background:var(--accent-from,#6366f1); border:2px solid white; cursor:pointer; box-shadow:0 0 6px rgba(var(--accent-rgb,99,102,241),0.5); transition:transform 0.15s; }
+        .tex-density-slider::-webkit-slider-thumb:hover { transform:scale(1.2); }
+        .tex-density-slider::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--accent-from,#6366f1); border:2px solid white; cursor:pointer; }
+        html.light-mode .tex-density-slider { background:rgba(0,0,0,0.15); }
 
         /* --- Texture preview swatches in Appearance modal --- */
         .tex-swatch { background-color: #1e293b; }
@@ -459,7 +469,19 @@
                             </div>
                             <div>
                                 <h4 class="text-white font-semibold text-sm mb-1">End-to-End Encryption</h4>
-                                <p class="text-slate-400 text-xs">Extra security layer for sensitive data</p>
+                                <p class="text-slate-400 text-xs">Client-side encryption before upload — no one can read your data except you</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-pink-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-pink-500/20 p-2 rounded-lg text-pink-400 shrink-0">
+                                <i data-lucide="key" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">Password-Protected Clips</h4>
+                                <p class="text-slate-400 text-xs">Lock your content with a passphrase — only those with the password can retrieve it</p>
                             </div>
                         </div>
                     </div>
@@ -471,31 +493,43 @@
                             </div>
                             <div>
                                 <h4 class="text-white font-semibold text-sm mb-1">Custom Expiration Times</h4>
-                                <p class="text-slate-400 text-xs">Choose 1h, 12h, 7d, or custom duration</p>
+                                <p class="text-slate-400 text-xs">Choose exactly how long your clip lives — 1h, 6h, 12h, 7d, or never</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-pink-500/30 hover:bg-white/10 transition-all">
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-emerald-500/30 hover:bg-white/10 transition-all">
                         <div class="flex items-start gap-3">
-                            <div class="bg-pink-500/20 p-2 rounded-lg text-pink-400 shrink-0">
-                                <i data-lucide="shield" class="w-5 h-5"></i>
+                            <div class="bg-emerald-500/20 p-2 rounded-lg text-emerald-400 shrink-0">
+                                <i data-lucide="puzzle" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">Password Protection</h4>
-                                <p class="text-slate-400 text-xs">Secure content with a password</p>
+                                <h4 class="text-white font-semibold text-sm mb-1">Browser Extension</h4>
+                                <p class="text-slate-400 text-xs">One-click send & receive directly from Chrome or Firefox — no tab switching needed</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-yellow-500/30 hover:bg-white/10 transition-all">
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-blue-500/30 hover:bg-white/10 transition-all">
                         <div class="flex items-start gap-3">
-                            <div class="bg-yellow-500/20 p-2 rounded-lg text-yellow-400 shrink-0">
-                                <i data-lucide="file-text" class="w-5 h-5"></i>
+                            <div class="bg-blue-500/20 p-2 rounded-lg text-blue-400 shrink-0">
+                                <i data-lucide="smartphone" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">Rich Text Editor</h4>
-                                <p class="text-slate-400 text-xs">Format text with styles and colors</p>
+                                <h4 class="text-white font-semibold text-sm mb-1">PWA &amp; Offline Support</h4>
+                                <p class="text-slate-400 text-xs">Install Copy Cloud on your home screen and access recent clips even without internet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-amber-500/30 hover:bg-white/10 transition-all">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-amber-500/20 p-2 rounded-lg text-amber-400 shrink-0">
+                                <i data-lucide="bell" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold text-sm mb-1">Push Notifications</h4>
+                                <p class="text-slate-400 text-xs">Get notified instantly when someone retrieves your shared clip or your file is downloaded</p>
                             </div>
                         </div>
                     </div>
@@ -658,6 +692,41 @@
                             <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="circles"></span>
                             <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Circles</span>
                         </button>
+                        <button onclick="setTexture('crosshatch')" id="tex-btn-crosshatch" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="crosshatch"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Crosshatch</span>
+                        </button>
+                        <button onclick="setTexture('hexagons')" id="tex-btn-hexagons" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="hexagons"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Hexagons</span>
+                        </button>
+                        <button onclick="setTexture('triangles')" id="tex-btn-triangles" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="triangles"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Triangles</span>
+                        </button>
+                        <button onclick="setTexture('stars')" id="tex-btn-stars" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="stars"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Stars</span>
+                        </button>
+                        <button onclick="setTexture('zigzag')" id="tex-btn-zigzag" class="tex-btn group flex flex-col items-center gap-1.5">
+                            <span class="tex-swatch w-11 h-11 rounded-xl border-2 border-transparent block transition-all group-hover:scale-110 shadow-md" data-tex="zigzag"></span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-white transition-colors">Zigzag</span>
+                        </button>
+                    </div>
+
+                    <!-- Texture Density Slider (hidden when no texture selected) -->
+                    <div id="tex-density-row" class="mt-4 hidden">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Texture Density</p>
+                            <span id="tex-density-label" class="text-xs text-slate-400 font-mono">Normal</span>
+                        </div>
+                        <input id="tex-density-slider" type="range" min="0.4" max="2.5" step="0.1" value="1"
+                            oninput="setTextureDensity(this.value)"
+                            class="tex-density-slider w-full">
+                        <div class="flex justify-between mt-1.5">
+                            <span class="text-[10px] text-slate-500">Tight</span>
+                            <span class="text-[10px] text-slate-500">Loose</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1943,8 +2012,11 @@
         //  THEME SYSTEM – Day / Night / Auto  +  Accent Color
         // =====================================================
         const THEME_KEY = 'copyCloudTheme';
+        const DEFAULT_TEXTURE_DENSITY = 1;
+        const TEX_DENSITY_THRESHOLDS = [0.6, 0.85, 1.15, 1.8];
+        const TEX_DENSITY_LABELS     = ['Very Tight', 'Tight', 'Normal', 'Loose', 'Very Loose'];
 
-        let themeState = { mode: 'dark', accent: 'indigo', texture: 'none' };
+        let themeState = { mode: 'dark', accent: 'indigo', texture: 'none', textureDensity: DEFAULT_TEXTURE_DENSITY };
 
         const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -1982,6 +2054,8 @@
             } else {
                 html.removeAttribute('data-texture');
             }
+            // Apply texture density scale
+            html.style.setProperty('--tex-scale', themeState.textureDensity || DEFAULT_TEXTURE_DENSITY);
             // Apply accent-tinted background via CSS vars (beats Tailwind via !important in <style>)
             const a = themeState.accent;
             html.style.setProperty('--page-bg',    isDark ? (DARK_BODY_BG[a]  || DARK_BODY_BG.indigo)  : (LIGHT_BODY_BG[a]  || LIGHT_BODY_BG.indigo));
@@ -2016,6 +2090,13 @@
             themeState.texture = texture;
             saveThemeState();
             applyTheme();
+        };
+
+        window.setTextureDensity = (val) => {
+            themeState.textureDensity = parseFloat(val);
+            saveThemeState();
+            document.documentElement.style.setProperty('--tex-scale', themeState.textureDensity);
+            updateAppearanceModalUI();
         };
 
         // Auto mode: re-apply when system preference changes
@@ -2081,7 +2162,7 @@
             });
 
             // Texture buttons – highlight active one
-            const TEX_KEYS = ['none','dots','grid','waves','diagonal','diamonds','circles'];
+            const TEX_KEYS = ['none','dots','grid','waves','diagonal','diamonds','circles','crosshatch','hexagons','triangles','stars','zigzag'];
             TEX_KEYS.forEach(t => {
                 const btn = document.getElementById(`tex-btn-${t}`);
                 if (!btn) return;
@@ -2102,6 +2183,21 @@
                     label.classList.toggle('text-slate-400', !active);
                 }
             });
+
+            // Texture density slider – show only when a texture is active
+            const densityRow = document.getElementById('tex-density-row');
+            const densitySlider = document.getElementById('tex-density-slider');
+            const densityLabel = document.getElementById('tex-density-label');
+            const hasTexture = themeState.texture && themeState.texture !== 'none';
+            if (densityRow) densityRow.classList.toggle('hidden', !hasTexture);
+            if (densitySlider && hasTexture) {
+                const d = parseFloat(themeState.textureDensity || DEFAULT_TEXTURE_DENSITY);
+                densitySlider.value = d;
+                if (densityLabel) {
+                    const idx = TEX_DENSITY_THRESHOLDS.findIndex(t => d <= t);
+                    densityLabel.textContent = TEX_DENSITY_LABELS[idx === -1 ? TEX_DENSITY_LABELS.length - 1 : idx];
+                }
+            }
 
             // Update the accent bar at top of modal
             const bar = document.querySelector('.theme-accent-bar');

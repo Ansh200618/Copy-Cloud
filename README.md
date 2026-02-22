@@ -148,6 +148,7 @@ Online-Clipboard/
 - **12 Accent Color Presets**: Indigo, Purple, Blue, Emerald, Rose, Amber, Teal, Pink, Crimson, Cyan, Gold, Violet — all apply to buttons, icons, and background gradient
 - **11 Background Textures**: None, Dots, Grid, Waves, Diagonal, Diamonds, Circles, Crosshatch, Hexagons, Triangles, Stars, Zigzag — pure SVG, no external assets
 - **Accent-Tinted Backgrounds**: Body and overlay colors shift with the chosen accent in both light and dark modes
+- **Texture Density Control**: Tight ↔ Loose slider scales any background texture pattern in real-time
 
 ---
 
@@ -237,14 +238,12 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🔮 Future Enhancements
 
-- [ ] End-to-end encryption option
-- [ ] Custom expiration times (1h, 12h, 7d)
-- [ ] Password protection for sensitive content
-- [x] QR code generation for easy code sharing ✅
-- [x] Usage statistics dashboard ✅
-- [x] Multi-file upload support ✅
-- [ ] Rich text editor
-- [x] Dark/Light theme toggle ✅
+- [ ] End-to-end encryption — client-side crypto before upload
+- [ ] Password-protected clips — lock content with a passphrase
+- [ ] Custom expiration times (1h, 6h, 12h, 7d, or never)
+- [ ] Browser extension for Chrome & Firefox (1-click send/receive)
+- [ ] PWA & offline support — install on home screen, access recent clips offline
+- [ ] Push notifications — get alerted when your clip is retrieved or downloaded
 
 ---
 
