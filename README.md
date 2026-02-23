@@ -59,7 +59,7 @@ The Stego Tool (`stego.html`) lets you hide secret messages or files inside inno
 - **Encryption**: AES-256-GCM via the native Web Crypto API
 - **Key Derivation**: PBKDF2 with 100,000 iterations
 - **Password**: Optional — works with or without a password
-- **Zero-Width Characters**: U+200B (zero-width space → 0) and U+200C (zero-width non-joiner → 1)
+- **Zero-Width Characters**: U+200B (zero-width space represents bit 0) and U+200C (zero-width non-joiner represents bit 1)
 - **LSB Steganography**: Modifies only the least-significant bit of R, G, B channels (alpha channel untouched)
 - **Payload Format**: Flag byte identifies content type — `0x00` plain text, `0x01` encrypted text, `0x02` plain file, `0x03` encrypted file
 
