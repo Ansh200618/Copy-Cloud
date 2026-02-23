@@ -95,6 +95,131 @@
             box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
             outline: none;
         }
+
+        /* ===== Feature Discovery Onboarding ===== */
+
+        /* Pulsing glow dot on the hamburger button */
+        .onboarding-dot {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+            z-index: 10;
+            pointer-events: none;
+        }
+        .onboarding-dot::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: rgba(var(--accent-rgb), 0.4);
+            animation: pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1);   opacity: 0.6; }
+            50%      { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* Floating tooltip */
+        .onboarding-tooltip {
+            position: fixed;
+            top: 12px;
+            left: 64px;
+            z-index: 55;
+            white-space: nowrap;
+            animation: tooltipFloat 3s ease-in-out infinite;
+        }
+        .onboarding-tooltip-inner {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(var(--accent-rgb), 0.3);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                        0 0 20px rgba(var(--accent-rgb), 0.15);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+        /* Arrow pointing left toward the hamburger */
+        .onboarding-tooltip-inner::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0; height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-right: 6px solid rgba(var(--accent-rgb), 0.3);
+        }
+        .onboarding-tooltip-inner::after {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0; height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-right: 5px solid rgba(15, 23, 42, 0.85);
+        }
+
+        /* Subtle float */
+        @keyframes tooltipFloat {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-4px); }
+        }
+
+        /* Bounce on hover */
+        @keyframes tooltipBounce {
+            0%, 100% { transform: translateY(0); }
+            30%      { transform: translateY(-6px); }
+            50%      { transform: translateY(-2px); }
+            70%      { transform: translateY(-4px); }
+        }
+        .onboarding-tooltip.bounce {
+            animation: tooltipBounce 0.5s ease-out forwards;
+        }
+
+        /* Fade-out transition for dismissal */
+        .onboarding-fade-out {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            opacity: 0 !important;
+            transform: scale(0.9) translateY(-4px) !important;
+            pointer-events: none !important;
+        }
+
+        /* Mobile adjustments – tooltip under the button instead of beside it */
+        @media (max-width: 480px) {
+            .onboarding-tooltip {
+                top: 58px;
+                left: 8px;
+            }
+            .onboarding-tooltip-inner::before {
+                left: 14px; top: -6px;
+                transform: none;
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-bottom: 6px solid rgba(var(--accent-rgb), 0.3);
+                border-top: none;
+            }
+            .onboarding-tooltip-inner::after {
+                left: 15px; top: -4px;
+                transform: none;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-bottom: 5px solid rgba(15, 23, 42, 0.85);
+                border-top: none;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen text-white overflow-x-hidden">
@@ -146,7 +271,16 @@
         <span></span>
         <span></span>
         <span></span>
+        <!-- Onboarding pulsing dot (injected by JS if not dismissed) -->
+        <div id="onboarding-dot" class="onboarding-dot hidden"></div>
     </button>
+
+    <!-- Onboarding tooltip -->
+    <div id="onboarding-tooltip" class="onboarding-tooltip hidden" role="tooltip">
+        <div class="onboarding-tooltip-inner">
+            🔒 Try our new <strong style="color:var(--accent-400)">Secure Message</strong> feature!
+        </div>
+    </div>
 
     <!-- Main content -->
     <main class="max-w-2xl mx-auto px-4 pt-20 pb-16">
@@ -290,6 +424,9 @@
             sidebar.classList.toggle('open', !isOpen);
             backdrop.classList.toggle('active', !isOpen);
             btn.classList.toggle('active', !isOpen);
+
+            // Dismiss onboarding on first menu open
+            if (!isOpen) dismissOnboarding();
         }
 
         /* ========== Tabs ========== */
@@ -505,8 +642,58 @@
             }
         }
 
+        /* ========== Feature Discovery Onboarding ========== */
+        const ONBOARDING_KEY = 'stegoOnboardingDismissed';
+
+        function initOnboarding() {
+            if (localStorage.getItem(ONBOARDING_KEY)) return;
+
+            const dot     = document.getElementById('onboarding-dot');
+            const tooltip = document.getElementById('onboarding-tooltip');
+            const btn     = document.getElementById('hamburger-btn');
+
+            // Show the dot and tooltip
+            dot.classList.remove('hidden');
+            tooltip.classList.remove('hidden');
+
+            // Hover → gentle bounce
+            btn.addEventListener('mouseenter', function onHover() {
+                tooltip.classList.remove('bounce');
+                // Force reflow to restart animation
+                void tooltip.offsetWidth;
+                tooltip.classList.add('bounce');
+            });
+
+            // Restore float after bounce ends
+            tooltip.addEventListener('animationend', function onBounceEnd(e) {
+                if (e.animationName === 'tooltipBounce') {
+                    tooltip.classList.remove('bounce');
+                }
+            });
+        }
+
+        function dismissOnboarding() {
+            const dot     = document.getElementById('onboarding-dot');
+            const tooltip = document.getElementById('onboarding-tooltip');
+            if (dot.classList.contains('hidden')) return; // already dismissed
+
+            dot.classList.add('onboarding-fade-out');
+            tooltip.classList.add('onboarding-fade-out');
+            localStorage.setItem(ONBOARDING_KEY, '1');
+
+            setTimeout(() => {
+                dot.classList.add('hidden');
+                tooltip.classList.add('hidden');
+                dot.classList.remove('onboarding-fade-out');
+                tooltip.classList.remove('onboarding-fade-out');
+            }, 400);
+        }
+
         /* ========== Init Lucide icons ========== */
-        document.addEventListener('DOMContentLoaded', () => { lucide.createIcons(); });
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initOnboarding();
+        });
     </script>
 </body>
 </html>
