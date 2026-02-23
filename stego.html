@@ -23,6 +23,28 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Prevent FOUC: restore saved theme immediately -->
+    <script>
+        (function () {
+            try {
+                const s = JSON.parse(localStorage.getItem('copyCloudTheme') || 'null');
+                if (s) {
+                    const dark = s.mode === 'dark' ? true : s.mode === 'light' ? false : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    if (!dark) document.documentElement.classList.add('light-mode');
+                    const a = s.accent || 'indigo';
+                    if (a !== 'indigo') document.documentElement.setAttribute('data-accent', a);
+                    const DARK_BODY_BG = {indigo:'#0b0d1e',purple:'#100819',blue:'#080e1f',emerald:'#041412',rose:'#1c0710',amber:'#181005',teal:'#041614',pink:'#190614',crimson:'#1f0808',cyan:'#041318',gold:'#1a1500',violet:'#110819'};
+                    const LIGHT_BODY_BG = {indigo:'#f0f2ff',purple:'#f7f0ff',blue:'#eff6ff',emerald:'#ecfdf5',rose:'#fff1f2',amber:'#fefce8',teal:'#f0fdfa',pink:'#fdf2f8',crimson:'#fff5f5',cyan:'#ecfeff',gold:'#fffef0',violet:'#f5f3ff'};
+                    const DARK_OVERLAY  = {indigo:'linear-gradient(135deg,#0b0d1e,#0f172a,#090b1c)',purple:'linear-gradient(135deg,#100819,#0f102a,#0d0617)',blue:'linear-gradient(135deg,#080e1f,#091422,#060c1d)',emerald:'linear-gradient(135deg,#041412,#06180f,#031210)',rose:'linear-gradient(135deg,#1c0710,#16091c,#190508)',amber:'linear-gradient(135deg,#181005,#1b1408,#140e04)',teal:'linear-gradient(135deg,#041614,#051c18,#031110)',pink:'linear-gradient(135deg,#190614,#14091e,#160312)',crimson:'linear-gradient(135deg,#1f0808,#200a0d,#1a0506)',cyan:'linear-gradient(135deg,#041318,#051b28,#030f15)',gold:'linear-gradient(135deg,#1a1500,#1e1908,#151100)',violet:'linear-gradient(135deg,#110819,#0e0a20,#0f0617)'};
+                    const LIGHT_OVERLAY = {indigo:'linear-gradient(135deg,#e8eaff,#f5f6ff,#e8eaff)',purple:'linear-gradient(135deg,#f0e4ff,#f9f5ff,#f0e4ff)',blue:'linear-gradient(135deg,#dbeafe,#eff6ff,#dbeafe)',emerald:'linear-gradient(135deg,#d1fae5,#f0fdf6,#d1fae5)',rose:'linear-gradient(135deg,#ffe4e6,#fff5f6,#ffe4e6)',amber:'linear-gradient(135deg,#fef3c7,#fefce8,#fef3c7)',teal:'linear-gradient(135deg,#ccfbf1,#f0fdfa,#ccfbf1)',pink:'linear-gradient(135deg,#fce7f3,#fdf8fb,#fce7f3)',crimson:'linear-gradient(135deg,#ffe4e6,#fff5f5,#ffe4e6)',cyan:'linear-gradient(135deg,#cffafe,#ecfeff,#cffafe)',gold:'linear-gradient(135deg,#fef9c3,#fffef0,#fef9c3)',violet:'linear-gradient(135deg,#ede9fe,#f5f3ff,#ede9fe)'};
+                    const h = document.documentElement;
+                    h.style.setProperty('--page-bg',    dark ? (DARK_BODY_BG[a]||DARK_BODY_BG.indigo)   : (LIGHT_BODY_BG[a]||LIGHT_BODY_BG.indigo));
+                    h.style.setProperty('--overlay-bg', dark ? (DARK_OVERLAY[a]||DARK_OVERLAY.indigo) : (LIGHT_OVERLAY[a]||LIGHT_OVERLAY.indigo));
+                }
+            } catch (e) {}
+        })();
+    </script>
+
     <style>
         body { font-family: 'Inter', sans-serif; }
 
@@ -40,6 +62,19 @@
             --overlay-bg: linear-gradient(135deg, #0b0d1e, #0f172a, #090b1c);
         }
 
+        /* Accent color overrides (same as main site) */
+        html[data-accent="purple"]  { --accent-from:#9333ea; --accent-to:#7c3aed; --accent-500:#a855f7; --accent-400:#c084fc; --accent-300:#d8b4fe; --accent-rgb:147,51,234; }
+        html[data-accent="blue"]    { --accent-from:#2563eb; --accent-to:#6d28d9; --accent-500:#3b82f6; --accent-400:#60a5fa; --accent-300:#93c5fd; --accent-rgb:59,130,246; }
+        html[data-accent="emerald"] { --accent-from:#059669; --accent-to:#0891b2; --accent-500:#10b981; --accent-400:#34d399; --accent-300:#6ee7b7; --accent-rgb:5,150,105; }
+        html[data-accent="rose"]    { --accent-from:#e11d48; --accent-to:#9333ea; --accent-500:#f43f5e; --accent-400:#fb7185; --accent-300:#fda4af; --accent-rgb:225,29,72; }
+        html[data-accent="amber"]   { --accent-from:#d97706; --accent-to:#ea580c; --accent-500:#f59e0b; --accent-400:#fbbf24; --accent-300:#fcd34d; --accent-rgb:217,119,6; }
+        html[data-accent="teal"]    { --accent-from:#0d9488; --accent-to:#2563eb; --accent-500:#14b8a6; --accent-400:#2dd4bf; --accent-300:#5eead4; --accent-rgb:13,148,136; }
+        html[data-accent="pink"]    { --accent-from:#db2777; --accent-to:#9333ea; --accent-500:#ec4899; --accent-400:#f472b6; --accent-300:#f9a8d4; --accent-rgb:219,39,119; }
+        html[data-accent="crimson"] { --accent-from:#dc2626; --accent-to:#9f1239; --accent-500:#ef4444; --accent-400:#fca5a5; --accent-300:#fecaca; --accent-rgb:220,38,38; }
+        html[data-accent="cyan"]    { --accent-from:#0ea5e9; --accent-to:#2563eb; --accent-500:#38bdf8; --accent-400:#7dd3fc; --accent-300:#bae6fd; --accent-rgb:14,165,233; }
+        html[data-accent="gold"]    { --accent-from:#eab308; --accent-to:#b45309; --accent-500:#f59e0b; --accent-400:#fcd34d; --accent-300:#fde68a; --accent-rgb:234,179,8; }
+        html[data-accent="violet"]  { --accent-from:#7c3aed; --accent-to:#c026d3; --accent-500:#a855f7; --accent-400:#c084fc; --accent-300:#d8b4fe; --accent-rgb:124,58,237; }
+
         body { background-color: var(--page-bg) !important; }
         #bg-overlay { background: var(--overlay-bg) !important; }
 
@@ -49,6 +84,58 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
+
+        /* ============= LIGHT MODE ============= */
+        html.light-mode { color-scheme: light; }
+        html.light-mode body { color: #1e293b !important; }
+        html.light-mode .glass-panel {
+            background-color: rgba(255,255,255,0.88) !important;
+            border-color: rgba(0,0,0,0.08) !important;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.07) !important;
+        }
+        html.light-mode .text-white   { color: #0f172a !important; }
+        html.light-mode button.text-white,
+        html.light-mode a.text-white   { color: #ffffff !important; }
+        html.light-mode .text-slate-300 { color: #334155 !important; }
+        html.light-mode .text-slate-400 { color: #64748b !important; }
+        html.light-mode .text-slate-500 { color: #475569 !important; }
+        html.light-mode .border-white\/10 { border-color: rgba(0,0,0,0.1) !important; }
+        html.light-mode .border-white\/5  { border-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .bg-white\/5   { background-color: rgba(0,0,0,0.04) !important; }
+        html.light-mode .bg-white\/10  { background-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .hover\:bg-white\/5:hover  { background-color: rgba(0,0,0,0.04) !important; }
+        html.light-mode .hover\:bg-white\/10:hover { background-color: rgba(0,0,0,0.07) !important; }
+        html.light-mode .placeholder-slate-500::placeholder { color: #94a3b8 !important; }
+        html.light-mode .input-field {
+            background-color: rgba(0,0,0,0.03) !important;
+            color: #1e293b !important;
+            border-color: rgba(0,0,0,0.12) !important;
+        }
+        html.light-mode .input-field:focus {
+            background-color: #ffffff !important;
+        }
+        html.light-mode textarea[readonly] {
+            background-color: rgba(0,0,0,0.03) !important;
+            color: #1e293b !important;
+        }
+        html.light-mode .hamburger span { background: #334155; }
+        html.light-mode .onboarding-tooltip-inner {
+            background: rgba(255,255,255,0.92);
+            color: #1e293b;
+            border-color: rgba(var(--accent-rgb), 0.25);
+        }
+        html.light-mode .onboarding-tooltip-inner::after {
+            border-right-color: rgba(255,255,255,0.92);
+        }
+        @media (max-width: 480px) {
+            html.light-mode .onboarding-tooltip-inner::after {
+                border-right-color: transparent;
+                border-bottom-color: rgba(255,255,255,0.92);
+            }
+        }
+        html.light-mode .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.04) !important; }
+        html.light-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15) !important; }
+        html.light-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25) !important; }
 
         /* Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
@@ -314,9 +401,9 @@
 
                 <!-- Password -->
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+                    <label class="block text-sm font-medium text-slate-300 mb-1.5">Password <span class="text-slate-500 font-normal">(Optional)</span></label>
                     <div class="relative">
-                        <input id="enc-password" type="password" class="input-field w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-white text-sm placeholder-slate-500 transition-all" placeholder="Enter encryption password">
+                        <input id="enc-password" type="password" class="input-field w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-white text-sm placeholder-slate-500 transition-all" placeholder="Leave empty for no encryption">
                         <button type="button" onclick="togglePassword('enc-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors" aria-label="Toggle password visibility">
                             <i data-lucide="eye" class="w-4 h-4"></i>
                         </button>
@@ -363,9 +450,9 @@
 
                 <!-- Password -->
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+                    <label class="block text-sm font-medium text-slate-300 mb-1.5">Password <span class="text-slate-500 font-normal">(Optional)</span></label>
                     <div class="relative">
-                        <input id="dec-password" type="password" class="input-field w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-white text-sm placeholder-slate-500 transition-all" placeholder="Enter decryption password">
+                        <input id="dec-password" type="password" class="input-field w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-white text-sm placeholder-slate-500 transition-all" placeholder="Leave empty if none was used">
                         <button type="button" onclick="togglePassword('dec-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors" aria-label="Toggle password visibility">
                             <i data-lucide="eye" class="w-4 h-4"></i>
                         </button>
@@ -396,7 +483,7 @@
             <div class="space-y-3 text-sm text-slate-400 leading-relaxed">
                 <div class="flex items-start gap-3">
                     <span class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">1</span>
-                    <p>Your message is encrypted with <strong class="text-slate-300">AES-256-GCM</strong> using a key derived from your password via <strong class="text-slate-300">PBKDF2</strong> (100,000 iterations).</p>
+                    <p>If you provide a password, your message is encrypted with <strong class="text-slate-300">AES-256-GCM</strong> using a key derived via <strong class="text-slate-300">PBKDF2</strong> (100,000 iterations). Without a password, the message is hidden as-is.</p>
                 </div>
                 <div class="flex items-start gap-3">
                     <span class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">2</span>
@@ -474,6 +561,8 @@
         const ZWNJ = '\u200C'; // zero-width non-joiner → 1
         const SALT_LEN = 16;
         const IV_LEN   = 12;
+        const FLAG_ENCRYPTED = 0x01;
+        const FLAG_PLAIN     = 0x00;
 
         async function deriveKey(password, salt) {
             const enc = new TextEncoder();
@@ -489,36 +578,56 @@
             );
         }
 
-        async function encryptMessage(message, password) {
+        async function encryptPayload(message, password) {
             const enc = new TextEncoder();
+            const msgBytes = enc.encode(message);
+
+            if (!password) {
+                // No password → plaintext flag + raw message bytes
+                const combined = new Uint8Array(1 + msgBytes.length);
+                combined[0] = FLAG_PLAIN;
+                combined.set(msgBytes, 1);
+                return combined;
+            }
+
+            // Password provided → AES-GCM encryption
             const salt = crypto.getRandomValues(new Uint8Array(SALT_LEN));
             const iv   = crypto.getRandomValues(new Uint8Array(IV_LEN));
             const key  = await deriveKey(password, salt);
             const cipherBuf = await crypto.subtle.encrypt(
-                { name: 'AES-GCM', iv },
-                key,
-                enc.encode(message)
+                { name: 'AES-GCM', iv }, key, msgBytes
             );
             const cipher = new Uint8Array(cipherBuf);
-            // Combine: salt(16) + iv(12) + ciphertext
-            const combined = new Uint8Array(SALT_LEN + IV_LEN + cipher.length);
-            combined.set(salt, 0);
-            combined.set(iv, SALT_LEN);
-            combined.set(cipher, SALT_LEN + IV_LEN);
+            // flag(1) + salt(16) + iv(12) + ciphertext
+            const combined = new Uint8Array(1 + SALT_LEN + IV_LEN + cipher.length);
+            combined[0] = FLAG_ENCRYPTED;
+            combined.set(salt, 1);
+            combined.set(iv, 1 + SALT_LEN);
+            combined.set(cipher, 1 + SALT_LEN + IV_LEN);
             return combined;
         }
 
-        async function decryptMessage(combined, password) {
-            const salt   = combined.slice(0, SALT_LEN);
-            const iv     = combined.slice(SALT_LEN, SALT_LEN + IV_LEN);
-            const cipher = combined.slice(SALT_LEN + IV_LEN);
-            const key = await deriveKey(password, salt);
-            const plainBuf = await crypto.subtle.decrypt(
-                { name: 'AES-GCM', iv },
-                key,
-                cipher
-            );
-            return new TextDecoder().decode(plainBuf);
+        async function decryptPayload(combined, password) {
+            const flag = combined[0];
+
+            if (flag === FLAG_PLAIN) {
+                // No encryption was used
+                return new TextDecoder().decode(combined.slice(1));
+            }
+
+            if (flag === FLAG_ENCRYPTED) {
+                if (!password) throw new Error('This message is password-protected. Please enter the password.');
+                const salt   = combined.slice(1, 1 + SALT_LEN);
+                const iv     = combined.slice(1 + SALT_LEN, 1 + SALT_LEN + IV_LEN);
+                const cipher = combined.slice(1 + SALT_LEN + IV_LEN);
+                const key = await deriveKey(password, salt);
+                const plainBuf = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv }, key, cipher
+                );
+                return new TextDecoder().decode(plainBuf);
+            }
+
+            throw new Error('Unknown payload format — the data may be corrupted.');
         }
 
         function bytesToZWC(bytes) {
@@ -555,7 +664,6 @@
             const cover    = document.getElementById('enc-cover').value || '📋';
 
             if (!message) { showStatus('enc-status', 'Please enter a secret message.', true); return; }
-            if (!password) { showStatus('enc-status', 'Please enter a password.', true); return; }
 
             const btn = document.getElementById('enc-btn');
             btn.disabled = true;
@@ -563,13 +671,14 @@
             lucide.createIcons();
 
             try {
-                const combined = await encryptMessage(message, password);
+                const combined = await encryptPayload(message, password);
                 const zwc = bytesToZWC(combined);
                 const result = cover + zwc;
 
                 document.getElementById('enc-result').value = result;
                 document.getElementById('enc-output').classList.remove('hidden');
-                showStatus('enc-status', 'Message encrypted and hidden successfully!', false);
+                const note = password ? 'Message encrypted and hidden successfully!' : 'Message hidden successfully (no password protection).';
+                showStatus('enc-status', note, false);
             } catch (e) {
                 showStatus('enc-status', 'Encryption failed: ' + e.message, true);
             } finally {
@@ -586,7 +695,6 @@
             const password = document.getElementById('dec-password').value;
 
             if (!input) { showStatus('dec-status', 'Please paste the encoded text.', true); return; }
-            if (!password) { showStatus('dec-status', 'Please enter the password.', true); return; }
 
             const btn = document.getElementById('dec-btn');
             btn.disabled = true;
@@ -596,14 +704,14 @@
             try {
                 const bytes = zwcToBytes(input);
                 if (!bytes) throw new Error('No hidden data found in the input.');
-                if (bytes.length < SALT_LEN + IV_LEN + 1) throw new Error('Hidden data is too short — it may be corrupted.');
+                if (bytes.length < 2) throw new Error('Hidden data is too short — it may be corrupted.');
 
-                const message = await decryptMessage(bytes, password);
+                const message = await decryptPayload(bytes, password);
                 document.getElementById('dec-result').value = message;
                 document.getElementById('dec-output').classList.remove('hidden');
                 showStatus('dec-status', 'Message decrypted successfully!', false);
             } catch (e) {
-                const msg = e.message.includes('decrypt') || e.name === 'OperationError'
+                const msg = (e.message.includes('decrypt') || e.name === 'OperationError')
                     ? 'Decryption failed — wrong password or corrupted data.'
                     : e.message;
                 showStatus('dec-status', msg, true);
