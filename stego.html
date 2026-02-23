@@ -709,7 +709,8 @@
             if (!input) { showStatus('dec-status', 'Please paste the encoded text.', true); return; }
 
             // Debug: count ZWC characters in the pasted input
-            const zwcCount = [...input].filter(c => c === ZWS || c === ZWNJ).length;
+            let zwcCount = 0;
+            for (const ch of input) { if (ch === ZWS || ch === ZWNJ) zwcCount++; }
             console.log('[Stego Decrypt] Input length:', input.length, '| ZWC chars found:', zwcCount);
 
             const btn = document.getElementById('dec-btn');
