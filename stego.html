@@ -616,7 +616,7 @@
             }
 
             if (flag === FLAG_ENCRYPTED) {
-                if (!password) throw new Error('This message is password-protected. Please enter the password.');
+                if (!password) throw new Error('This message requires a password to decrypt.');
                 const salt   = combined.slice(1, 1 + SALT_LEN);
                 const iv     = combined.slice(1 + SALT_LEN, 1 + SALT_LEN + IV_LEN);
                 const cipher = combined.slice(1 + SALT_LEN + IV_LEN);
@@ -704,7 +704,7 @@
             try {
                 const bytes = zwcToBytes(input);
                 if (!bytes) throw new Error('No hidden data found in the input.');
-                if (bytes.length < 2) throw new Error('Hidden data is too short — it may be corrupted.');
+                if (bytes.length < 2) throw new Error('Hidden data is too short — it may be corrupted.'); // minimum: 1 flag byte + 1 data byte
 
                 const message = await decryptPayload(bytes, password);
                 document.getElementById('dec-result').value = message;
