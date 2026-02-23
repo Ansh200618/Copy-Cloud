@@ -568,12 +568,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-indigo-500/30 hover:bg-white/10 transition-all">
                         <div class="flex items-start gap-3">
-                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0">
-                                <i data-lucide="lock" class="w-5 h-5"></i>
+                            <div class="bg-emerald-500/20 p-2 rounded-lg text-emerald-400 shrink-0">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i>
                             </div>
                             <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">End-to-End Encryption</h4>
-                                <p class="text-slate-400 text-xs">Client-side encryption before upload — no one can read your data except you</p>
+                                <h4 class="text-white font-semibold text-sm mb-1">End-to-End Encryption <span class="text-xs font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 ml-1">SHIPPED</span></h4>
+                                <p class="text-slate-400 text-xs">Available now in the <a href="stego.html" class="text-indigo-400 hover:text-indigo-300 transition-colors">Stego Tool</a> — AES-256-GCM encryption with optional password, plus LSB image steganography</p>
                             </div>
                         </div>
                     </div>
@@ -1250,14 +1250,43 @@
                 <!-- ABOUT TAB -->
                 <div id="tab-about" class="glass-panel rounded-3xl p-8 shadow-2xl space-y-8 hidden animate-fade-in">
                     <h2 class="text-2xl font-bold text-white">Platform Information</h2>
+
+                    <!-- New Feature Announcement -->
+                    <div class="rounded-2xl p-6 border animate-fade-in" style="background:linear-gradient(135deg, rgba(var(--accent-rgb,99,102,241),0.12), rgba(var(--accent-rgb,99,102,241),0.04)); border-color:rgba(var(--accent-rgb,99,102,241),0.25);">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2 py-0.5 text-xs font-bold rounded-full" style="background:rgba(var(--accent-rgb,99,102,241),0.2); color:var(--accent-400,#a5b4fc);">NEW</span>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                                <i data-lucide="eye-off" class="w-5 h-5" style="color:var(--accent-400,#a5b4fc);"></i> Stego Tool — Hide Secrets in Plain Sight
+                            </h3>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Our new end-to-end encrypted steganography tool lets you hide messages and files inside innocent-looking text or images. 100% client-side — nothing leaves your browser.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                            <div class="flex items-start gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
+                                <i data-lucide="type" class="w-4 h-4 shrink-0 mt-0.5" style="color:var(--accent-400,#a5b4fc);"></i>
+                                <div><p class="text-white text-xs font-semibold">Text → Text</p><p class="text-slate-500 text-xs">Hide messages in zero-width characters</p></div>
+                            </div>
+                            <div class="flex items-start gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
+                                <i data-lucide="file" class="w-4 h-4 shrink-0 mt-0.5" style="color:var(--accent-400,#a5b4fc);"></i>
+                                <div><p class="text-white text-xs font-semibold">File → Text</p><p class="text-slate-500 text-xs">Encode images & docs into copyable text</p></div>
+                            </div>
+                            <div class="flex items-start gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
+                                <i data-lucide="image" class="w-4 h-4 shrink-0 mt-0.5" style="color:var(--accent-400,#a5b4fc);"></i>
+                                <div><p class="text-white text-xs font-semibold">Text → Image</p><p class="text-slate-500 text-xs">LSB steganography in image pixels</p></div>
+                            </div>
+                        </div>
+                        <a href="stego.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:shadow-lg" style="background:linear-gradient(135deg, var(--accent-from,#6366f1), var(--accent-to,#9333ea)); box-shadow:0 4px 15px rgba(var(--accent-rgb,99,102,241),0.3);">
+                            <i data-lucide="lock" class="w-4 h-4"></i> Try Stego Tool
+                        </a>
+                    </div>
+
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="bg-white/5 p-6 rounded-2xl border border-white/5">
-                            <i data-lucide="shield" class="text-indigo-400 mb-4 w-6 h-6"></i>
+                            <i data-lucide="shield" class="mb-4 w-6 h-6" style="color:var(--accent-400,#a5b4fc);"></i>
                             <h3 class="text-lg font-bold text-white mb-2">Secure & Private</h3>
                             <p class="text-slate-400 text-sm leading-relaxed">All data is assigned a temporary, anonymous ID. No login required. Data persists only as long as you need it.</p>
                         </div>
                         <div class="bg-white/5 p-6 rounded-2xl border border-white/5">
-                            <i data-lucide="zap" class="text-purple-400 mb-4 w-6 h-6"></i>
+                            <i data-lucide="zap" class="mb-4 w-6 h-6" style="color:var(--accent-400,#a5b4fc);"></i>
                             <h3 class="text-lg font-bold text-white mb-2">Instant Transfer</h3>
                             <p class="text-slate-400 text-sm leading-relaxed">Powered by Supabase PostgreSQL database for real-time performance.</p>
                         </div>
@@ -1290,20 +1319,20 @@
             <div class="lg:col-span-4 space-y-6 w-full">
                 <div class="glass-panel rounded-3xl p-6 shadow-xl h-full flex flex-col">
                     <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-6">
-                        <i data-lucide="info" class="text-indigo-400 w-5 h-5"></i> How It Works
+                        <i data-lucide="info" class="w-5 h-5" style="color:var(--accent-400,#a5b4fc);"></i> How It Works
                     </h3>
                     
                     <div class="space-y-4">
                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
-                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="upload" class="w-5 h-5"></i></div>
+                            <div class="p-2 rounded-lg shrink-0" style="background:rgba(var(--accent-rgb,99,102,241),0.2); color:var(--accent-400,#a5b4fc);"><i data-lucide="upload" class="w-5 h-5"></i></div>
                             <div><h4 class="text-white font-medium text-sm mb-1">Upload Content</h4><p class="text-slate-400 text-xs leading-relaxed">Paste text or select multiple files (up to 40MB total).</p></div>
                         </div>
                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
-                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="shield" class="w-5 h-5"></i></div>
+                            <div class="p-2 rounded-lg shrink-0" style="background:rgba(var(--accent-rgb,99,102,241),0.2); color:var(--accent-400,#a5b4fc);"><i data-lucide="shield" class="w-5 h-5"></i></div>
                             <div><h4 class="text-white font-medium text-sm mb-1">Get Unique ID</h4><p class="text-slate-400 text-xs leading-relaxed">We generate a random 6-character code. This key is the only way to access your data.</p></div>
                         </div>
                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
-                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="download" class="w-5 h-5"></i></div>
+                            <div class="p-2 rounded-lg shrink-0" style="background:rgba(var(--accent-rgb,99,102,241),0.2); color:var(--accent-400,#a5b4fc);"><i data-lucide="download" class="w-5 h-5"></i></div>
                             <div><h4 class="text-white font-medium text-sm mb-1">Retrieve Anywhere</h4><p class="text-slate-400 text-xs leading-relaxed">Enter the code to fetch content. Data expires after 24 hours.</p></div>
                         </div>
                     </div>
@@ -1313,11 +1342,11 @@
                     <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Why use this?</h3>
                     <div class="space-y-4">
                         <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
-                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="wifi" class="w-5 h-5"></i></div>
+                            <div class="p-2 rounded-lg shrink-0" style="background:rgba(var(--accent-rgb,99,102,241),0.2); color:var(--accent-400,#a5b4fc);"><i data-lucide="wifi" class="w-5 h-5"></i></div>
                             <div><h4 class="text-white font-medium text-sm mb-1">No Login Required</h4><p class="text-slate-400 text-xs leading-relaxed">Don't waste time signing up. Just upload and go.</p></div>
                         </div>
                          <div class="flex gap-4 items-start p-3 rounded-xl hover:bg-white/5 transition-colors">
-                            <div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400 shrink-0"><i data-lucide="share-2" class="w-5 h-5"></i></div>
+                            <div class="p-2 rounded-lg shrink-0" style="background:rgba(var(--accent-rgb,99,102,241),0.2); color:var(--accent-400,#a5b4fc);"><i data-lucide="share-2" class="w-5 h-5"></i></div>
                             <div><h4 class="text-white font-medium text-sm mb-1">Cross-Device</h4><p class="text-slate-400 text-xs leading-relaxed">Easily move text from your iPhone to Windows, or Android to Mac.</p></div>
                         </div>
                     </div>
