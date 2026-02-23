@@ -564,6 +564,10 @@
         const FLAG_ENCRYPTED = 0x01;
         const FLAG_PLAIN     = 0x00;
 
+        // Keep the raw encoded result in a JS variable so the clipboard copy
+        // never relies on reading back from the DOM (which can strip ZWCs).
+        let lastEncodedResult = '';
+
         async function deriveKey(password, salt) {
             const enc = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey(
@@ -642,7 +646,12 @@
         }
 
         function zwcToBytes(zwcStr) {
-            const filtered = [...zwcStr].filter(c => c === ZWS || c === ZWNJ);
+            // Extract only our ZWC characters, safely skipping emojis (surrogate pairs)
+            // and any other Unicode characters in the input.
+            const filtered = [];
+            for (const ch of zwcStr) {
+                if (ch === ZWS || ch === ZWNJ) filtered.push(ch);
+            }
             if (filtered.length === 0) return null;
             if (filtered.length % 8 !== 0) return null;
             const bytes = new Uint8Array(filtered.length / 8);
@@ -675,10 +684,13 @@
                 const zwc = bytesToZWC(combined);
                 const result = cover + zwc;
 
+                // Store in JS variable for reliable clipboard copy
+                lastEncodedResult = result;
                 document.getElementById('enc-result').value = result;
                 document.getElementById('enc-output').classList.remove('hidden');
                 const note = password ? 'Message encrypted and hidden successfully!' : 'Message hidden successfully (no password protection).';
                 showStatus('enc-status', note, false);
+                console.log('[Stego Encrypt] Output length:', result.length, '| Cover length:', cover.length, '| ZWC chars:', zwc.length);
             } catch (e) {
                 showStatus('enc-status', 'Encryption failed: ' + e.message, true);
             } finally {
@@ -691,10 +703,14 @@
         /* ========== Decrypt handler ========== */
         async function handleDecrypt() {
             hideStatus('dec-status');
-            const input    = document.getElementById('dec-input').value;
+            const input    = document.getElementById('dec-input').value; // raw value — no .trim()
             const password = document.getElementById('dec-password').value;
 
             if (!input) { showStatus('dec-status', 'Please paste the encoded text.', true); return; }
+
+            // Debug: count ZWC characters in the pasted input
+            const zwcCount = [...input].filter(c => c === ZWS || c === ZWNJ).length;
+            console.log('[Stego Decrypt] Input length:', input.length, '| ZWC chars found:', zwcCount);
 
             const btn = document.getElementById('dec-btn');
             btn.disabled = true;
@@ -725,7 +741,10 @@
 
         /* ========== Copy to clipboard ========== */
         async function copyResult() {
-            const text = document.getElementById('enc-result').value;
+            // Copy from the JS variable directly — never read back from the DOM,
+            // because browsers can strip ZWCs when rendering or reading .value/.textContent.
+            const text = lastEncodedResult;
+            if (!text) return;
             try {
                 await navigator.clipboard.writeText(text);
                 const el = document.getElementById('copy-status');
@@ -738,7 +757,7 @@
                     el.classList.add('text-slate-500');
                 }, 2000);
             } catch {
-                /* Fallback: select text so user can copy manually */
+                /* Fallback: select text in textarea so user can Ctrl+C manually */
                 const ta = document.getElementById('enc-result');
                 ta.select();
                 ta.setSelectionRange(0, ta.value.length);
