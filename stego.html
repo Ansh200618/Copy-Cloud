@@ -574,7 +574,7 @@
                 showStatus('enc-status', 'Encryption failed: ' + e.message, true);
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="lock" class="w-4 h-4"></i> Encrypt & Hide';
+                btn.innerHTML = '<i data-lucide="lock" class="w-4 h-4"></i> Encrypt &amp; Hide';
                 lucide.createIcons();
             }
         }
@@ -630,15 +630,10 @@
                     el.classList.add('text-slate-500');
                 }, 2000);
             } catch {
-                /* Fallback for older browsers */
-                const ta = document.createElement('textarea');
-                ta.value = text;
-                ta.style.position = 'fixed';
-                ta.style.opacity = '0';
-                document.body.appendChild(ta);
+                /* Fallback: select text so user can copy manually */
+                const ta = document.getElementById('enc-result');
                 ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
+                ta.setSelectionRange(0, ta.value.length);
             }
         }
 
@@ -659,7 +654,8 @@
             // Hover → gentle bounce
             btn.addEventListener('mouseenter', function onHover() {
                 tooltip.classList.remove('bounce');
-                // Force reflow to restart animation
+                // Force a synchronous reflow so the browser registers the class
+                // removal before re-adding it, which restarts the CSS animation.
                 void tooltip.offsetWidth;
                 tooltip.classList.add('bounce');
             });
