@@ -918,27 +918,26 @@
         }
 
         /* ========== LSB Image Steganography ========== */
+        const LSB_HEADER_BYTES = 4; // 4-byte big-endian payload length prefix
+
         function lsbEncode(imageData, payloadBytes) {
             const pixels = imageData.data; // RGBA array
-            // Format: [payloadLength:4 bytes BE][payload...]
-            const totalLen = 4 + payloadBytes.length;
+            const totalLen = LSB_HEADER_BYTES + payloadBytes.length;
             const bitsNeeded = totalLen * 8;
             const bitsAvailable = (pixels.length / 4) * 3; // 3 channels per pixel (skip alpha)
             if (bitsNeeded > bitsAvailable) {
                 throw new Error('Image too small. Need ' + Math.ceil(bitsNeeded / 8) + ' bytes capacity, have ' + Math.floor(bitsAvailable / 8) + '.');
             }
-            // Build header + payload
             const fullPayload = new Uint8Array(totalLen);
             const len = payloadBytes.length;
             fullPayload[0] = (len >> 24) & 0xFF;
             fullPayload[1] = (len >> 16) & 0xFF;
             fullPayload[2] = (len >> 8) & 0xFF;
             fullPayload[3] = len & 0xFF;
-            fullPayload.set(payloadBytes, 4);
-            // Embed bits into LSB of R, G, B channels
+            fullPayload.set(payloadBytes, LSB_HEADER_BYTES);
             let bitIdx = 0;
             for (let px = 0; px < pixels.length && bitIdx < bitsNeeded; px++) {
-                if (px % 4 === 3) continue; // skip alpha channel
+                if (px % 4 === 3) continue;
                 const byteIndex = Math.floor(bitIdx / 8);
                 const bitOffset = 7 - (bitIdx % 8);
                 const bit = (fullPayload[byteIndex] >> bitOffset) & 1;
@@ -950,10 +949,11 @@
 
         function lsbDecode(imageData) {
             const pixels = imageData.data;
-            // Extract 4 bytes for length header
-            const headerBits = 32;
+            const LSB_HEADER_BYTES = 4;
+            // First pass: extract 4-byte length header
+            const headerBits = LSB_HEADER_BYTES * 8;
             let bitIdx = 0;
-            const header = new Uint8Array(4);
+            const header = new Uint8Array(LSB_HEADER_BYTES);
             for (let px = 0; px < pixels.length && bitIdx < headerBits; px++) {
                 if (px % 4 === 3) continue;
                 const byteIndex = Math.floor(bitIdx / 8);
@@ -962,29 +962,27 @@
                 bitIdx++;
             }
             const payloadLen = (header[0] << 24) | (header[1] << 16) | (header[2] << 8) | header[3];
-            if (payloadLen <= 0 || payloadLen > 10 * 1024 * 1024) {
+            const MAX_LSB_PAYLOAD = 10 * 1024 * 1024;
+            if (payloadLen <= 0 || payloadLen > MAX_LSB_PAYLOAD) {
                 throw new Error('No hidden data found in this image.');
             }
-            // Extract payload bytes
-            const totalBits = (4 + payloadLen) * 8;
+            // Single-pass: extract header + payload bits together
+            const totalBytes = LSB_HEADER_BYTES + payloadLen;
+            const totalBits = totalBytes * 8;
             const bitsAvailable = (pixels.length / 4) * 3;
             if (totalBits > bitsAvailable) {
                 throw new Error('Image data appears corrupted.');
             }
-            const fullPayload = new Uint8Array(4 + payloadLen);
-            fullPayload.set(header);
-            bitIdx = headerBits;
+            const fullPayload = new Uint8Array(totalBytes);
+            bitIdx = 0;
             for (let px = 0; px < pixels.length && bitIdx < totalBits; px++) {
                 if (px % 4 === 3) continue;
-                // Skip first headerBits worth of pixels
-                const channelIdx = px - Math.floor(px / 4); // exclude alpha indices
-                if (channelIdx < headerBits) continue;
                 const byteIndex = Math.floor(bitIdx / 8);
                 const bitOffset = 7 - (bitIdx % 8);
                 fullPayload[byteIndex] |= (pixels[px] & 1) << bitOffset;
                 bitIdx++;
             }
-            return fullPayload.slice(4);
+            return fullPayload.slice(LSB_HEADER_BYTES);
         }
 
         /* ========== File input handlers ========== */
@@ -1023,7 +1021,7 @@
                 // Calculate capacity
                 const img = new Image();
                 img.onload = () => {
-                    const capacity = Math.floor((img.width * img.height * 3) / 8) - 4;
+                    const capacity = Math.floor((img.width * img.height * 3) / 8) - LSB_HEADER_BYTES;
                     document.getElementById('enc-img-capacity').textContent =
                         'Capacity: ~' + formatBytes(capacity) + ' (' + img.width + '×' + img.height + ')';
                 };
@@ -1279,7 +1277,7 @@
         }
 
         /* ========== Drag & drop support ========== */
-        function setupDropZone(zoneId, inputId, handler) {
+        function setupDropZone(zoneId, inputId) {
             const zone = document.getElementById(zoneId);
             if (!zone) return;
             zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
@@ -1287,9 +1285,11 @@
             zone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 zone.classList.remove('drag-over');
-                const input = document.getElementById(inputId);
                 if (e.dataTransfer.files.length > 0) {
-                    input.files = e.dataTransfer.files;
+                    const input = document.getElementById(inputId);
+                    const dt = new DataTransfer();
+                    dt.items.add(e.dataTransfer.files[0]);
+                    input.files = dt.files;
                     input.dispatchEvent(new Event('change'));
                 }
             });
