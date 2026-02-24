@@ -847,6 +847,11 @@
 
         const PLATFORM_SAFE_MARKER = '\u{1F512}'; // 🔒
 
+        // Regex that strips ALL common invisible / formatting Unicode characters.
+        // Messaging platforms (WhatsApp, Telegram, iMessage, etc.) often inject
+        // variation selectors, directional marks, word-joiners, soft hyphens, etc.
+        const INVISIBLE_RE = /[\s\u00AD\u034F\u061C\u180E\u200B-\u200F\u2028-\u202F\u2060-\u206F\uFE00-\uFE0F\uFEFF]/g;
+
         let lastEncodedResult = '';
         let selectedEncImage = null;
         let selectedDecImage = null;
@@ -859,7 +864,7 @@
         }
 
         function base64ToBytes(str) {
-            const cleaned = str.replace(/[\s\uFE0F]/g, '');
+            const cleaned = str.replace(INVISIBLE_RE, '');
             const binary = atob(cleaned);
             const bytes = new Uint8Array(binary.length);
             for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
@@ -1105,7 +1110,13 @@
         /* Create an inline Web Worker for LSB processing to avoid blocking the UI */
         const lsbWorkerCode = `
             const LSB_HEADER_BYTES = 4;
+            // Force every pixel to fully opaque (alpha=255) so that canvas
+            // premultiplied-alpha round-trips cannot corrupt R/G/B LSBs.
+            function opaquePixels(pixels) {
+                for (let i = 3; i < pixels.length; i += 4) pixels[i] = 255;
+            }
             function lsbEncodeW(pixels, payloadBytes) {
+                opaquePixels(pixels);
                 const totalLen = LSB_HEADER_BYTES + payloadBytes.length;
                 const bitsNeeded = totalLen * 8;
                 const bitsAvailable = (pixels.length / 4) * 3;
@@ -1130,6 +1141,7 @@
                 return pixels;
             }
             function lsbDecodeW(pixels) {
+                opaquePixels(pixels);
                 const headerBits = LSB_HEADER_BYTES * 8;
                 let bitIdx = 0;
                 const header = new Uint8Array(LSB_HEADER_BYTES);
@@ -1138,9 +1150,9 @@
                     header[bitIdx >>> 3] |= (pixels[px] & 1) << (7 - (bitIdx & 7));
                     bitIdx++;
                 }
-                const payloadLen = (header[0] << 24) | (header[1] << 16) | (header[2] << 8) | header[3];
+                const payloadLen = ((header[0] << 24) | (header[1] << 16) | (header[2] << 8) | header[3]) >>> 0;
                 const MAX_LSB_PAYLOAD = 10 * 1024 * 1024;
-                if (payloadLen <= 0 || payloadLen > MAX_LSB_PAYLOAD) throw new Error('No hidden data found in this image.');
+                if (payloadLen === 0 || payloadLen > MAX_LSB_PAYLOAD) throw new Error('No hidden data found in this image.');
                 const totalBytes = LSB_HEADER_BYTES + payloadLen;
                 const totalBits = totalBytes * 8;
                 if (totalBits > (pixels.length / 4) * 3) throw new Error('Image data appears corrupted.');
@@ -1215,7 +1227,7 @@
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width;
                 canvas.height = img.height;
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 ctx.drawImage(img, 0, 0);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -1257,9 +1269,9 @@
             const lockIdx = input.lastIndexOf(PLATFORM_SAFE_MARKER);
             let isPlatformSafe = false;
             if (lockIdx >= 0) {
-                // Strip whitespace AND variation selectors (U+FE0F) that messaging
-                // platforms (WhatsApp, Telegram, etc.) often append to emoji
-                const afterLock = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).replace(/[\s\uFE0F]/g, '');
+                // Strip ALL invisible / formatting Unicode characters that messaging
+                // platforms may inject (variation selectors, directional marks, etc.)
+                const afterLock = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).replace(INVISIBLE_RE, '');
                 if (afterLock.length > 0 && /^[A-Za-z0-9+/=]+$/.test(afterLock)) {
                     isPlatformSafe = true;
                 }
@@ -1272,7 +1284,7 @@
             try {
                 let bytes;
                 if (isPlatformSafe) {
-                    const b64 = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).replace(/[\s\uFE0F]/g, '');
+                    const b64 = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).replace(INVISIBLE_RE, '');
                     try {
                         bytes = base64ToBytes(b64);
                     } catch {
@@ -1327,7 +1339,7 @@
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width;
                 canvas.height = img.height;
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 ctx.drawImage(img, 0, 0);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
