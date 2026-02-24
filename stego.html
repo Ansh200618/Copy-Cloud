@@ -223,6 +223,20 @@
         /* Image preview */
         .img-preview { max-width: 100%; max-height: 200px; border-radius: 0.75rem; margin-top: 0.5rem; }
 
+        /* Theme-aware accent utilities */
+        .accent-btn {
+            background: linear-gradient(135deg, var(--accent-from), var(--accent-to)) !important;
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.25);
+        }
+        .accent-btn:hover { box-shadow: 0 8px 25px rgba(var(--accent-rgb), 0.35); }
+        .accent-icon-bg {
+            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+        }
+        .accent-badge-bg {
+            background: rgba(var(--accent-rgb), 0.15);
+            color: var(--accent-400);
+        }
+
         /* ===== Feature Discovery Onboarding ===== */
 
         /* Pulsing glow dot on the hamburger button */
@@ -361,7 +375,7 @@
     <nav id="sidebar" class="sidebar fixed top-0 left-0 h-full w-72 z-50 glass-panel border-r border-white/10 flex flex-col">
         <div class="p-6 border-b border-white/10">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
+                <div class="w-10 h-10 rounded-xl accent-icon-bg flex items-center justify-center shadow-lg">
                     <i data-lucide="clipboard" class="w-5 h-5 text-white"></i>
                 </div>
                 <div>
@@ -413,11 +427,11 @@
     <main class="max-w-2xl mx-auto px-4 pt-20 pb-16">
         <!-- Header -->
         <div class="text-center mb-8 animate-fade-in">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 mb-4 shadow-lg shadow-indigo-500/20">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl accent-icon-bg mb-4 shadow-lg">
                 <i data-lucide="eye-off" class="w-8 h-8 text-white"></i>
             </div>
             <h1 class="text-3xl font-bold text-white mb-2">Stego Tool</h1>
-            <p class="text-slate-400 text-sm max-w-md mx-auto">Hide encrypted messages inside ordinary text using invisible zero-width characters. End-to-end encrypted, 100% client-side.</p>
+            <p class="text-slate-400 text-sm max-w-md mx-auto">Hide secret messages inside emojis or pictures. Only you and the receiver can read them — everything stays on your device.</p>
         </div>
 
         <!-- Tabs -->
@@ -462,7 +476,7 @@
                     <input id="enc-cover" type="text" value="📋" class="input-field w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500 transition-all" placeholder="Visible text (e.g. an emoji)">
                     <p class="text-xs text-slate-500 mt-1">This text will be visible — the secret is hidden after it.</p>
                 </div>
-                <button id="enc-btn" onclick="handleEncrypt()" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center justify-center gap-2">
+                <button id="enc-btn" onclick="handleEncrypt()" class="accent-btn w-full py-3 rounded-xl text-white font-semibold text-sm transition-all flex items-center justify-center gap-2">
                     <i data-lucide="lock" class="w-4 h-4"></i> Encrypt &amp; Hide
                 </button>
                 <div id="enc-status" class="status-msg hidden"></div>
@@ -499,7 +513,7 @@
                         </div>
                     </div>
                 </div>
-                <button id="enc-img-btn" onclick="handleEncryptImageStego()" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center justify-center gap-2">
+                <button id="enc-img-btn" onclick="handleEncryptImageStego()" class="accent-btn w-full py-3 rounded-xl text-white font-semibold text-sm transition-all flex items-center justify-center gap-2">
                     <i data-lucide="lock" class="w-4 h-4"></i> Hide Text in Image
                 </button>
                 <div id="enc-img-status" class="status-msg hidden"></div>
@@ -524,7 +538,7 @@
             <div id="enc-output-image" class="glass-panel rounded-2xl p-6 hidden">
                 <label class="block text-sm font-medium text-slate-300 mb-1.5">Stego Image</label>
                 <img id="enc-stego-preview" class="img-preview mx-auto mb-3" alt="Stego image">
-                <a id="enc-stego-download" download="stego.png" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 no-underline">
+                <a id="enc-stego-download" download="stego.png" class="accent-btn w-full py-3 rounded-xl text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 no-underline">
                     <i data-lucide="download" class="w-4 h-4"></i> Download Stego Image
                 </a>
                 <p class="text-xs text-slate-500 mt-1.5 text-center">The image looks identical but contains your hidden message.</p>
@@ -558,7 +572,7 @@
                         </button>
                     </div>
                 </div>
-                <button id="dec-btn" onclick="handleDecrypt()" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center justify-center gap-2">
+                <button id="dec-btn" onclick="handleDecrypt()" class="accent-btn w-full py-3 rounded-xl text-white font-semibold text-sm transition-all flex items-center justify-center gap-2">
                     <i data-lucide="unlock" class="w-4 h-4"></i> Decrypt
                 </button>
                 <div id="dec-status" class="status-msg hidden"></div>
@@ -590,7 +604,7 @@
                         </button>
                     </div>
                 </div>
-                <button id="dec-img-btn" onclick="handleDecryptImageStego()" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center justify-center gap-2">
+                <button id="dec-img-btn" onclick="handleDecryptImageStego()" class="accent-btn w-full py-3 rounded-xl text-white font-semibold text-sm transition-all flex items-center justify-center gap-2">
                     <i data-lucide="unlock" class="w-4 h-4"></i> Extract from Image
                 </button>
                 <div id="dec-img-status" class="status-msg hidden"></div>
@@ -606,15 +620,15 @@
             <div id="dec-output-file" class="glass-panel rounded-2xl p-6 hidden">
                 <label class="block text-sm font-medium text-slate-300 mb-1.5">Recovered File</label>
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center">
-                        <i data-lucide="file-down" class="w-5 h-5 text-indigo-400"></i>
+                    <div class="w-10 h-10 rounded-xl accent-badge-bg flex items-center justify-center">
+                        <i data-lucide="file-down" class="w-5 h-5" style="color:var(--accent-400)"></i>
                     </div>
                     <div>
                         <p id="dec-file-name" class="text-sm font-medium text-white">file.ext</p>
                         <p id="dec-file-size" class="text-xs text-slate-400">0 KB</p>
                     </div>
                 </div>
-                <a id="dec-file-download" download class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 no-underline">
+                <a id="dec-file-download" download class="accent-btn w-full py-3 rounded-xl text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 no-underline">
                     <i data-lucide="download" class="w-4 h-4"></i> Download File
                 </a>
             </div>
@@ -623,21 +637,38 @@
         <!-- How It Works -->
         <div id="how-it-works" class="mt-10 glass-panel rounded-2xl p-6 animate-fade-in" style="animation-delay: 0.3s;">
             <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <i data-lucide="book-open" class="w-5 h-5 text-indigo-400"></i> How It Works
+                <i data-lucide="book-open" class="w-5 h-5" style="color:var(--accent-400)"></i> How It Works
             </h2>
-            <div class="space-y-3 text-sm text-slate-400 leading-relaxed">
-                <div class="flex items-start gap-3">
-                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">1</span>
-                    <p><strong class="text-slate-300">Text → Text:</strong> Your message (optionally encrypted with <strong class="text-slate-300">AES-256-GCM</strong>) is converted to <strong class="text-slate-300">invisible zero-width characters</strong> and appended after cover text.</p>
-                </div>
-                <div class="flex items-start gap-3">
-                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">2</span>
-                    <p><strong class="text-slate-300">Text → Image:</strong> Your message is hidden in a cover image using <strong class="text-slate-300">LSB steganography</strong> — changing the least significant bit of pixel colors, invisible to the eye. Processing is offloaded to a Web Worker so your browser stays responsive.</p>
-                </div>
-                <div class="flex items-start gap-3">
-                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">3</span>
-                    <p><strong class="text-slate-300">Everything happens in your browser</strong> — no data is ever sent to a server. Passwords use <strong class="text-slate-300">PBKDF2</strong> (100k iterations).</p>
-                </div>
+
+            <p class="text-sm text-slate-400 mb-4">Think of it like writing a secret letter in invisible ink — only someone who knows the trick (and optionally, your password) can read it.</p>
+
+            <!-- Mode 1 -->
+            <h3 class="text-sm font-semibold text-white flex items-center gap-2 mb-2">
+                <span class="flex-shrink-0 w-6 h-6 rounded-full accent-badge-bg flex items-center justify-center text-xs font-bold">1</span>
+                Hide a message inside text
+            </h3>
+            <div class="space-y-1.5 text-sm text-slate-400 leading-relaxed mb-4 ml-8">
+                <p>📝 <strong class="text-slate-300">You type</strong> a secret message and pick a cover emoji or word (like 📋).</p>
+                <p>🔒 <strong class="text-slate-300">Optionally add a password</strong> — this scrambles the message so only someone with the same password can unlock it.</p>
+                <p>✨ <strong class="text-slate-300">We attach</strong> your message to the cover text using <strong class="text-slate-300">invisible characters</strong> — they look like nothing at all, so the result just looks like a normal emoji.</p>
+                <p>📋 <strong class="text-slate-300">Share it</strong> anywhere — chat, email, social media. Only this tool can reveal what's hidden inside.</p>
+            </div>
+
+            <!-- Mode 2 -->
+            <h3 class="text-sm font-semibold text-white flex items-center gap-2 mb-2">
+                <span class="flex-shrink-0 w-6 h-6 rounded-full accent-badge-bg flex items-center justify-center text-xs font-bold">2</span>
+                Hide a message inside a picture
+            </h3>
+            <div class="space-y-1.5 text-sm text-slate-400 leading-relaxed mb-4 ml-8">
+                <p>🖼️ <strong class="text-slate-300">You upload</strong> any image and type your secret message.</p>
+                <p>🔍 <strong class="text-slate-300">We make tiny changes</strong> to the image's pixels — so small that no human eye can tell the difference.</p>
+                <p>💾 <strong class="text-slate-300">Download</strong> the new image and share it. It looks completely normal, but your message is baked in.</p>
+            </div>
+
+            <!-- Privacy note -->
+            <div class="flex items-start gap-2 rounded-xl p-3 mt-2" style="background:rgba(var(--accent-rgb),0.08); border:1px solid rgba(var(--accent-rgb),0.15);">
+                <span class="text-base mt-0.5">🛡️</span>
+                <p class="text-sm text-slate-300 leading-relaxed"><strong style="color:var(--accent-400)">100% private</strong> — everything happens right here in your browser. No data is ever sent to any server. Your secrets never leave your device.</p>
             </div>
         </div>
     </main>
