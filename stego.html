@@ -859,7 +859,7 @@
         }
 
         function base64ToBytes(str) {
-            const cleaned = str.replace(/\s/g, '');
+            const cleaned = str.replace(/[\s\uFE0F]/g, '');
             const binary = atob(cleaned);
             const bytes = new Uint8Array(binary.length);
             for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
@@ -1047,6 +1047,22 @@
             });
         }
 
+        /**
+         * Load an image for LSB steganography with color-accurate pixels.
+         * Uses createImageBitmap with colorSpaceConversion:'none' to prevent
+         * browser color management from altering pixel LSBs (which would
+         * corrupt hidden data). Falls back to standard Image loading if the
+         * browser doesn't support createImageBitmap options.
+         */
+        async function loadImageForStego(file) {
+            if (typeof createImageBitmap === 'function') {
+                try {
+                    return await createImageBitmap(file, { colorSpaceConversion: 'none' });
+                } catch (_) { /* options not supported, fall through */ }
+            }
+            return loadImageFromFile(file);
+        }
+
         /* ========== Encrypt: Text → Text ========== */
         async function handleEncrypt() {
             hideStatus('enc-status');
@@ -1193,7 +1209,7 @@
             setBtnLoading('enc-img-btn', 'Processing…');
             try {
                 const payloadBytes = await encryptPayload(message, password);
-                const img = await loadImageFromFile(selectedEncImage);
+                const img = await loadImageForStego(selectedEncImage);
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width;
                 canvas.height = img.height;
@@ -1239,8 +1255,9 @@
             const lockIdx = input.lastIndexOf(PLATFORM_SAFE_MARKER);
             let isPlatformSafe = false;
             if (lockIdx >= 0) {
-                // Strip whitespace first, then validate strictly as Base64
-                const afterLock = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).replace(/\s/g, '');
+                // Strip whitespace AND variation selectors (U+FE0F) that messaging
+                // platforms (WhatsApp, Telegram, etc.) often append to emoji
+                const afterLock = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).replace(/[\s\uFE0F]/g, '');
                 if (afterLock.length > 0 && /^[A-Za-z0-9+/=]+$/.test(afterLock)) {
                     isPlatformSafe = true;
                 }
@@ -1253,7 +1270,7 @@
             try {
                 let bytes;
                 if (isPlatformSafe) {
-                    const b64 = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).trim();
+                    const b64 = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).replace(/[\uFE0F]/g, '').trim();
                     try {
                         bytes = base64ToBytes(b64);
                     } catch {
@@ -1304,7 +1321,7 @@
             const password = document.getElementById('dec-img-password').value;
             setBtnLoading('dec-img-btn', 'Extracting…');
             try {
-                const img = await loadImageFromFile(selectedDecImage);
+                const img = await loadImageForStego(selectedDecImage);
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width;
                 canvas.height = img.height;
