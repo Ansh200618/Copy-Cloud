@@ -1222,6 +1222,11 @@
             setupDropZone('enc-img-zone', 'enc-img-input', 'enc');
             setupDropZone('dec-img-zone', 'dec-img-input', 'dec');
         });
+
+        // Cleanup blob URLs on page unload to prevent memory leaks
+        window.addEventListener('beforeunload', () => {
+            if (stegoObjectUrl) URL.revokeObjectURL(stegoObjectUrl);
+        });
     </script>
 </body>
 </html>
