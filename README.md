@@ -18,7 +18,7 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **📷 QR Code Generation** - Scan QR codes to quickly access shared content
 - **🎨 Appearance System** - Day/Night/Auto theme modes, 12 accent color presets, 11 background textures — all persisted across sessions
 - **🌐 Real-time Database** - PostgreSQL database with real-time subscriptions
-- **🕵️ Stego Tool** - Hide encrypted messages and files inside text or images using zero-width characters and LSB steganography (see below)
+- **🕵️ Stego Tool** - Hide encrypted messages inside text or images using zero-width characters and LSB steganography (see below)
 
 ---
 
@@ -44,14 +44,13 @@ A modern, secure, and user-friendly web application for transferring text and fi
 
 ## 🕵️ Stego Tool — E2EE Steganography
 
-The Stego Tool (`stego.html`) lets you hide secret messages or files inside innocent-looking text or images. Everything is 100% client-side — no data ever leaves your browser.
+The Stego Tool (`stego.html`) lets you hide secret messages inside innocent-looking text or images. Everything is 100% client-side — no data ever leaves your browser. Image processing runs in a Web Worker so the UI never freezes.
 
-### Three Modes
+### Two Modes
 
 | Mode | Description |
 |------|-------------|
 | **Text → Text** | Encrypt a message with AES-256-GCM (optional password) and encode it as invisible zero-width characters appended to cover text (e.g., an emoji). |
-| **File → Text** | Upload an image or document (up to 500 KB), encode its bytes + metadata (filename, MIME type) into zero-width characters. The result is copyable text that carries a hidden file. |
 | **Text → Image** | Type a secret message and select a cover PNG image. The message is embedded into the least-significant bits of the image pixels (LSB steganography). The output is a visually identical PNG. |
 
 ### Security

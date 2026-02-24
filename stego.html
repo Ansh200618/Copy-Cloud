@@ -375,18 +375,18 @@
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 <span class="text-sm font-medium">Back to Copy Cloud</span>
             </a>
-            <a href="#how-it-works" onclick="toggleMenu()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+            <a href="#how-it-works" onclick="toggleMenu(); document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'}); return false;" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all">
                 <i data-lucide="info" class="w-4 h-4"></i>
                 <span class="text-sm font-medium">How It Works</span>
             </a>
-            <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300">
+            <button onclick="switchTab('encrypt'); toggleMenu();" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all">
                 <i data-lucide="lock" class="w-4 h-4"></i>
                 <span class="text-sm font-medium">Encrypt</span>
-            </div>
-            <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300">
+            </button>
+            <button onclick="switchTab('decrypt'); toggleMenu();" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-all">
                 <i data-lucide="unlock" class="w-4 h-4"></i>
                 <span class="text-sm font-medium">Decrypt</span>
-            </div>
+            </button>
         </div>
         <div class="p-4 border-t border-white/10">
             <p class="text-xs text-slate-500 text-center">100% client-side · No data leaves your browser</p>
@@ -437,9 +437,6 @@
                 <button class="mode-btn active flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 border border-transparent bg-transparent" onclick="switchEncMode('text')" id="enc-mode-btn-text">
                     <i data-lucide="type" class="w-3.5 h-3.5"></i> Text → Text
                 </button>
-                <button class="mode-btn flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 border border-transparent text-slate-400 bg-transparent" onclick="switchEncMode('file')" id="enc-mode-btn-file">
-                    <i data-lucide="file" class="w-3.5 h-3.5"></i> File → Text
-                </button>
                 <button class="mode-btn flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 border border-transparent text-slate-400 bg-transparent" onclick="switchEncMode('image')" id="enc-mode-btn-image">
                     <i data-lucide="image" class="w-3.5 h-3.5"></i> Text → Image
                 </button>
@@ -469,41 +466,6 @@
                     <i data-lucide="lock" class="w-4 h-4"></i> Encrypt &amp; Hide
                 </button>
                 <div id="enc-status" class="status-msg hidden"></div>
-            </div>
-
-            <!-- Mode: File in Text -->
-            <div id="enc-panel-file" class="glass-panel rounded-2xl p-6 space-y-4 hidden">
-                <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1.5">Secret File</label>
-                    <div id="enc-file-zone" class="file-drop-zone" onclick="document.getElementById('enc-file-input').click()">
-                        <input id="enc-file-input" type="file" class="hidden" onchange="handleFileSelect(this, 'enc')" accept="image/*,.pdf,.doc,.docx,.txt,.zip,.csv,.xls,.xlsx,.ppt,.pptx">
-                        <div id="enc-file-placeholder" class="space-y-1">
-                            <i data-lucide="upload-cloud" class="w-8 h-8 mx-auto text-slate-500"></i>
-                            <p class="text-sm text-slate-400">Click or drag & drop a file here</p>
-                            <p class="text-xs text-slate-500">Images, documents, PDFs — max 500 KB</p>
-                        </div>
-                        <div id="enc-file-info" class="hidden justify-center">
-                            <span class="file-info"><i data-lucide="paperclip" class="w-3.5 h-3.5"></i> <span id="enc-file-name">file.ext</span> <span id="enc-file-size" class="text-slate-500">(0 KB)</span></span>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1.5">Password <span class="text-slate-500 font-normal">(Optional)</span></label>
-                    <div class="relative">
-                        <input id="enc-file-password" type="password" class="input-field w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-11 text-white text-sm placeholder-slate-500 transition-all" placeholder="Leave empty for no encryption">
-                        <button type="button" onclick="togglePassword('enc-file-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors" aria-label="Toggle password visibility">
-                            <i data-lucide="eye" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1.5">Cover Text</label>
-                    <input id="enc-file-cover" type="text" value="📋" class="input-field w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500 transition-all" placeholder="Visible text (e.g. an emoji)">
-                </div>
-                <button id="enc-file-btn" onclick="handleEncryptFile()" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="lock" class="w-4 h-4"></i> Encrypt File &amp; Hide
-                </button>
-                <div id="enc-file-status" class="status-msg hidden"></div>
             </div>
 
             <!-- Mode: Text in Image -->
@@ -667,14 +629,10 @@
                 </div>
                 <div class="flex items-start gap-3">
                     <span class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">2</span>
-                    <p><strong class="text-slate-300">File → Text:</strong> Images or documents are encoded into zero-width characters with metadata (filename, type). The result is copyable text.</p>
+                    <p><strong class="text-slate-300">Text → Image:</strong> Your message is hidden in a cover image using <strong class="text-slate-300">LSB steganography</strong> — changing the least significant bit of pixel colors, invisible to the eye. Processing is offloaded to a Web Worker so your browser stays responsive.</p>
                 </div>
                 <div class="flex items-start gap-3">
                     <span class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">3</span>
-                    <p><strong class="text-slate-300">Text → Image:</strong> Your message is hidden in a cover image using <strong class="text-slate-300">LSB steganography</strong> — changing the least significant bit of pixel colors, invisible to the eye.</p>
-                </div>
-                <div class="flex items-start gap-3">
-                    <span class="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs font-bold">4</span>
                     <p><strong class="text-slate-300">Everything happens in your browser</strong> — no data is ever sent to a server. Passwords use <strong class="text-slate-300">PBKDF2</strong> (100k iterations).</p>
                 </div>
             </div>
@@ -705,7 +663,7 @@
 
         /* ========== Encrypt mode switching ========== */
         function switchEncMode(mode) {
-            ['text', 'file', 'image'].forEach(m => {
+            ['text', 'image'].forEach(m => {
                 document.getElementById('enc-mode-btn-' + m).classList.toggle('active', m === mode);
                 document.getElementById('enc-panel-' + m).classList.toggle('hidden', m !== mode);
             });
@@ -761,12 +719,10 @@
         const IV_LEN   = 12;
         const FLAG_PLAIN      = 0x00;
         const FLAG_ENCRYPTED  = 0x01;
-        const FLAG_FILE_PLAIN = 0x02;
-        const FLAG_FILE_ENC   = 0x03;
-        const MAX_FILE_SIZE   = 500 * 1024; // 500 KB for ZWC encoding
+        const FLAG_FILE_PLAIN = 0x02; // kept for backwards-compat decryption
+        const FLAG_FILE_ENC   = 0x03; // kept for backwards-compat decryption
 
         let lastEncodedResult = '';
-        let selectedEncFile = null;
         let selectedEncImage = null;
         let selectedDecImage = null;
 
@@ -838,55 +794,6 @@
         }
 
         /* ========== File payload helpers ========== */
-        function buildFilePayload(fileBytes, fileName, mimeType) {
-            const enc = new TextEncoder();
-            const fnBytes = enc.encode(fileName);
-            const mtBytes = enc.encode(mimeType);
-            // [fnLen:2][filename][mtLen:2][mime][fileData]
-            const payload = new Uint8Array(2 + fnBytes.length + 2 + mtBytes.length + fileBytes.length);
-            payload[0] = (fnBytes.length >> 8) & 0xFF;
-            payload[1] = fnBytes.length & 0xFF;
-            payload.set(fnBytes, 2);
-            const mtOff = 2 + fnBytes.length;
-            payload[mtOff] = (mtBytes.length >> 8) & 0xFF;
-            payload[mtOff + 1] = mtBytes.length & 0xFF;
-            payload.set(mtBytes, mtOff + 2);
-            payload.set(new Uint8Array(fileBytes), mtOff + 2 + mtBytes.length);
-            return payload;
-        }
-
-        function parseFilePayload(data) {
-            const dec = new TextDecoder();
-            const fnLen = (data[0] << 8) | data[1];
-            const fileName = dec.decode(data.slice(2, 2 + fnLen));
-            const mtOff = 2 + fnLen;
-            const mtLen = (data[mtOff] << 8) | data[mtOff + 1];
-            const mimeType = dec.decode(data.slice(mtOff + 2, mtOff + 2 + mtLen));
-            const fileData = data.slice(mtOff + 2 + mtLen);
-            return { fileName, mimeType, fileData };
-        }
-
-        async function encryptFilePayload(fileBytes, fileName, mimeType, password) {
-            const inner = buildFilePayload(fileBytes, fileName, mimeType);
-            if (!password) {
-                const combined = new Uint8Array(1 + inner.length);
-                combined[0] = FLAG_FILE_PLAIN;
-                combined.set(inner, 1);
-                return combined;
-            }
-            const salt = crypto.getRandomValues(new Uint8Array(SALT_LEN));
-            const iv   = crypto.getRandomValues(new Uint8Array(IV_LEN));
-            const key  = await deriveKey(password, salt);
-            const cipherBuf = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, inner);
-            const cipher = new Uint8Array(cipherBuf);
-            const combined = new Uint8Array(1 + SALT_LEN + IV_LEN + cipher.length);
-            combined[0] = FLAG_FILE_ENC;
-            combined.set(salt, 1);
-            combined.set(iv, 1 + SALT_LEN);
-            combined.set(cipher, 1 + SALT_LEN + IV_LEN);
-            return combined;
-        }
-
         /* ========== ZWC encode/decode ========== */
         function bytesToZWC(bytes) {
             let zwc = '';
@@ -917,95 +824,10 @@
             return bytes;
         }
 
-        /* ========== LSB Image Steganography ========== */
-        const LSB_HEADER_BYTES = 4; // 4-byte big-endian payload length prefix
+        /* ========== LSB Image Steganography (moved to Web Worker) ========== */
+        const LSB_HEADER_BYTES = 4; // used for capacity calculation only
 
-        function lsbEncode(imageData, payloadBytes) {
-            const pixels = imageData.data; // RGBA array
-            const totalLen = LSB_HEADER_BYTES + payloadBytes.length;
-            const bitsNeeded = totalLen * 8;
-            const bitsAvailable = (pixels.length / 4) * 3; // 3 channels per pixel (skip alpha)
-            if (bitsNeeded > bitsAvailable) {
-                throw new Error('Image too small. Need ' + Math.ceil(bitsNeeded / 8) + ' bytes capacity, have ' + Math.floor(bitsAvailable / 8) + '.');
-            }
-            const fullPayload = new Uint8Array(totalLen);
-            const len = payloadBytes.length;
-            fullPayload[0] = (len >> 24) & 0xFF;
-            fullPayload[1] = (len >> 16) & 0xFF;
-            fullPayload[2] = (len >> 8) & 0xFF;
-            fullPayload[3] = len & 0xFF;
-            fullPayload.set(payloadBytes, LSB_HEADER_BYTES);
-            let bitIdx = 0;
-            for (let px = 0; px < pixels.length && bitIdx < bitsNeeded; px++) {
-                if (px % 4 === 3) continue;
-                const byteIndex = Math.floor(bitIdx / 8);
-                const bitOffset = 7 - (bitIdx % 8);
-                const bit = (fullPayload[byteIndex] >> bitOffset) & 1;
-                pixels[px] = (pixels[px] & 0xFE) | bit;
-                bitIdx++;
-            }
-            return imageData;
-        }
-
-        function lsbDecode(imageData) {
-            const pixels = imageData.data;
-            const LSB_HEADER_BYTES = 4;
-            // First pass: extract 4-byte length header
-            const headerBits = LSB_HEADER_BYTES * 8;
-            let bitIdx = 0;
-            const header = new Uint8Array(LSB_HEADER_BYTES);
-            for (let px = 0; px < pixels.length && bitIdx < headerBits; px++) {
-                if (px % 4 === 3) continue;
-                const byteIndex = Math.floor(bitIdx / 8);
-                const bitOffset = 7 - (bitIdx % 8);
-                header[byteIndex] |= (pixels[px] & 1) << bitOffset;
-                bitIdx++;
-            }
-            const payloadLen = (header[0] << 24) | (header[1] << 16) | (header[2] << 8) | header[3];
-            const MAX_LSB_PAYLOAD = 10 * 1024 * 1024;
-            if (payloadLen <= 0 || payloadLen > MAX_LSB_PAYLOAD) {
-                throw new Error('No hidden data found in this image.');
-            }
-            // Single-pass: extract header + payload bits together
-            const totalBytes = LSB_HEADER_BYTES + payloadLen;
-            const totalBits = totalBytes * 8;
-            const bitsAvailable = (pixels.length / 4) * 3;
-            if (totalBits > bitsAvailable) {
-                throw new Error('Image data appears corrupted.');
-            }
-            const fullPayload = new Uint8Array(totalBytes);
-            bitIdx = 0;
-            for (let px = 0; px < pixels.length && bitIdx < totalBits; px++) {
-                if (px % 4 === 3) continue;
-                const byteIndex = Math.floor(bitIdx / 8);
-                const bitOffset = 7 - (bitIdx % 8);
-                fullPayload[byteIndex] |= (pixels[px] & 1) << bitOffset;
-                bitIdx++;
-            }
-            return fullPayload.slice(LSB_HEADER_BYTES);
-        }
-
-        /* ========== File input handlers ========== */
-        function handleFileSelect(input, prefix) {
-            const file = input.files[0];
-            if (!file) return;
-            if (file.size > MAX_FILE_SIZE) {
-                showStatus(prefix === 'enc' ? 'enc-file-status' : 'dec-status', 'File too large. Maximum is 500 KB for text encoding.', true);
-                input.value = '';
-                return;
-            }
-            if (prefix === 'enc') {
-                selectedEncFile = file;
-                document.getElementById('enc-file-placeholder').classList.add('hidden');
-                const info = document.getElementById('enc-file-info');
-                info.classList.remove('hidden');
-                info.classList.add('flex');
-                document.getElementById('enc-file-name').textContent = file.name;
-                document.getElementById('enc-file-size').textContent = '(' + formatBytes(file.size) + ')';
-            }
-            lucide.createIcons();
-        }
-
+        /* ========== Image input handlers ========== */
         function handleImageSelect(input, prefix) {
             const file = input.files[0];
             if (!file) return;
@@ -1042,15 +864,6 @@
             if (bytes < 1024) return bytes + ' B';
             if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
             return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-
-        function readFileAsArrayBuffer(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = () => reject(new Error('Failed to read file.'));
-                reader.readAsArrayBuffer(file);
-            });
         }
 
         function loadImageFromFile(file) {
@@ -1093,37 +906,98 @@
             }
         }
 
-        /* ========== Encrypt: File → Text ========== */
-        async function handleEncryptFile() {
-            hideStatus('enc-file-status');
-            if (!selectedEncFile) { showStatus('enc-file-status', 'Please select a file.', true); return; }
-            const password = document.getElementById('enc-file-password').value;
-            const cover    = document.getElementById('enc-file-cover').value || '📋';
-            const btn = document.getElementById('enc-file-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Encoding…';
-            lucide.createIcons();
-            try {
-                const buf = await readFileAsArrayBuffer(selectedEncFile);
-                const fileBytes = new Uint8Array(buf);
-                const combined = await encryptFilePayload(fileBytes, selectedEncFile.name, selectedEncFile.type || 'application/octet-stream', password);
-                const zwc = bytesToZWC(combined);
-                const result = cover + zwc;
-                lastEncodedResult = result;
-                document.getElementById('enc-result').value = result;
-                document.getElementById('enc-output').classList.remove('hidden');
-                showStatus('enc-file-status', 'File hidden in text! (' + formatBytes(fileBytes.length) + ' → ' + formatBytes(zwc.length) + ' ZWCs)', false);
-                console.log('[Stego File Encrypt] File:', selectedEncFile.name, '| ZWC chars:', zwc.length);
-            } catch (e) {
-                showStatus('enc-file-status', 'Failed: ' + e.message, true);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="lock" class="w-4 h-4"></i> Encrypt File &amp; Hide';
-                lucide.createIcons();
+        /* ========== Encrypt: Text → Image (Web Worker) ========== */
+
+        /* Create an inline Web Worker for LSB processing to avoid blocking the UI */
+        const lsbWorkerCode = `
+            const LSB_HEADER_BYTES = 4;
+            function lsbEncodeW(pixels, payloadBytes) {
+                const totalLen = LSB_HEADER_BYTES + payloadBytes.length;
+                const bitsNeeded = totalLen * 8;
+                const bitsAvailable = (pixels.length / 4) * 3;
+                if (bitsNeeded > bitsAvailable) {
+                    throw new Error('Image too small. Need ' + Math.ceil(bitsNeeded / 8) + ' bytes capacity, have ' + Math.floor(bitsAvailable / 8) + '.');
+                }
+                const fullPayload = new Uint8Array(totalLen);
+                const len = payloadBytes.length;
+                fullPayload[0] = (len >>> 24) & 0xFF;
+                fullPayload[1] = (len >>> 16) & 0xFF;
+                fullPayload[2] = (len >>> 8) & 0xFF;
+                fullPayload[3] = len & 0xFF;
+                fullPayload.set(payloadBytes, LSB_HEADER_BYTES);
+                let bitIdx = 0;
+                for (let px = 0; px < pixels.length && bitIdx < bitsNeeded; px++) {
+                    if (px % 4 === 3) continue;
+                    const byteIndex = bitIdx >>> 3;
+                    const bitOffset = 7 - (bitIdx & 7);
+                    pixels[px] = (pixels[px] & 0xFE) | ((fullPayload[byteIndex] >>> bitOffset) & 1);
+                    bitIdx++;
+                }
+                return pixels;
             }
+            function lsbDecodeW(pixels) {
+                const headerBits = LSB_HEADER_BYTES * 8;
+                let bitIdx = 0;
+                const header = new Uint8Array(LSB_HEADER_BYTES);
+                for (let px = 0; px < pixels.length && bitIdx < headerBits; px++) {
+                    if (px % 4 === 3) continue;
+                    header[bitIdx >>> 3] |= (pixels[px] & 1) << (7 - (bitIdx & 7));
+                    bitIdx++;
+                }
+                const payloadLen = (header[0] << 24) | (header[1] << 16) | (header[2] << 8) | header[3];
+                const MAX_LSB_PAYLOAD = 10 * 1024 * 1024;
+                if (payloadLen <= 0 || payloadLen > MAX_LSB_PAYLOAD) throw new Error('No hidden data found in this image.');
+                const totalBytes = LSB_HEADER_BYTES + payloadLen;
+                const totalBits = totalBytes * 8;
+                if (totalBits > (pixels.length / 4) * 3) throw new Error('Image data appears corrupted.');
+                const fullPayload = new Uint8Array(totalBytes);
+                bitIdx = 0;
+                for (let px = 0; px < pixels.length && bitIdx < totalBits; px++) {
+                    if (px % 4 === 3) continue;
+                    fullPayload[bitIdx >>> 3] |= (pixels[px] & 1) << (7 - (bitIdx & 7));
+                    bitIdx++;
+                }
+                return fullPayload.slice(LSB_HEADER_BYTES);
+            }
+            self.onmessage = function(e) {
+                try {
+                    if (e.data.action === 'encode') {
+                        const result = lsbEncodeW(e.data.pixels, e.data.payload);
+                        self.postMessage({ ok: true, pixels: result }, [result.buffer]);
+                    } else if (e.data.action === 'decode') {
+                        const result = lsbDecodeW(e.data.pixels);
+                        self.postMessage({ ok: true, payload: result }, [result.buffer]);
+                    }
+                } catch (err) {
+                    self.postMessage({ ok: false, error: err.message });
+                }
+            };
+        `;
+        const lsbWorkerBlob = new Blob([lsbWorkerCode], { type: 'application/javascript' });
+        const lsbWorkerUrl = URL.createObjectURL(lsbWorkerBlob);
+
+        function runLsbWorker(action, pixelData, payload) {
+            return new Promise((resolve, reject) => {
+                const worker = new Worker(lsbWorkerUrl);
+                worker.onmessage = (e) => {
+                    worker.terminate();
+                    if (e.data.ok) resolve(e.data);
+                    else reject(new Error(e.data.error));
+                };
+                worker.onerror = (err) => {
+                    worker.terminate();
+                    reject(new Error('Worker error: ' + err.message));
+                };
+                if (action === 'encode') {
+                    worker.postMessage({ action, pixels: pixelData, payload }, [pixelData.buffer, payload.buffer]);
+                } else {
+                    worker.postMessage({ action, pixels: pixelData }, [pixelData.buffer]);
+                }
+            });
         }
 
-        /* ========== Encrypt: Text → Image ========== */
+        let stegoObjectUrl = null; // track for memory cleanup
+
         async function handleEncryptImageStego() {
             hideStatus('enc-img-status');
             const message = document.getElementById('enc-img-message').value.trim();
@@ -1132,7 +1006,7 @@
             if (!selectedEncImage) { showStatus('enc-img-status', 'Please select a cover image.', true); return; }
             const btn = document.getElementById('enc-img-btn');
             btn.disabled = true;
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Encoding…';
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Processing…';
             lucide.createIcons();
             try {
                 const payloadBytes = await encryptPayload(message, password);
@@ -1143,11 +1017,18 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                lsbEncode(imageData, payloadBytes);
+
+                // Offload LSB encoding to Web Worker (non-blocking)
+                const result = await runLsbWorker('encode', imageData.data, payloadBytes);
+                imageData.data.set(result.pixels);
                 ctx.putImageData(imageData, 0, 0);
-                const dataUrl = canvas.toDataURL('image/png');
-                document.getElementById('enc-stego-preview').src = dataUrl;
-                document.getElementById('enc-stego-download').href = dataUrl;
+
+                // Use async toBlob() instead of synchronous toDataURL()
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                if (stegoObjectUrl) URL.revokeObjectURL(stegoObjectUrl);
+                stegoObjectUrl = URL.createObjectURL(blob);
+                document.getElementById('enc-stego-preview').src = stegoObjectUrl;
+                document.getElementById('enc-stego-download').href = stegoObjectUrl;
                 document.getElementById('enc-output-image').classList.remove('hidden');
                 showStatus('enc-img-status', 'Text hidden in image successfully!', false);
             } catch (e) {
@@ -1206,7 +1087,7 @@
             }
         }
 
-        /* ========== Decrypt: Image → Text ========== */
+        /* ========== Decrypt: Image → Text (Web Worker) ========== */
         async function handleDecryptImageStego() {
             hideStatus('dec-img-status');
             document.getElementById('dec-output').classList.add('hidden');
@@ -1225,7 +1106,11 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const payloadBytes = lsbDecode(imageData);
+
+                // Offload LSB decoding to Web Worker (non-blocking)
+                const workerResult = await runLsbWorker('decode', imageData.data);
+                const payloadBytes = workerResult.payload;
+
                 const result = await decryptPayload(payloadBytes, password);
                 if (result.type === 'text') {
                     document.getElementById('dec-result').value = result.data;
@@ -1334,7 +1219,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             initOnboarding();
-            setupDropZone('enc-file-zone', 'enc-file-input', 'enc');
             setupDropZone('enc-img-zone', 'enc-img-input', 'enc');
             setupDropZone('dec-img-zone', 'dec-img-input', 'dec');
         });
