@@ -236,6 +236,11 @@
             background: rgba(var(--accent-rgb), 0.15);
             color: var(--accent-400);
         }
+        .accent-info-box {
+            background: rgba(var(--accent-rgb), 0.08);
+            border: 1px solid rgba(var(--accent-rgb), 0.15);
+        }
+        .accent-info-box strong { color: var(--accent-400); }
 
         /* ===== Feature Discovery Onboarding ===== */
 
@@ -642,33 +647,39 @@
 
             <p class="text-sm text-slate-400 mb-4">Think of it like writing a secret letter in invisible ink — only someone who knows the trick (and optionally, your password) can read it.</p>
 
+            <ol class="list-none space-y-4 mb-4" role="list">
             <!-- Mode 1 -->
+            <li>
             <h3 class="text-sm font-semibold text-white flex items-center gap-2 mb-2">
-                <span class="flex-shrink-0 w-6 h-6 rounded-full accent-badge-bg flex items-center justify-center text-xs font-bold">1</span>
+                <span class="flex-shrink-0 w-6 h-6 rounded-full accent-badge-bg flex items-center justify-center text-xs font-bold" aria-hidden="true">1</span>
                 Hide a message inside text
             </h3>
-            <div class="space-y-1.5 text-sm text-slate-400 leading-relaxed mb-4 ml-8">
+            <div class="space-y-1.5 text-sm text-slate-400 leading-relaxed ml-8">
                 <p>📝 <strong class="text-slate-300">You type</strong> a secret message and pick a cover emoji or word (like 📋).</p>
                 <p>🔒 <strong class="text-slate-300">Optionally add a password</strong> — this scrambles the message so only someone with the same password can unlock it.</p>
                 <p>✨ <strong class="text-slate-300">We attach</strong> your message to the cover text using <strong class="text-slate-300">invisible characters</strong> — they look like nothing at all, so the result just looks like a normal emoji.</p>
                 <p>📋 <strong class="text-slate-300">Share it</strong> anywhere — chat, email, social media. Only this tool can reveal what's hidden inside.</p>
             </div>
+            </li>
 
             <!-- Mode 2 -->
+            <li>
             <h3 class="text-sm font-semibold text-white flex items-center gap-2 mb-2">
-                <span class="flex-shrink-0 w-6 h-6 rounded-full accent-badge-bg flex items-center justify-center text-xs font-bold">2</span>
+                <span class="flex-shrink-0 w-6 h-6 rounded-full accent-badge-bg flex items-center justify-center text-xs font-bold" aria-hidden="true">2</span>
                 Hide a message inside a picture
             </h3>
-            <div class="space-y-1.5 text-sm text-slate-400 leading-relaxed mb-4 ml-8">
+            <div class="space-y-1.5 text-sm text-slate-400 leading-relaxed ml-8">
                 <p>🖼️ <strong class="text-slate-300">You upload</strong> any image and type your secret message.</p>
                 <p>🔍 <strong class="text-slate-300">We make tiny changes</strong> to the image's pixels — so small that no human eye can tell the difference.</p>
                 <p>💾 <strong class="text-slate-300">Download</strong> the new image and share it. It looks completely normal, but your message is baked in.</p>
             </div>
+            </li>
+            </ol>
 
             <!-- Privacy note -->
-            <div class="flex items-start gap-2 rounded-xl p-3 mt-2" style="background:rgba(var(--accent-rgb),0.08); border:1px solid rgba(var(--accent-rgb),0.15);">
+            <div class="accent-info-box flex items-start gap-2 rounded-xl p-3 mt-2">
                 <span class="text-base mt-0.5">🛡️</span>
-                <p class="text-sm text-slate-300 leading-relaxed"><strong style="color:var(--accent-400)">100% private</strong> — everything happens right here in your browser. No data is ever sent to any server. Your secrets never leave your device.</p>
+                <p class="text-sm text-slate-300 leading-relaxed"><strong>100% private</strong> — everything happens right here in your browser. No data is ever sent to any server. Your secrets never leave your device.</p>
             </div>
         </div>
     </main>
