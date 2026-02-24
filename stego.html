@@ -749,7 +749,12 @@
         async function deriveKey(password, salt) {
             const saltHex = [...salt].map(b => b.toString(16).padStart(2, '0')).join('');
             const cacheId = password + ':' + saltHex;
-            if (_keyCache.has(cacheId)) return _keyCache.get(cacheId);
+            if (_keyCache.has(cacheId)) {
+                const cached = _keyCache.get(cacheId);
+                _keyCache.delete(cacheId);
+                _keyCache.set(cacheId, cached);
+                return cached;
+            }
             const enc = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey(
                 'raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']
@@ -1175,7 +1180,10 @@
 
         /* ========== Quick Decrypt (auto-populate decrypt tab from encrypt result) ========== */
         function quickDecrypt() {
-            if (!lastEncodedResult) return;
+            if (!lastEncodedResult) {
+                showStatus('enc-status', 'Encrypt a message first to use quick decrypt.', true);
+                return;
+            }
             document.getElementById('dec-input').value = lastEncodedResult;
             document.getElementById('dec-password').value = document.getElementById('enc-password').value;
             switchTab('decrypt');
