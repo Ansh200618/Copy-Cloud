@@ -1239,9 +1239,9 @@
             const lockIdx = input.lastIndexOf(PLATFORM_SAFE_MARKER);
             let isPlatformSafe = false;
             if (lockIdx >= 0) {
-                const afterLock = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).trim();
-                // Check if what follows looks like Base64 (only Base64-safe characters)
-                if (afterLock.length > 0 && /^[A-Za-z0-9+/=\s]+$/.test(afterLock)) {
+                // Strip whitespace first, then validate strictly as Base64
+                const afterLock = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).replace(/\s/g, '');
+                if (afterLock.length > 0 && /^[A-Za-z0-9+/=]+$/.test(afterLock)) {
                     isPlatformSafe = true;
                 }
             }
@@ -1262,7 +1262,13 @@
                 } else {
                     bytes = zwcToBytes(input);
                 }
-                if (!bytes) throw new Error('No hidden data found in the input. If you shared this through a messaging app, the invisible characters may have been stripped. Try using Platform-Safe Mode when encrypting.');
+                if (!bytes) {
+                    if (isPlatformSafe) {
+                        throw new Error('Platform-safe data appears corrupted or incomplete.');
+                    } else {
+                        throw new Error('No hidden data found in the input. If you shared this through a messaging app, the invisible characters may have been stripped. Try using Platform-Safe Mode when encrypting.');
+                    }
+                }
                 if (bytes.length < 2) throw new Error('Hidden data is too short — it may be corrupted or stripped by the messaging platform.');
                 const result = await decryptPayload(bytes, password);
                 if (result.type === 'text') {
