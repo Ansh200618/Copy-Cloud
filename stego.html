@@ -1058,7 +1058,9 @@
             if (typeof createImageBitmap === 'function') {
                 try {
                     return await createImageBitmap(file, { colorSpaceConversion: 'none' });
-                } catch (_) { /* options not supported, fall through */ }
+                } catch (e) {
+                    console.warn('[Stego] createImageBitmap options not supported, falling back to Image:', e.message);
+                }
             }
             return loadImageFromFile(file);
         }
@@ -1270,7 +1272,7 @@
             try {
                 let bytes;
                 if (isPlatformSafe) {
-                    const b64 = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).replace(/[\uFE0F]/g, '').trim();
+                    const b64 = input.slice(lockIdx + PLATFORM_SAFE_MARKER.length).replace(/[\s\uFE0F]/g, '');
                     try {
                         bytes = base64ToBytes(b64);
                     } catch {
