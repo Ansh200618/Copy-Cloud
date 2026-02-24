@@ -846,14 +846,22 @@
         }
 
         function zwcToBytes(zwcStr) {
+            // Extract only our two steganography ZWCs, ignoring any stray
+            // invisible chars injected by browsers or emoji ZWJ sequences
             const filtered = [];
             for (const ch of zwcStr) {
                 if (ch === ZWS || ch === ZWNJ) filtered.push(ch);
             }
             if (filtered.length === 0) return null;
-            if (filtered.length % 8 !== 0) return null;
-            const bytes = new Uint8Array(filtered.length / 8);
-            for (let i = 0; i < filtered.length; i += 8) {
+            // Truncate trailing bits that don't form a full byte (can happen
+            // if copy/paste or DOM reads lose a few trailing ZWCs)
+            const usable = filtered.length - (filtered.length % 8);
+            if (usable === 0) return null;
+            if (usable !== filtered.length) {
+                console.warn('[Stego] Trimmed', filtered.length - usable, 'trailing ZWC bits (copy/paste artifact)');
+            }
+            const bytes = new Uint8Array(usable / 8);
+            for (let i = 0; i < usable; i += 8) {
                 let val = 0;
                 for (let b = 0; b < 8; b++) {
                     val = (val << 1) | (filtered[i + b] === ZWNJ ? 1 : 0);
@@ -1022,10 +1030,19 @@
                     worker.terminate();
                     reject(new Error('Worker error: ' + err.message));
                 };
+                // Copy buffers before transfer so the originals stay usable on the main thread
+                const pixelCopy = new Uint8Array(pixelData).buffer;
                 if (action === 'encode') {
-                    worker.postMessage({ action, pixels: pixelData, payload }, [pixelData.buffer, payload.buffer]);
+                    const payloadCopy = new Uint8Array(payload).buffer;
+                    worker.postMessage(
+                        { action, pixels: new Uint8Array(pixelCopy), payload: new Uint8Array(payloadCopy) },
+                        [pixelCopy, payloadCopy]
+                    );
                 } else {
-                    worker.postMessage({ action, pixels: pixelData }, [pixelData.buffer]);
+                    worker.postMessage(
+                        { action, pixels: new Uint8Array(pixelCopy) },
+                        [pixelCopy]
+                    );
                 }
             });
         }
