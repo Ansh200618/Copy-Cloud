@@ -1031,17 +1031,18 @@
                     reject(new Error('Worker error: ' + err.message));
                 };
                 // Copy buffers before transfer so the originals stay usable on the main thread
-                const pixelCopy = new Uint8Array(pixelData).buffer;
+                const pixBuf = new Uint8Array(pixelData).buffer;
                 if (action === 'encode') {
-                    const payloadCopy = new Uint8Array(payload).buffer;
+                    const payBuf = new Uint8Array(payload).buffer;
+                    // Worker expects Uint8Array views (not raw ArrayBuffers)
                     worker.postMessage(
-                        { action, pixels: new Uint8Array(pixelCopy), payload: new Uint8Array(payloadCopy) },
-                        [pixelCopy, payloadCopy]
+                        { action, pixels: new Uint8Array(pixBuf), payload: new Uint8Array(payBuf) },
+                        [pixBuf, payBuf]
                     );
                 } else {
                     worker.postMessage(
-                        { action, pixels: new Uint8Array(pixelCopy) },
-                        [pixelCopy]
+                        { action, pixels: new Uint8Array(pixBuf) },
+                        [pixBuf]
                     );
                 }
             });
