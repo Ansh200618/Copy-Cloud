@@ -514,7 +514,10 @@
                         <i data-lucide="copy" class="w-4 h-4"></i>
                     </button>
                 </div>
-                <p id="copy-status" class="text-xs text-slate-500 mt-1.5">Click copy — the hidden data is embedded after the visible text.</p>
+                <div class="flex items-center justify-between mt-1.5">
+                    <p id="copy-status" class="text-xs text-slate-500">Click copy — the hidden data is embedded after the visible text.</p>
+                    <button onclick="quickDecrypt()" class="text-xs font-semibold px-3 py-1 rounded-lg hover:bg-white/10 transition-all whitespace-nowrap" style="color:var(--accent-400, #a5b4fc);">Try Decrypt →</button>
+                </div>
             </div>
 
             <!-- Output: Stego Image (Text→Image) -->
@@ -696,10 +699,8 @@
             const el = document.getElementById(elId);
             el.className = 'status-msg mt-3 px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 ' +
                 (isError ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20');
-            const icon = isError ? 'alert-circle' : 'check-circle-2';
-            el.innerHTML = '<i data-lucide="' + icon + '" class="w-4 h-4 flex-shrink-0"></i><span>' + escapeHtml(message) + '</span>';
+            el.innerHTML = '<span>' + (isError ? '⚠️' : '✅') + '</span><span>' + escapeHtml(message) + '</span>';
             el.classList.remove('hidden');
-            lucide.createIcons();
         }
 
         function hideStatus(elId) {
@@ -710,6 +711,21 @@
             const d = document.createElement('div');
             d.textContent = str;
             return d.innerHTML;
+        }
+
+        /* ========== Button state helpers (avoid costly lucide.createIcons) ========== */
+        const btnOrigHTML = {};
+
+        function setBtnLoading(id, text) {
+            const btn = document.getElementById(id);
+            btn.disabled = true;
+            btn.textContent = '⏳ ' + text;
+        }
+
+        function restoreBtn(id) {
+            const btn = document.getElementById(id);
+            btn.disabled = false;
+            if (btnOrigHTML[id]) btn.innerHTML = btnOrigHTML[id];
         }
 
         /* ========== Crypto constants ========== */
@@ -726,19 +742,28 @@
         let selectedEncImage = null;
         let selectedDecImage = null;
 
-        /* ========== Key derivation ========== */
+        /* ========== Key derivation (with LRU cache) ========== */
+        const _keyCache = new Map();
+        const _KEY_CACHE_MAX = 20;
+
         async function deriveKey(password, salt) {
+            const saltHex = [...salt].map(b => b.toString(16).padStart(2, '0')).join('');
+            const cacheId = password + ':' + saltHex;
+            if (_keyCache.has(cacheId)) return _keyCache.get(cacheId);
             const enc = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey(
                 'raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']
             );
-            return crypto.subtle.deriveKey(
+            const key = await crypto.subtle.deriveKey(
                 { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
                 keyMaterial,
                 { name: 'AES-GCM', length: 256 },
                 false,
                 ['encrypt', 'decrypt']
             );
+            if (_keyCache.size >= _KEY_CACHE_MAX) _keyCache.delete(_keyCache.keys().next().value);
+            _keyCache.set(cacheId, key);
+            return key;
         }
 
         /* ========== Text payload encrypt/decrypt ========== */
@@ -793,7 +818,16 @@
             throw new Error('Unknown payload format — the data may be corrupted.');
         }
 
-        /* ========== File payload helpers ========== */
+        /* ========== File payload helpers (stub for backwards compat) ========== */
+        function parseFilePayload(data) {
+            const nameLen = data[0];
+            const mimeLen = data[1];
+            const fileName = new TextDecoder().decode(data.slice(2, 2 + nameLen));
+            const mimeType = new TextDecoder().decode(data.slice(2 + nameLen, 2 + nameLen + mimeLen));
+            const fileData = data.slice(2 + nameLen + mimeLen);
+            return { fileName, mimeType, fileData };
+        }
+
         /* ========== ZWC encode/decode ========== */
         function bytesToZWC(bytes) {
             let zwc = '';
@@ -883,10 +917,7 @@
             const password = document.getElementById('enc-password').value;
             const cover    = document.getElementById('enc-cover').value || '📋';
             if (!message) { showStatus('enc-status', 'Please enter a secret message.', true); return; }
-            const btn = document.getElementById('enc-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Encrypting…';
-            lucide.createIcons();
+            setBtnLoading('enc-btn', 'Encrypting…');
             try {
                 const combined = await encryptPayload(message, password);
                 const zwc = bytesToZWC(combined);
@@ -900,9 +931,7 @@
             } catch (e) {
                 showStatus('enc-status', 'Encryption failed: ' + e.message, true);
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="lock" class="w-4 h-4"></i> Encrypt &amp; Hide';
-                lucide.createIcons();
+                restoreBtn('enc-btn');
             }
         }
 
@@ -1004,10 +1033,7 @@
             const password = document.getElementById('enc-img-password').value;
             if (!message) { showStatus('enc-img-status', 'Please enter a secret message.', true); return; }
             if (!selectedEncImage) { showStatus('enc-img-status', 'Please select a cover image.', true); return; }
-            const btn = document.getElementById('enc-img-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Processing…';
-            lucide.createIcons();
+            setBtnLoading('enc-img-btn', 'Processing…');
             try {
                 const payloadBytes = await encryptPayload(message, password);
                 const img = await loadImageFromFile(selectedEncImage);
@@ -1034,9 +1060,7 @@
             } catch (e) {
                 showStatus('enc-img-status', 'Failed: ' + e.message, true);
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="lock" class="w-4 h-4"></i> Hide Text in Image';
-                lucide.createIcons();
+                restoreBtn('enc-img-btn');
             }
         }
 
@@ -1051,10 +1075,7 @@
             let zwcCount = 0;
             for (const ch of input) { if (ch === ZWS || ch === ZWNJ) zwcCount++; }
             console.log('[Stego Decrypt] Input length:', input.length, '| ZWC chars found:', zwcCount);
-            const btn = document.getElementById('dec-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Decrypting…';
-            lucide.createIcons();
+            setBtnLoading('dec-btn', 'Decrypting…');
             try {
                 const bytes = zwcToBytes(input);
                 if (!bytes) throw new Error('No hidden data found in the input.');
@@ -1074,16 +1095,13 @@
                     dl.download = result.fileName;
                     document.getElementById('dec-output-file').classList.remove('hidden');
                     showStatus('dec-status', 'File recovered: ' + result.fileName, false);
-                    lucide.createIcons();
                 }
             } catch (e) {
                 const msg = (e.message.includes('decrypt') || e.name === 'OperationError')
                     ? 'Decryption failed — wrong password or corrupted data.' : e.message;
                 showStatus('dec-status', msg, true);
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="unlock" class="w-4 h-4"></i> Decrypt';
-                lucide.createIcons();
+                restoreBtn('dec-btn');
             }
         }
 
@@ -1094,10 +1112,7 @@
             document.getElementById('dec-output-file').classList.add('hidden');
             if (!selectedDecImage) { showStatus('dec-img-status', 'Please upload a stego image.', true); return; }
             const password = document.getElementById('dec-img-password').value;
-            const btn = document.getElementById('dec-img-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Extracting…';
-            lucide.createIcons();
+            setBtnLoading('dec-img-btn', 'Extracting…');
             try {
                 const img = await loadImageFromFile(selectedDecImage);
                 const canvas = document.createElement('canvas');
@@ -1126,16 +1141,13 @@
                     dl.download = result.fileName;
                     document.getElementById('dec-output-file').classList.remove('hidden');
                     showStatus('dec-img-status', 'File extracted: ' + result.fileName, false);
-                    lucide.createIcons();
                 }
             } catch (e) {
                 const msg = (e.message.includes('decrypt') || e.name === 'OperationError')
                     ? 'Decryption failed — wrong password or corrupted data.' : e.message;
                 showStatus('dec-img-status', msg, true);
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="unlock" class="w-4 h-4"></i> Extract from Image';
-                lucide.createIcons();
+                restoreBtn('dec-img-btn');
             }
         }
 
@@ -1159,6 +1171,16 @@
                 ta.select();
                 ta.setSelectionRange(0, ta.value.length);
             }
+        }
+
+        /* ========== Quick Decrypt (auto-populate decrypt tab from encrypt result) ========== */
+        function quickDecrypt() {
+            if (!lastEncodedResult) return;
+            document.getElementById('dec-input').value = lastEncodedResult;
+            document.getElementById('dec-password').value = document.getElementById('enc-password').value;
+            switchTab('decrypt');
+            switchDecMode('text');
+            handleDecrypt();
         }
 
         /* ========== Drag & drop support ========== */
@@ -1218,6 +1240,11 @@
         /* ========== Init ========== */
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+            // Cache button HTML after icons render — restoring this is instant (no DOM re-scan)
+            ['enc-btn', 'enc-img-btn', 'dec-btn', 'dec-img-btn'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) btnOrigHTML[id] = el.innerHTML;
+            });
             initOnboarding();
             setupDropZone('enc-img-zone', 'enc-img-input', 'enc');
             setupDropZone('dec-img-zone', 'dec-img-input', 'dec');
