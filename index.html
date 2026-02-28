@@ -1457,7 +1457,20 @@
         const SB_URL = 'https://luunzeonlmzvmewaucqj.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dW56ZW9ubG16dm1ld2F1Y3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMzAyNzEsImV4cCI6MjA4NTcwNjI3MX0.qQpWEGFLg6Weof0NO_ApntTrGGYVsrsNB2zaujRMuFY';
 
-        const db = window.supabase.createClient(SB_URL, SB_KEY);
+        async function fetchWithRetry(url, options, retries = 2) {
+            for (let i = 0; i <= retries; i++) {
+                try {
+                    return await fetch(url, options);
+                } catch (err) {
+                    if (i === retries) throw err;
+                    await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+                }
+            }
+        }
+
+        const db = window.supabase.createClient(SB_URL, SB_KEY, {
+            global: { fetch: fetchWithRetry }
+        });
 
         let selectedFiles = []; 
         let currentInputType = 'text';
@@ -1633,41 +1646,54 @@
         }
 
         // --- CUSTOM XHR UPLOAD FUNCTION TO GET PROGRESS ---
-        function uploadFileWithProgress(file, fileName, onProgress) {
+        function uploadFileWithProgress(file, fileName, onProgress, retries = 2) {
             return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                // Supabase Storage Endpoint
-                const url = `${SB_URL}/storage/v1/object/uploads/${fileName}`;
-                
-                xhr.open('POST', url);
-                
-                // Necessary Headers
-                xhr.setRequestHeader('Authorization', `Bearer ${SB_KEY}`);
-                xhr.setRequestHeader('apikey', SB_KEY);
-                // Optional: Force upsert to avoid conflicts (though we use random IDs)
-                xhr.setRequestHeader('x-upsert', 'true'); 
-                // Don't set Content-Type manually for FormData/Binary if browser handles it, 
-                // but for raw binary body, Supabase usually expects exact type or octet-stream.
-                xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+                let attempt = 0;
 
-                xhr.upload.onprogress = (e) => {
-                    if (e.lengthComputable) {
-                        onProgress(e.loaded, e.total);
-                    }
-                };
-                
-                xhr.onload = () => {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        // Success
-                        resolve(fileName); // Return path
-                    } else {
-                        reject(new Error(`Upload failed: ${xhr.statusText}`));
-                    }
-                };
-                
-                xhr.onerror = () => reject(new Error('Network Error during upload'));
-                
-                xhr.send(file);
+                function tryUpload() {
+                    const xhr = new XMLHttpRequest();
+                    // Supabase Storage Endpoint
+                    const url = `${SB_URL}/storage/v1/object/uploads/${fileName}`;
+                    
+                    xhr.open('POST', url);
+                    
+                    // Necessary Headers
+                    xhr.setRequestHeader('Authorization', `Bearer ${SB_KEY}`);
+                    xhr.setRequestHeader('apikey', SB_KEY);
+                    // Optional: Force upsert to avoid conflicts (though we use random IDs)
+                    xhr.setRequestHeader('x-upsert', 'true'); 
+                    // Don't set Content-Type manually for FormData/Binary if browser handles it, 
+                    // but for raw binary body, Supabase usually expects exact type or octet-stream.
+                    xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+
+                    xhr.upload.onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            onProgress(e.loaded, e.total);
+                        }
+                    };
+                    
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            // Success
+                            resolve(fileName); // Return path
+                        } else {
+                            reject(new Error(`Upload failed: ${xhr.statusText}`));
+                        }
+                    };
+                    
+                    xhr.onerror = () => {
+                        if (attempt < retries) {
+                            attempt++;
+                            setTimeout(tryUpload, 1000 * attempt);
+                        } else {
+                            reject(new Error('Network error during upload. Please check your connection.'));
+                        }
+                    };
+                    
+                    xhr.send(file);
+                }
+
+                tryUpload();
             });
         }
 
@@ -1680,6 +1706,9 @@
             }
             if (currentInputType === 'file' && selectedFiles.length === 0) {
                 return showNotification("Please select files.", "error");
+            }
+            if (!navigator.onLine) {
+                return showNotification("You are offline. Please check your connection.", "error");
             }
 
             // Setup Progress UI
@@ -1753,7 +1782,7 @@
                     code: code, 
                     content: contentValue, 
                     type: currentInputType,
-                    created_at: new Date()
+                    created_at: new Date().toISOString()
                 };
                 
                 const { error: dbError } = await db
@@ -1795,7 +1824,11 @@
                 console.error("Upload Error:", error);
                 progressModal.classList.add('hidden'); // Hide progress on error
                 progressModal.classList.remove('flex');
-                showNotification("Upload failed. " + error.message, "error");
+                if (isNetworkError(error)) {
+                    showNotification("Upload failed. Please check your internet connection and try again.", "error");
+                } else {
+                    showNotification("Upload failed. " + (error.message || "Please try again."), "error");
+                }
             } finally {
                 btn.disabled = false;
             }
@@ -1853,6 +1886,9 @@
         window.handleRetrieve = async () => {
             const codeInput = document.getElementById('retrieve-code-input').value.toUpperCase().trim();
             if (codeInput.length < 4) return showNotification("Enter a valid code.", "error");
+            if (!navigator.onLine) {
+                return showNotification("You are offline. Please check your connection.", "error");
+            }
 
             const btn = document.getElementById('retrieve-btn');
             btn.disabled = true;
@@ -1889,7 +1925,11 @@
 
             } catch (error) {
                 console.error("Retrieve Error", error);
-                showNotification("Error fetching content.", "error");
+                if (isNetworkError(error)) {
+                    showNotification("Connection error. Please check your internet and try again.", "error");
+                } else {
+                    showNotification("Error fetching content.", "error");
+                }
             } finally {
                 btn.disabled = false;
                 document.getElementById('retrieve-icon').classList.remove('hidden');
@@ -2093,6 +2133,12 @@
         };
 
         // --- UTILS ---
+        function isNetworkError(error) {
+            if (error instanceof TypeError) return true;
+            const msg = (error && error.message || '').toLowerCase();
+            return msg.includes('fetch') || msg.includes('network');
+        }
+
         function generateId() {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
             let result = '';
