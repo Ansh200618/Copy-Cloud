@@ -1824,8 +1824,7 @@
                 console.error("Upload Error:", error);
                 progressModal.classList.add('hidden'); // Hide progress on error
                 progressModal.classList.remove('flex');
-                const msg = (error && error.message || '').toLowerCase();
-                if (msg.includes('fetch') || msg.includes('network') || msg.includes('failed')) {
+                if (isNetworkError(error)) {
                     showNotification("Upload failed. Please check your internet connection and try again.", "error");
                 } else {
                     showNotification("Upload failed. " + (error.message || "Please try again."), "error");
@@ -1926,8 +1925,7 @@
 
             } catch (error) {
                 console.error("Retrieve Error", error);
-                const msg = (error && error.message || '').toLowerCase();
-                if (msg.includes('fetch') || msg.includes('network') || msg.includes('failed')) {
+                if (isNetworkError(error)) {
                     showNotification("Connection error. Please check your internet and try again.", "error");
                 } else {
                     showNotification("Error fetching content.", "error");
@@ -2135,6 +2133,12 @@
         };
 
         // --- UTILS ---
+        function isNetworkError(error) {
+            if (error instanceof TypeError) return true;
+            const msg = (error && error.message || '').toLowerCase();
+            return msg.includes('fetch') || msg.includes('network');
+        }
+
         function generateId() {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
             let result = '';
