@@ -1073,6 +1073,19 @@
                         <i data-lucide="user-circle" class="w-4 h-4 shrink-0" style="color:var(--accent-400,#a5b4fc)"></i>
                         <span id="user-greeting-text" class="text-sm font-semibold text-white whitespace-nowrap"></span>
                     </button>
+                    <!-- Stego Tool button -->
+                    <a href="stego.html" title="Stego Tool – Hide secrets in images & text"
+                        class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 border shrink-0 group relative overflow-hidden"
+                        style="background:linear-gradient(135deg,rgba(var(--accent-rgb,99,102,241),0.15),rgba(var(--accent-rgb,99,102,241),0.05)); border-color:rgba(var(--accent-rgb,99,102,241),0.35); color:var(--accent-400,#a5b4fc); box-shadow:0 0 20px rgba(var(--accent-rgb,99,102,241),0.12);"
+                        onmouseover="this.style.boxShadow='0 0 25px rgba(var(--accent-rgb,99,102,241),0.3)'; this.style.borderColor='rgba(var(--accent-rgb,99,102,241),0.6)'"
+                        onmouseout="this.style.boxShadow='0 0 20px rgba(var(--accent-rgb,99,102,241),0.12)'; this.style.borderColor='rgba(var(--accent-rgb,99,102,241),0.35)'">
+                        <i data-lucide="lock" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Stego</span>
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background-color:var(--accent-from,#6366f1);"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2" style="background-color:var(--accent-from,#6366f1);"></span>
+                        </span>
+                    </a>
                     <!-- Appearance settings button -->
                     <button id="appearance-btn" onclick="openAppearanceModal()" title="Appearance Settings"
                         class="p-2.5 bg-slate-900/50 backdrop-blur-md rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 transition-all shrink-0">
@@ -1415,13 +1428,16 @@
                     <i data-lucide="user" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors"></i>
                     <span>Portfolio</span>
                 </a>
-                <a href="stego.html" class="stego-highlight-link flex items-center gap-2 transition-colors group px-4 py-2 rounded-full border" style="background:rgba(var(--accent-rgb,99,102,241),0.10); border-color:rgba(var(--accent-rgb,99,102,241),0.30); color:var(--accent-400,#a5b4fc);">
+                <a href="stego.html" class="stego-highlight-link flex items-center gap-2 transition-all duration-300 group px-5 py-2.5 rounded-full border relative overflow-hidden font-bold" style="background:linear-gradient(135deg,rgba(var(--accent-rgb,99,102,241),0.18),rgba(var(--accent-rgb,99,102,241),0.08)); border-color:rgba(var(--accent-rgb,99,102,241),0.40); color:var(--accent-400,#a5b4fc); box-shadow:0 0 20px rgba(var(--accent-rgb,99,102,241),0.15);"
+                    onmouseover="this.style.boxShadow='0 4px 30px rgba(var(--accent-rgb,99,102,241),0.35)'; this.style.borderColor='rgba(var(--accent-rgb,99,102,241),0.7)'; this.style.transform='translateY(-1px)'"
+                    onmouseout="this.style.boxShadow='0 0 20px rgba(var(--accent-rgb,99,102,241),0.15)'; this.style.borderColor='rgba(var(--accent-rgb,99,102,241),0.40)'; this.style.transform='translateY(0)'">
                     <i data-lucide="lock" class="w-4 h-4 transition-colors" style="color:var(--accent-400,#a5b4fc);"></i>
-                    <span class="font-semibold">🔒 Stego Tool</span>
+                    <span>🔒 Stego Tool</span>
                     <span class="relative flex h-2.5 w-2.5">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style="background-color:var(--accent-from,#6366f1);"></span>
                         <span class="relative inline-flex rounded-full h-2.5 w-2.5" style="background-color:var(--accent-from,#6366f1);"></span>
                     </span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent" style="animation: shimmer 3s infinite;"></span>
                 </a>
                 <button onclick="openComingSoonModal()" class="flex items-center gap-2 hover:text-purple-400 transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-purple-500/30 hover:bg-purple-500/10">
                     <i data-lucide="sparkles" class="w-4 h-4 text-slate-400 group-hover:text-purple-400 transition-colors"></i>
@@ -2824,5 +2840,12 @@
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script src="/_vercel/insights/script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+            });
+        }
+    </script>
 </body>
 </html>

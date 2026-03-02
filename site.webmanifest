@@ -1,6 +1,7 @@
 {
   "name": "Copy Cloud",
   "short_name": "Copy Cloud",
+  "description": "Secure online clipboard for anonymous text and file transfer without login.",
   "icons": [
     {
       "src": "/favicon-96x96.png",
@@ -23,11 +24,20 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "theme_color": "#6366f1",
   "background_color": "#0f172a",
   "display": "standalone",
   "start_url": "/",
-  "scope": "/"
+  "scope": "/",
+  "orientation": "any",
+  "categories": ["utilities", "productivity"],
+  "id": "/"
 }

@@ -6,6 +6,26 @@
 
     <title>Stego Tool - Copy Cloud</title>
     <meta name="description" content="E2EE Steganography tool – hide secret messages inside images and text using robust block-stego and AES-GCM encryption. 100% client-side.">
+    <meta name="application-name" content="Copy Cloud">
+    <meta name="apple-mobile-web-app-title" content="Copy Cloud">
+    <meta name="author" content="Anshdeep Singh">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:site_name" content="Copy Cloud">
+    <meta property="og:title" content="Stego Tool - Copy Cloud">
+    <meta property="og:description" content="Hide secret messages inside images and text using robust steganography and AES-256-GCM encryption. 100% client-side.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://copycloud.vercel.app/stego.html">
+    <meta property="og:image" content="https://copycloud.vercel.app/og-image.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:image:alt" content="Copy Cloud - Stego Tool">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Stego Tool - Copy Cloud">
+    <meta name="twitter:description" content="Hide secret messages inside images and text. AES-256-GCM encryption, 100% client-side.">
+    <meta name="twitter:image" content="https://copycloud.vercel.app/og-image.png">
 
     <!-- FAVICON AREA -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -13,6 +33,7 @@
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <meta name="theme-color" content="#6366f1">
+    <link rel="manifest" href="/site.webmanifest">
 
     <!-- Prevent flash of unstyled content when restoring saved theme -->
     <script>
@@ -387,11 +408,11 @@
                     <i data-lucide="clipboard" class="w-4 h-4 transition-colors"></i>
                     <span class="font-semibold">Copy Cloud</span>
                 </a>
-                <a href="http://ansh200618.github.io/Portfolio/" target="_blank" class="flex items-center gap-2 hover:text-white transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-white/10 hover:bg-white/10">
+                <a href="http://ansh200618.github.io/Portfolio/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-white transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-white/10 hover:bg-white/10">
                     <i data-lucide="user" class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors"></i>
                     <span>Portfolio</span>
                 </a>
-                <a href="https://github.com/Ansh200618/Online-Clipboard" target="_blank" class="flex items-center gap-2 hover:text-white transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-white/10 hover:bg-white/10">
+                <a href="https://github.com/Ansh200618/Online-Clipboard" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-white transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-white/10 hover:bg-white/10">
                     <i data-lucide="github" class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors"></i>
                     <span>GitHub</span>
                 </a>
@@ -732,6 +753,13 @@
                     showToast("Failed to copy.", "error");
                 });
             }
+        }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+            });
         }
     </script>
 </body>
