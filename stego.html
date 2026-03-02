@@ -641,7 +641,7 @@
                     const salt = payload.slice(0, 16);
                     const iv = payload.slice(16, 28);
                     const ciphertext = payload.slice(28);
-                    const keyMaterial = await getDerivationKey(password || '');
+                    const keyMaterial = await getDerivationKey(password);
                     const key = await getCryptoKey(keyMaterial, salt);
                     const decrypted = await window.crypto.subtle.decrypt({name: "AES-GCM", iv: iv}, key, ciphertext);
                     return new TextDecoder().decode(decrypted);
@@ -663,7 +663,7 @@
         // ==========================================
         // HELPER: Set button to loading/normal state
         // ==========================================
-        function setBtnLoading(btn, loading, originalHTML) {
+        function setBtnLoading(btn, loading) {
             if (loading) {
                 btn.disabled = true;
                 btn.dataset.origHtml = btn.innerHTML;
@@ -799,8 +799,7 @@
                 const maxBits = Math.floor(blocksX / 2) * blocksY;
 
                 if (msgBin.length > maxBits) {
-                    setBtnLoading(btn, false);
-                    return showToast(`Image too small. Max bits: ${maxBits}, Need: ${msgBin.length}`, "error");
+                    throw new Error(`Image too small. Max bits: ${maxBits}, Need: ${msgBin.length}`);
                 }
 
                 const DELTA = 30;
@@ -838,7 +837,6 @@
 
                 // Use async toBlob for much better performance on large images
                 // Try WebP lossless first (smaller file), fall back to PNG
-                revokeOldBlob();
                 const blob = await new Promise((resolve) => {
                     // Attempt WebP lossless (quality 1.0 = lossless in supported browsers)
                     canvas.toBlob((webpBlob) => {
@@ -853,6 +851,7 @@
 
                 const isWebP = blob.type === 'image/webp';
                 const ext = isWebP ? 'webp' : 'png';
+                revokeOldBlob();
                 lastBlobUrl = URL.createObjectURL(blob);
 
                 // Show download panel with preview
@@ -907,8 +906,7 @@
 
                 const headerIdx = extractedBits.indexOf('1010101010101010');
                 if (headerIdx === -1) {
-                    setBtnLoading(btn, false);
-                    return showToast("No hidden data found. Image may have been cropped or resized.", "error");
+                    throw new Error("No hidden data found. Image may have been cropped or resized.");
                 }
 
                 const payloadStart = headerIdx + 16;
