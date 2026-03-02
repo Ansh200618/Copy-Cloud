@@ -95,13 +95,22 @@
         })();
     </script>
 
+    <!-- Preconnect to external origins for faster resource loading -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5287107562841728"
@@ -1126,7 +1135,7 @@
                                     <div id="file-selected-state" class="hidden absolute inset-0 w-full h-full bg-slate-900/90 flex flex-col items-center justify-center z-20">
                                         <!-- Single File Preview -->
                                         <div id="single-file-preview" class="flex flex-col items-center hidden">
-                                            <img id="file-preview-img" class="h-24 object-contain rounded-lg mb-3 shadow-lg hidden" />
+                                            <img id="file-preview-img" alt="File preview" class="h-24 object-contain rounded-lg mb-3 shadow-lg hidden" />
                                             <i id="file-preview-icon" data-lucide="file" class="text-indigo-400 w-12 h-12 mb-3 hidden"></i>
                                             <p id="file-name" class="text-white font-medium text-sm truncate max-w-[80%] px-4">filename.txt</p>
                                         </div>
@@ -1258,7 +1267,7 @@
 
                                 <!-- Single File Content -->
                                 <div id="retrieved-file-container" class="p-8 flex flex-col items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] hidden">
-                                    <img id="retrieved-image" class="hidden max-h-80 rounded-lg shadow-2xl object-contain border border-white/10" />
+                                    <img id="retrieved-image" alt="Retrieved file preview" class="hidden max-h-80 rounded-lg shadow-2xl object-contain border border-white/10" />
                                     <div id="retrieved-file-info" class="hidden text-center">
                                         <i data-lucide="file" class="text-slate-600 mx-auto mb-4 w-16 h-16"></i>
                                         <p id="retrieved-filename" class="text-white font-medium mb-1">file.ext</p>
@@ -1616,6 +1625,7 @@
                     const url = `${SB_URL}/storage/v1/object/uploads/${fileName}`;
                     
                     xhr.open('POST', url);
+                    xhr.timeout = 120000; // 2 minute timeout
                     
                     // Necessary Headers
                     xhr.setRequestHeader('Authorization', `Bearer ${SB_KEY}`);
@@ -1634,10 +1644,15 @@
                     
                     xhr.onload = () => {
                         if (xhr.status >= 200 && xhr.status < 300) {
-                            // Success
-                            resolve(fileName); // Return path
+                            resolve(fileName);
+                        } else if (xhr.status >= 500 && attempt < retries) {
+                            attempt++;
+                            setTimeout(tryUpload, 1000 * attempt);
+                        } else if (xhr.status === 429 && attempt < retries) {
+                            attempt++;
+                            setTimeout(tryUpload, 2000 * attempt);
                         } else {
-                            reject(new Error(`Upload failed: ${xhr.statusText}`));
+                            reject(new Error(`Upload failed (${xhr.status}): ${xhr.statusText || 'Server error'}`));
                         }
                     };
                     
@@ -1647,6 +1662,15 @@
                             setTimeout(tryUpload, 1000 * attempt);
                         } else {
                             reject(new Error('Network error during upload. Please check your connection.'));
+                        }
+                    };
+
+                    xhr.ontimeout = () => {
+                        if (attempt < retries) {
+                            attempt++;
+                            setTimeout(tryUpload, 1000 * attempt);
+                        } else {
+                            reject(new Error('Upload timed out. Please check your connection and try again.'));
                         }
                     };
                     
