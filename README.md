@@ -18,7 +18,6 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **📷 QR Code Generation** - Scan QR codes to quickly access shared content
 - **🎨 Appearance System** - Day/Night/Auto theme modes, 12 accent color presets, 11 background textures — all persisted across sessions
 - **🌐 Real-time Database** - PostgreSQL database with real-time subscriptions
-- **🕵️ Stego Tool** - Hide encrypted messages inside text or images using zero-width characters and LSB steganography (see below)
 
 ---
 
@@ -39,28 +38,6 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - Enter the 6-character code
 - Access your content instantly
 - Copy text or download files
-
----
-
-## 🕵️ Stego Tool — E2EE Steganography
-
-The Stego Tool (`stego.html`) lets you hide secret messages inside innocent-looking text or images. Everything is 100% client-side — no data ever leaves your browser. Image processing runs in a Web Worker so the UI never freezes.
-
-### Two Modes
-
-| Mode | Description |
-|------|-------------|
-| **Text → Text** | Encrypt a message with AES-256-GCM (optional password) and encode it as invisible zero-width characters appended to cover text (e.g., an emoji). |
-| **Text → Image** | Type a secret message and select a cover PNG image. The message is embedded into the least-significant bits of the image pixels (LSB steganography). The output is a visually identical PNG. |
-
-### Security
-
-- **Encryption**: AES-256-GCM via the native Web Crypto API
-- **Key Derivation**: PBKDF2 with 100,000 iterations
-- **Password**: Optional — works with or without a password
-- **Zero-Width Characters**: U+200B (zero-width space represents bit 0) and U+200C (zero-width non-joiner represents bit 1)
-- **LSB Steganography**: Modifies only the least-significant bit of R, G, B channels (alpha channel untouched)
-- **Payload Format**: Flag byte identifies content type — `0x00` plain text, `0x01` encrypted text, `0x02` plain file, `0x03` encrypted file
 
 ---
 
@@ -131,7 +108,6 @@ The Stego Tool (`stego.html`) lets you hide secret messages inside innocent-look
 Online-Clipboard/
 │
 ├── index.html          # Main application file (HTML, CSS, JS all-in-one)
-├── stego.html          # Stego Tool — E2EE steganography (text, file, image modes)
 ├── favicon.svg         # Site favicon
 ├── sitemap.xml         # SEO sitemap
 └── README.md           # Project documentation
@@ -256,7 +232,7 @@ Contributions are welcome! Feel free to:
 
 ## 🔮 Future Enhancements
 
-- [x] End-to-end encryption — client-side crypto before upload *(shipped in Stego Tool)*
+- [ ] End-to-end encryption — client-side crypto before upload
 - [ ] Password-protected clips — lock content with a passphrase
 - [ ] Custom expiration times (1h, 6h, 12h, 7d, or never)
 - [ ] Browser extension for Chrome & Firefox (1-click send/receive)

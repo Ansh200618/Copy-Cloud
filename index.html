@@ -65,7 +65,7 @@
                 "price": "0",
                 "priceCurrency": "USD"
             },
-            "featureList": "No login required, 24-hour auto-delete, Cross-device sync, Encrypted transfer, Free file sharing"
+            "featureList": "No login required, 24-hour auto-delete, Cross-device sync, Free file sharing"
         }
     ]
     </script>
@@ -570,18 +570,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-indigo-500/30 hover:bg-white/10 transition-all">
-                        <div class="flex items-start gap-3">
-                            <div class="bg-emerald-500/20 p-2 rounded-lg text-emerald-400 shrink-0">
-                                <i data-lucide="check-circle" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold text-sm mb-1">End-to-End Encryption <span class="text-xs font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 ml-1">SHIPPED</span></h4>
-                                <p class="text-slate-400 text-xs">Available now in the <a href="stego.html" class="text-indigo-400 hover:text-indigo-300 transition-colors">Stego Tool</a> — AES-256-GCM encryption with optional password, plus LSB image steganography</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="bg-white/5 rounded-xl p-4 border border-white/5 hover:border-pink-500/30 hover:bg-white/10 transition-all">
                         <div class="flex items-start gap-3">
                             <div class="bg-pink-500/20 p-2 rounded-lg text-pink-400 shrink-0">
@@ -1073,19 +1061,6 @@
                         <i data-lucide="user-circle" class="w-4 h-4 shrink-0" style="color:var(--accent-400,#a5b4fc)"></i>
                         <span id="user-greeting-text" class="text-sm font-semibold text-white whitespace-nowrap"></span>
                     </button>
-                    <!-- Stego Tool button -->
-                    <a href="stego.html" title="Stego Tool – Hide secrets in images & text"
-                        class="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 border shrink-0 group relative overflow-hidden"
-                        style="background:linear-gradient(135deg,rgba(var(--accent-rgb,99,102,241),0.15),rgba(var(--accent-rgb,99,102,241),0.05)); border-color:rgba(var(--accent-rgb,99,102,241),0.35); color:var(--accent-400,#a5b4fc); box-shadow:0 0 20px rgba(var(--accent-rgb,99,102,241),0.12);"
-                        onmouseover="this.style.boxShadow='0 0 25px rgba(var(--accent-rgb,99,102,241),0.3)'; this.style.borderColor='rgba(var(--accent-rgb,99,102,241),0.6)'"
-                        onmouseout="this.style.boxShadow='0 0 20px rgba(var(--accent-rgb,99,102,241),0.12)'; this.style.borderColor='rgba(var(--accent-rgb,99,102,241),0.35)'">
-                        <i data-lucide="lock" class="w-4 h-4"></i>
-                        <span class="hidden sm:inline">Stego</span>
-                        <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background-color:var(--accent-from,#6366f1);"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2" style="background-color:var(--accent-from,#6366f1);"></span>
-                        </span>
-                    </a>
                     <!-- Appearance settings button -->
                     <button id="appearance-btn" onclick="openAppearanceModal()" title="Appearance Settings"
                         class="p-2.5 bg-slate-900/50 backdrop-blur-md rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 transition-all shrink-0">
@@ -1322,30 +1297,6 @@
                 <div id="tab-about" class="glass-panel rounded-3xl p-8 shadow-2xl space-y-8 hidden animate-fade-in">
                     <h2 class="text-2xl font-bold text-white">Platform Information</h2>
 
-                    <!-- New Feature Announcement -->
-                    <div class="rounded-2xl p-6 border animate-fade-in" style="background:linear-gradient(135deg, rgba(var(--accent-rgb,99,102,241),0.12), rgba(var(--accent-rgb,99,102,241),0.04)); border-color:rgba(var(--accent-rgb,99,102,241),0.25);">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="px-2 py-0.5 text-xs font-bold rounded-full" style="background:rgba(var(--accent-rgb,99,102,241),0.2); color:var(--accent-400,#a5b4fc);">NEW</span>
-                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                                <i data-lucide="eye-off" class="w-5 h-5" style="color:var(--accent-400,#a5b4fc);"></i> Stego Tool — Hide Secrets in Plain Sight
-                            </h3>
-                        </div>
-                        <p class="text-slate-400 text-sm leading-relaxed mb-4">Our end-to-end encrypted steganography tool lets you hide messages inside innocent-looking text or images. 100% client-side — nothing leaves your browser.</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                            <div class="flex items-start gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
-                                <i data-lucide="type" class="w-4 h-4 shrink-0 mt-0.5" style="color:var(--accent-400,#a5b4fc);"></i>
-                                <div><p class="text-white text-xs font-semibold">Text → Text</p><p class="text-slate-500 text-xs">Hide messages in zero-width characters</p></div>
-                            </div>
-                            <div class="flex items-start gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
-                                <i data-lucide="image" class="w-4 h-4 shrink-0 mt-0.5" style="color:var(--accent-400,#a5b4fc);"></i>
-                                <div><p class="text-white text-xs font-semibold">Text → Image</p><p class="text-slate-500 text-xs">LSB steganography in image pixels</p></div>
-                            </div>
-                        </div>
-                        <a href="stego.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:shadow-lg" style="background:linear-gradient(135deg, var(--accent-from,#6366f1), var(--accent-to,#9333ea)); box-shadow:0 4px 15px rgba(var(--accent-rgb,99,102,241),0.3);">
-                            <i data-lucide="lock" class="w-4 h-4"></i> Try Stego Tool
-                        </a>
-                    </div>
-
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="bg-white/5 p-6 rounded-2xl border border-white/5">
                             <i data-lucide="shield" class="mb-4 w-6 h-6" style="color:var(--accent-400,#a5b4fc);"></i>
@@ -1427,17 +1378,6 @@
                 <a href="http://ansh200618.github.io/Portfolio/" target="_blank" class="flex items-center gap-2 hover:text-indigo-400 transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-indigo-500/30 hover:bg-indigo-500/10">
                     <i data-lucide="user" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors"></i>
                     <span>Portfolio</span>
-                </a>
-                <a href="stego.html" class="stego-highlight-link flex items-center gap-2 transition-all duration-300 group px-5 py-2.5 rounded-full border relative overflow-hidden font-bold" style="background:linear-gradient(135deg,rgba(var(--accent-rgb,99,102,241),0.18),rgba(var(--accent-rgb,99,102,241),0.08)); border-color:rgba(var(--accent-rgb,99,102,241),0.40); color:var(--accent-400,#a5b4fc); box-shadow:0 0 20px rgba(var(--accent-rgb,99,102,241),0.15);"
-                    onmouseover="this.style.boxShadow='0 4px 30px rgba(var(--accent-rgb,99,102,241),0.35)'; this.style.borderColor='rgba(var(--accent-rgb,99,102,241),0.7)'; this.style.transform='translateY(-1px)'"
-                    onmouseout="this.style.boxShadow='0 0 20px rgba(var(--accent-rgb,99,102,241),0.15)'; this.style.borderColor='rgba(var(--accent-rgb,99,102,241),0.40)'; this.style.transform='translateY(0)'">
-                    <i data-lucide="lock" class="w-4 h-4 transition-colors" style="color:var(--accent-400,#a5b4fc);"></i>
-                    <span>🔒 Stego Tool</span>
-                    <span class="relative flex h-2.5 w-2.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style="background-color:var(--accent-from,#6366f1);"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5" style="background-color:var(--accent-from,#6366f1);"></span>
-                    </span>
-                    <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent" style="animation: shimmer 3s infinite;"></span>
                 </a>
                 <button onclick="openComingSoonModal()" class="flex items-center gap-2 hover:text-purple-400 transition-colors group bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-purple-500/30 hover:bg-purple-500/10">
                     <i data-lucide="sparkles" class="w-4 h-4 text-slate-400 group-hover:text-purple-400 transition-colors"></i>

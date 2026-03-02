@@ -7,7 +7,6 @@ const CACHE_NAME = 'copycloud-v1';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
-  '/stego.html',
   '/favicon.svg',
   '/favicon-96x96.png',
   '/apple-touch-icon.png',
