@@ -1165,6 +1165,10 @@
                                 <span id="send-btn-text" class="flex items-center gap-2">
                                     <i data-lucide="zap" class="w-4 h-4 fill-current"></i> Generate Secure Code
                                 </span>
+                                <!-- Loading Spinner (shown during upload) -->
+                                <span id="send-btn-loading" class="hidden flex items-center gap-2">
+                                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin-custom"></i> Uploading...
+                                </span>
                             </button>
                         </div>
 
@@ -1428,10 +1432,22 @@
 
         async function fetchWithRetry(input, options, retries = 2) {
             for (let i = 0; i <= retries; i++) {
+                let controller;
+                let timeoutId;
                 try {
                     const req = (input instanceof Request) ? input.clone() : input;
-                    return await fetch(req, options);
+                    const fetchOptions = { ...options };
+                    // Add a 30s timeout if no signal is already set
+                    if (!fetchOptions.signal) {
+                        controller = new AbortController();
+                        timeoutId = setTimeout(() => controller.abort(), 30000);
+                        fetchOptions.signal = controller.signal;
+                    }
+                    const response = await fetch(req, fetchOptions);
+                    if (timeoutId) clearTimeout(timeoutId);
+                    return response;
                 } catch (err) {
+                    if (timeoutId) clearTimeout(timeoutId);
                     if (i === retries) throw err;
                     await new Promise(r => setTimeout(r, 1000 * (i + 1)));
                 }
@@ -1700,8 +1716,13 @@
             const progressStats = document.getElementById('progress-stats');
             const progressFileName = document.getElementById('progress-file-name');
             const btn = document.getElementById('send-btn');
+            const btnText = document.getElementById('send-btn-text');
+            const btnLoading = document.getElementById('send-btn-loading');
             
             btn.disabled = true;
+            btnText.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
+            btnLoading.classList.add('flex');
 
             const code = generateId();
             let contentValue = "";
@@ -1813,6 +1834,9 @@
                 }
             } finally {
                 btn.disabled = false;
+                btnText.classList.remove('hidden');
+                btnLoading.classList.add('hidden');
+                btnLoading.classList.remove('flex');
             }
         };
 
@@ -2115,7 +2139,7 @@
         function isNetworkError(error) {
             const msg = (error && error.message || '').toLowerCase();
             if (error instanceof TypeError && (msg.includes('failed to fetch') || msg.includes('network'))) return true;
-            return msg.includes('network error') || msg.includes('network request failed');
+            return msg.includes('failed to fetch') || msg.includes('network error') || msg.includes('network request failed');
         }
 
         function generateId() {
