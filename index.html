@@ -96,16 +96,14 @@
     </script>
 
     <!-- Preconnect to external origins for faster resource loading -->
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://luunzeonlmzvmewaucqj.supabase.co">
 
     <!-- Dependencies -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="/styles.css">
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
@@ -1418,6 +1416,8 @@
         </footer>
     </div>
 
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
         // Initialize Icons
         lucide.createIcons();
@@ -1426,10 +1426,11 @@
         const SB_URL = 'https://luunzeonlmzvmewaucqj.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dW56ZW9ubG16dm1ld2F1Y3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMzAyNzEsImV4cCI6MjA4NTcwNjI3MX0.qQpWEGFLg6Weof0NO_ApntTrGGYVsrsNB2zaujRMuFY';
 
-        async function fetchWithRetry(url, options, retries = 2) {
+        async function fetchWithRetry(input, options, retries = 2) {
             for (let i = 0; i <= retries; i++) {
                 try {
-                    return await fetch(url, options);
+                    const req = (input instanceof Request) ? input.clone() : input;
+                    return await fetch(req, options);
                 } catch (err) {
                     if (i === retries) throw err;
                     await new Promise(r => setTimeout(r, 1000 * (i + 1)));
@@ -1691,9 +1692,6 @@
             if (currentInputType === 'file' && selectedFiles.length === 0) {
                 return showNotification("Please select files.", "error");
             }
-            if (!navigator.onLine) {
-                return showNotification("You are offline. Please check your connection.", "error");
-            }
 
             // Setup Progress UI
             const progressModal = document.getElementById('upload-progress-modal');
@@ -1870,9 +1868,6 @@
         window.handleRetrieve = async () => {
             const codeInput = document.getElementById('retrieve-code-input').value.toUpperCase().trim();
             if (codeInput.length < 4) return showNotification("Enter a valid code.", "error");
-            if (!navigator.onLine) {
-                return showNotification("You are offline. Please check your connection.", "error");
-            }
 
             const btn = document.getElementById('retrieve-btn');
             btn.disabled = true;
@@ -2118,9 +2113,9 @@
 
         // --- UTILS ---
         function isNetworkError(error) {
-            if (error instanceof TypeError) return true;
             const msg = (error && error.message || '').toLowerCase();
-            return msg.includes('fetch') || msg.includes('network');
+            if (error instanceof TypeError && (msg.includes('fetch') || msg.includes('network') || msg.includes('failed to fetch'))) return true;
+            return msg.includes('networkerror') || msg.includes('network request failed') || msg.includes('network error');
         }
 
         function generateId() {
