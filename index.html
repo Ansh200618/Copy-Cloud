@@ -2114,8 +2114,8 @@
         // --- UTILS ---
         function isNetworkError(error) {
             const msg = (error && error.message || '').toLowerCase();
-            if (error instanceof TypeError && (msg.includes('fetch') || msg.includes('network') || msg.includes('failed to fetch'))) return true;
-            return msg.includes('networkerror') || msg.includes('network request failed') || msg.includes('network error');
+            if (error instanceof TypeError && (msg.includes('failed to fetch') || msg.includes('network'))) return true;
+            return msg.includes('network error') || msg.includes('network request failed');
         }
 
         function generateId() {

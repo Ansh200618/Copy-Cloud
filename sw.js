@@ -1,4 +1,4 @@
-// Copy Cloud Service Worker – v1
+// Copy Cloud Service Worker – v2
 // Provides offline shell caching and network-first strategy for pages.
 
 const CACHE_NAME = 'copycloud-v2';
