@@ -115,7 +115,11 @@
          crossorigin="anonymous"></script>
 
     <style>
+        html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; }
+        
+        /* Smooth global transitions for interactive elements */
+        button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
 
         /* Text selection uses the active accent colour with white text */
         ::selection      { background-color: rgba(var(--accent-rgb), 0.40); color: #ffffff; }
@@ -131,6 +135,9 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         
+        @keyframes fadeInFast { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-fast { animation: fadeInFast 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .animate-spin-custom { animation: spin 1s linear infinite; }
 
@@ -321,7 +328,7 @@
         }
         html.light-mode #retrieve-code-input::placeholder { color: #cbd5e1 !important; }
         html.light-mode #text-input {
-            background-color: rgba(255,255,255,0.8) !important; color: #1e293b !important;
+            background-color: #ffffff !important; color: #1e293b !important;
             border-color: rgba(0,0,0,0.12) !important;
         }
         html.light-mode #text-input:focus { background-color: #ffffff !important; }
@@ -1115,8 +1122,9 @@
                                 </button>
                             </div>
 
-                            <div id="input-area-text" class="mb-6 relative">
-                                <textarea id="text-input" placeholder="Type or paste your content here..." class="w-full h-56 bg-black/20 border border-white/10 rounded-xl p-5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:bg-black/30 transition-all resize-none font-mono text-sm leading-relaxed"></textarea>
+                            <div id="input-area-text" class="mb-6 relative group">
+                                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl opacity-0 group-focus-within:opacity-100 blur transition-opacity duration-500 -z-10"></div>
+                                <textarea id="text-input" placeholder="Type or paste your content here..." class="w-full h-56 bg-[#0B1120] border border-white/10 rounded-xl p-5 text-slate-200 placeholder-slate-600 focus:outline-none focus:bg-[#0f172a] transition-all resize-none font-mono text-sm leading-relaxed"></textarea>
                             </div>
 
                             <div id="input-area-file" class="mb-6 relative hidden">
@@ -1477,6 +1485,8 @@
                 const el = document.getElementById(`tab-${t}`);
                 if (t === tabName) {
                     el.classList.remove('hidden');
+                    el.classList.add('animate-fade-in-fast');
+                    el.addEventListener('animationend', () => el.classList.remove('animate-fade-in-fast'), { once: true });
                     if(tabName === 'send') resetSend();
                 } else {
                     el.classList.add('hidden');
@@ -1499,12 +1509,16 @@
                 textBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm bg-indigo-600 text-white shadow-lg";
                 fileBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm text-slate-400 hover:text-white";
                 textArea.classList.remove('hidden');
+                textArea.classList.add('animate-fade-in-fast');
+                textArea.addEventListener('animationend', () => textArea.classList.remove('animate-fade-in-fast'), { once: true });
                 fileArea.classList.add('hidden');
             } else {
                 fileBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm bg-indigo-600 text-white shadow-lg";
                 textBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm text-slate-400 hover:text-white";
                 textArea.classList.add('hidden');
                 fileArea.classList.remove('hidden');
+                fileArea.classList.add('animate-fade-in-fast');
+                fileArea.addEventListener('animationend', () => fileArea.classList.remove('animate-fade-in-fast'), { once: true });
             }
         };
 
