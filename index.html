@@ -96,16 +96,14 @@
     </script>
 
     <!-- Preconnect to external origins for faster resource loading -->
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://luunzeonlmzvmewaucqj.supabase.co">
 
     <!-- Dependencies -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="/styles.css">
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
@@ -117,7 +115,11 @@
          crossorigin="anonymous"></script>
 
     <style>
+        html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; }
+        
+        /* Smooth global transitions for interactive elements */
+        button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
 
         /* Text selection uses the active accent colour with white text */
         ::selection      { background-color: rgba(var(--accent-rgb), 0.40); color: #ffffff; }
@@ -133,6 +135,9 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         
+        @keyframes fadeInFast { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-fast { animation: fadeInFast 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .animate-spin-custom { animation: spin 1s linear infinite; }
 
@@ -323,7 +328,7 @@
         }
         html.light-mode #retrieve-code-input::placeholder { color: #cbd5e1 !important; }
         html.light-mode #text-input {
-            background-color: rgba(255,255,255,0.8) !important; color: #1e293b !important;
+            background-color: #ffffff !important; color: #1e293b !important;
             border-color: rgba(0,0,0,0.12) !important;
         }
         html.light-mode #text-input:focus { background-color: #ffffff !important; }
@@ -1117,8 +1122,9 @@
                                 </button>
                             </div>
 
-                            <div id="input-area-text" class="mb-6 relative">
-                                <textarea id="text-input" placeholder="Type or paste your content here..." class="w-full h-56 bg-black/20 border border-white/10 rounded-xl p-5 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-indigo-500/50 focus:bg-black/30 transition-all resize-none font-mono text-sm leading-relaxed"></textarea>
+                            <div id="input-area-text" class="mb-6 relative group">
+                                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl opacity-0 group-focus-within:opacity-100 blur transition-opacity duration-500 -z-10"></div>
+                                <textarea id="text-input" placeholder="Type or paste your content here..." class="w-full h-56 bg-[#0B1120] border border-white/10 rounded-xl p-5 text-slate-200 placeholder-slate-600 focus:outline-none focus:bg-[#0f172a] transition-all resize-none font-mono text-sm leading-relaxed"></textarea>
                             </div>
 
                             <div id="input-area-file" class="mb-6 relative hidden">
@@ -1166,6 +1172,10 @@
                                 <!-- Default Text -->
                                 <span id="send-btn-text" class="flex items-center gap-2">
                                     <i data-lucide="zap" class="w-4 h-4 fill-current"></i> Generate Secure Code
+                                </span>
+                                <!-- Loading Spinner (shown during upload) -->
+                                <span id="send-btn-loading" class="hidden flex items-center gap-2">
+                                    <i data-lucide="loader-2" class="w-5 h-5 animate-spin-custom"></i> Uploading...
                                 </span>
                             </button>
                         </div>
@@ -1418,6 +1428,8 @@
         </footer>
     </div>
 
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
         // Initialize Icons
         lucide.createIcons();
@@ -1426,11 +1438,24 @@
         const SB_URL = 'https://luunzeonlmzvmewaucqj.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dW56ZW9ubG16dm1ld2F1Y3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMzAyNzEsImV4cCI6MjA4NTcwNjI3MX0.qQpWEGFLg6Weof0NO_ApntTrGGYVsrsNB2zaujRMuFY';
 
-        async function fetchWithRetry(url, options, retries = 2) {
+        async function fetchWithRetry(input, options, retries = 2) {
             for (let i = 0; i <= retries; i++) {
+                let controller;
+                let timeoutId;
                 try {
-                    return await fetch(url, options);
+                    const req = (input instanceof Request) ? input.clone() : input;
+                    const fetchOptions = { ...options };
+                    // Add a 30s timeout if no signal is already set
+                    if (!fetchOptions.signal) {
+                        controller = new AbortController();
+                        timeoutId = setTimeout(() => controller.abort(), 30000);
+                        fetchOptions.signal = controller.signal;
+                    }
+                    const response = await fetch(req, fetchOptions);
+                    if (timeoutId) clearTimeout(timeoutId);
+                    return response;
                 } catch (err) {
+                    if (timeoutId) clearTimeout(timeoutId);
                     if (i === retries) throw err;
                     await new Promise(r => setTimeout(r, 1000 * (i + 1)));
                 }
@@ -1460,6 +1485,8 @@
                 const el = document.getElementById(`tab-${t}`);
                 if (t === tabName) {
                     el.classList.remove('hidden');
+                    el.classList.add('animate-fade-in-fast');
+                    el.addEventListener('animationend', () => el.classList.remove('animate-fade-in-fast'), { once: true });
                     if(tabName === 'send') resetSend();
                 } else {
                     el.classList.add('hidden');
@@ -1482,12 +1509,16 @@
                 textBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm bg-indigo-600 text-white shadow-lg";
                 fileBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm text-slate-400 hover:text-white";
                 textArea.classList.remove('hidden');
+                textArea.classList.add('animate-fade-in-fast');
+                textArea.addEventListener('animationend', () => textArea.classList.remove('animate-fade-in-fast'), { once: true });
                 fileArea.classList.add('hidden');
             } else {
                 fileBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm bg-indigo-600 text-white shadow-lg";
                 textBtn.className = "py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all font-medium text-sm text-slate-400 hover:text-white";
                 textArea.classList.add('hidden');
                 fileArea.classList.remove('hidden');
+                fileArea.classList.add('animate-fade-in-fast');
+                fileArea.addEventListener('animationend', () => fileArea.classList.remove('animate-fade-in-fast'), { once: true });
             }
         };
 
@@ -1691,9 +1722,6 @@
             if (currentInputType === 'file' && selectedFiles.length === 0) {
                 return showNotification("Please select files.", "error");
             }
-            if (!navigator.onLine) {
-                return showNotification("You are offline. Please check your connection.", "error");
-            }
 
             // Setup Progress UI
             const progressModal = document.getElementById('upload-progress-modal');
@@ -1702,8 +1730,13 @@
             const progressStats = document.getElementById('progress-stats');
             const progressFileName = document.getElementById('progress-file-name');
             const btn = document.getElementById('send-btn');
+            const btnText = document.getElementById('send-btn-text');
+            const btnLoading = document.getElementById('send-btn-loading');
             
             btn.disabled = true;
+            btnText.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
+            btnLoading.classList.add('flex');
 
             const code = generateId();
             let contentValue = "";
@@ -1815,6 +1848,9 @@
                 }
             } finally {
                 btn.disabled = false;
+                btnText.classList.remove('hidden');
+                btnLoading.classList.add('hidden');
+                btnLoading.classList.remove('flex');
             }
         };
 
@@ -1870,9 +1906,6 @@
         window.handleRetrieve = async () => {
             const codeInput = document.getElementById('retrieve-code-input').value.toUpperCase().trim();
             if (codeInput.length < 4) return showNotification("Enter a valid code.", "error");
-            if (!navigator.onLine) {
-                return showNotification("You are offline. Please check your connection.", "error");
-            }
 
             const btn = document.getElementById('retrieve-btn');
             btn.disabled = true;
@@ -2118,9 +2151,9 @@
 
         // --- UTILS ---
         function isNetworkError(error) {
-            if (error instanceof TypeError) return true;
             const msg = (error && error.message || '').toLowerCase();
-            return msg.includes('fetch') || msg.includes('network');
+            if (error instanceof TypeError && (msg.includes('failed to fetch') || msg.includes('network'))) return true;
+            return msg.includes('failed to fetch') || msg.includes('network error') || msg.includes('network request failed');
         }
 
         function generateId() {
