@@ -1638,11 +1638,10 @@
 
         // --- HELPER: FORCE DOWNLOAD (FIXED) ---
         async function forceDownload(url, filename) {
+            const btnIcon = document.activeElement ? document.activeElement.querySelector('i') : null;
+            const originalIcon = btnIcon ? btnIcon.getAttribute('data-lucide') : null;
             try {
                 // Visual feedback
-                const btnIcon = document.activeElement ? document.activeElement.querySelector('i') : null;
-                const originalIcon = btnIcon ? btnIcon.getAttribute('data-lucide') : null;
-                
                 if (btnIcon) {
                     btnIcon.setAttribute('data-lucide', 'loader-2');
                     btnIcon.classList.add('animate-spin');
@@ -1651,9 +1650,23 @@
                      showNotification("Downloading...", "info");
                 }
 
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("Network error");
-                const blob = await response.blob();
+                // Retry download up to 3 times with 60s timeout each attempt
+                let blob;
+                for (let attempt = 0; attempt <= 3; attempt++) {
+                    try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 120000);
+                        const response = await fetch(url, { signal: controller.signal });
+                        clearTimeout(timeoutId);
+                        if (!response.ok) throw new Error("Network error");
+                        blob = await response.blob();
+                        break;
+                    } catch (err) {
+                        if (attempt === 3) throw err;
+                        await new Promise(r => setTimeout(r, 2000 * Math.pow(2, attempt)));
+                    }
+                }
+
                 const blobUrl = window.URL.createObjectURL(blob);
                 
                 const a = document.createElement('a');
@@ -1674,7 +1687,15 @@
                 
             } catch (error) {
                 console.error("Download error:", error);
-                // Fallback
+                if (btnIcon && originalIcon) {
+                    btnIcon.setAttribute('data-lucide', originalIcon);
+                    btnIcon.classList.remove('animate-spin');
+                    try { lucide.createIcons(); } catch(e) {}
+                }
+                if (isNetworkError(error)) {
+                    showNotification("Download failed. Check your internet and try again.", "error");
+                }
+                // Fallback: direct link download
                 const a = document.createElement('a');
                 a.href = url;
                 a.target = '_blank';
@@ -1879,14 +1900,15 @@
 
             } catch (error) {
                 console.error("Upload Error:", error);
-                progressModal.classList.add('hidden'); // Hide progress on error
-                progressModal.classList.remove('flex');
                 if (isNetworkError(error)) {
                     showNotification("Upload failed. Please check your internet connection and try again.", "error");
                 } else {
                     showNotification("Upload failed. " + (error.message || "Please try again."), "error");
                 }
             } finally {
+                // Always reset UI state regardless of success/failure
+                progressModal.classList.add('hidden');
+                progressModal.classList.remove('flex');
                 btn.disabled = false;
                 btnText.classList.remove('hidden');
                 btnLoading.classList.add('hidden');
@@ -2098,8 +2120,21 @@
                              const zip = new JSZip();
                              const filePromises = filePaths.map(async (path) => {
                                  const { data: fileData } = db.storage.from('uploads').getPublicUrl(path);
-                                 const response = await fetch(fileData.publicUrl);
-                                 const blob = await response.blob();
+                                 // Retry each file fetch up to 3 times with 120s timeout
+                                 let blob;
+                                 for (let attempt = 0; attempt <= 3; attempt++) {
+                                     try {
+                                         const controller = new AbortController();
+                                         const timeoutId = setTimeout(() => controller.abort(), 120000);
+                                         const response = await fetch(fileData.publicUrl, { signal: controller.signal });
+                                         clearTimeout(timeoutId);
+                                         blob = await response.blob();
+                                         break;
+                                     } catch (err) {
+                                         if (attempt === 3) throw err;
+                                         await new Promise(r => setTimeout(r, 2000 * Math.pow(2, attempt)));
+                                     }
+                                 }
                                  
                                  // Clean filename logic: Remove CODE-RANDOM- prefix if possible
                                  let fileName = path.split('-').slice(2).join('-') || path;
@@ -2142,7 +2177,11 @@
                              document.body.removeChild(a);
 
                          } catch (e) {
-                             showNotification("Error creating ZIP", "error");
+                             if (isNetworkError(e)) {
+                                 showNotification("ZIP download failed. Check your internet and try again.", "error");
+                             } else {
+                                 showNotification("Error creating ZIP. Please try again.", "error");
+                             }
                              console.error(e);
                          } finally {
                              newZipBtn.disabled = false;
