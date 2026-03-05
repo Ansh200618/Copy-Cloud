@@ -1650,7 +1650,7 @@
                      showNotification("Downloading...", "info");
                 }
 
-                // Retry download up to 3 times with 60s timeout each attempt
+                // Retry download with 120s timeout per attempt (4 attempts total)
                 let blob;
                 for (let attempt = 0; attempt <= 3; attempt++) {
                     try {
@@ -2120,7 +2120,7 @@
                              const zip = new JSZip();
                              const filePromises = filePaths.map(async (path) => {
                                  const { data: fileData } = db.storage.from('uploads').getPublicUrl(path);
-                                 // Retry each file fetch up to 3 times with 120s timeout
+                                 // Retry each file fetch with 120s timeout (4 attempts total)
                                  let blob;
                                  for (let attempt = 0; attempt <= 3; attempt++) {
                                      try {
