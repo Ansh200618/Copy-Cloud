@@ -361,6 +361,45 @@
         html.light-mode .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.04) !important; }
         html.light-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15) !important; }
         html.light-mode .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25) !important; }
+        /* File upload area – theme aware */
+        html.light-mode #input-area-file > div {
+            border-color: rgba(99,102,241,0.25) !important;
+            background-color: rgba(248,250,252,0.6) !important;
+        }
+        html.light-mode #input-area-file > div:hover {
+            background-color: rgba(238,242,255,0.7) !important;
+        }
+        html.light-mode #file-empty-state .text-slate-300 { color: #334155 !important; }
+        html.light-mode #file-empty-state .text-slate-500 { color: #64748b !important; }
+        html.light-mode #file-empty-state .bg-indigo-500\/10 {
+            background-color: rgba(99,102,241,0.1) !important;
+        }
+        html.light-mode #file-empty-state .bg-white\/5 {
+            background-color: rgba(0,0,0,0.05) !important;
+            border-color: rgba(0,0,0,0.08) !important;
+        }
+        html.light-mode #file-selected-state {
+            background-color: rgba(248,250,252,0.95) !important;
+        }
+        html.light-mode #file-selected-state .text-white {
+            color: #0f172a !important;
+        }
+        html.light-mode #file-selected-state .text-slate-500 {
+            color: #64748b !important;
+        }
+        html.light-mode #file-selected-state #file-count-badge {
+            border-color: #f8fafc !important;
+        }
+        html.light-mode #file-selected-state button {
+            background-color: rgba(0,0,0,0.08) !important;
+        }
+        html.light-mode #file-selected-state button:hover {
+            background-color: rgba(244,63,94,0.8) !important;
+        }
+        html.light-mode #file-selected-state button .text-white,
+        html.light-mode #file-selected-state button:hover .text-white {
+            color: #ffffff !important;
+        }
 
         /* =============================================
            BACKGROUND TEXTURES
@@ -1438,17 +1477,17 @@
         const SB_URL = 'https://luunzeonlmzvmewaucqj.supabase.co';
         const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dW56ZW9ubG16dm1ld2F1Y3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMzAyNzEsImV4cCI6MjA4NTcwNjI3MX0.qQpWEGFLg6Weof0NO_ApntTrGGYVsrsNB2zaujRMuFY';
 
-        async function fetchWithRetry(input, options, retries = 2) {
+        async function fetchWithRetry(input, options, retries = 3) {
             for (let i = 0; i <= retries; i++) {
                 let controller;
                 let timeoutId;
                 try {
                     const req = (input instanceof Request) ? input.clone() : input;
                     const fetchOptions = { ...options };
-                    // Add a 30s timeout if no signal is already set
+                    // Add a 60s timeout if no signal is already set (generous for slow connections)
                     if (!fetchOptions.signal) {
                         controller = new AbortController();
-                        timeoutId = setTimeout(() => controller.abort(), 30000);
+                        timeoutId = setTimeout(() => controller.abort(), 60000);
                         fetchOptions.signal = controller.signal;
                     }
                     const response = await fetch(req, fetchOptions);
@@ -1457,7 +1496,8 @@
                 } catch (err) {
                     if (timeoutId) clearTimeout(timeoutId);
                     if (i === retries) throw err;
-                    await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+                    // Exponential backoff: 2s, 4s, 8s
+                    await new Promise(r => setTimeout(r, 2000 * Math.pow(2, i)));
                 }
             }
         }
@@ -1646,7 +1686,7 @@
         }
 
         // --- CUSTOM XHR UPLOAD FUNCTION TO GET PROGRESS ---
-        function uploadFileWithProgress(file, fileName, onProgress, retries = 2) {
+        function uploadFileWithProgress(file, fileName, onProgress, retries = 3) {
             return new Promise((resolve, reject) => {
                 let attempt = 0;
 
@@ -1656,7 +1696,7 @@
                     const url = `${SB_URL}/storage/v1/object/uploads/${fileName}`;
                     
                     xhr.open('POST', url);
-                    xhr.timeout = 120000; // 2 minute timeout
+                    xhr.timeout = 300000; // 5 minute timeout for slow connections
                     
                     // Necessary Headers
                     xhr.setRequestHeader('Authorization', `Bearer ${SB_KEY}`);
@@ -1678,10 +1718,10 @@
                             resolve(fileName);
                         } else if (xhr.status >= 500 && attempt < retries) {
                             attempt++;
-                            setTimeout(tryUpload, 1000 * attempt);
+                            setTimeout(tryUpload, 2000 * Math.pow(2, attempt - 1));
                         } else if (xhr.status === 429 && attempt < retries) {
                             attempt++;
-                            setTimeout(tryUpload, 2000 * attempt);
+                            setTimeout(tryUpload, 3000 * Math.pow(2, attempt - 1));
                         } else {
                             reject(new Error(`Upload failed (${xhr.status}): ${xhr.statusText || 'Server error'}`));
                         }
@@ -1690,7 +1730,7 @@
                     xhr.onerror = () => {
                         if (attempt < retries) {
                             attempt++;
-                            setTimeout(tryUpload, 1000 * attempt);
+                            setTimeout(tryUpload, 2000 * Math.pow(2, attempt - 1));
                         } else {
                             reject(new Error('Network error during upload. Please check your connection.'));
                         }
@@ -1699,7 +1739,7 @@
                     xhr.ontimeout = () => {
                         if (attempt < retries) {
                             attempt++;
-                            setTimeout(tryUpload, 1000 * attempt);
+                            setTimeout(tryUpload, 2000 * Math.pow(2, attempt - 1));
                         } else {
                             reject(new Error('Upload timed out. Please check your connection and try again.'));
                         }
@@ -2151,9 +2191,11 @@
 
         // --- UTILS ---
         function isNetworkError(error) {
+            if (error && error.name === 'AbortError') return true;
+            if (error && error.name === 'TimeoutError') return true;
             const msg = (error && error.message || '').toLowerCase();
             if (error instanceof TypeError && (msg.includes('failed to fetch') || msg.includes('network'))) return true;
-            return msg.includes('failed to fetch') || msg.includes('network error') || msg.includes('network request failed');
+            return msg.includes('failed to fetch') || msg.includes('network error') || msg.includes('network request failed') || msg.includes('timed out') || msg.includes('timeout') || msg.includes('aborted');
         }
 
         function generateId() {
