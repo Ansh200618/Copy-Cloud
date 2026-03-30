@@ -490,9 +490,6 @@
         .tex-swatch[data-tex="datastream"]  { background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='60'><rect x='3' y='2' width='2' height='8' rx='1' fill='white' fill-opacity='0.36'/><rect x='3' y='14' width='2' height='5' rx='1' fill='white' fill-opacity='0.24'/><rect x='3' y='24' width='2' height='10' rx='1' fill='white' fill-opacity='0.32'/><rect x='3' y='40' width='2' height='6' rx='1' fill='white' fill-opacity='0.40'/><rect x='3' y='52' width='2' height='7' rx='1' fill='white' fill-opacity='0.28'/><rect x='13' y='0' width='2' height='5' rx='1' fill='white' fill-opacity='0.28'/><rect x='13' y='10' width='2' height='9' rx='1' fill='white' fill-opacity='0.40'/><rect x='13' y='24' width='2' height='4' rx='1' fill='white' fill-opacity='0.32'/><rect x='13' y='33' width='2' height='11' rx='1' fill='white' fill-opacity='0.24'/><rect x='13' y='51' width='2' height='8' rx='1' fill='white' fill-opacity='0.36'/><rect x='23' y='5' width='2' height='7' rx='1' fill='white' fill-opacity='0.40'/><rect x='23' y='18' width='2' height='11' rx='1' fill='white' fill-opacity='0.28'/><rect x='23' y='35' width='2' height='5' rx='1' fill='white' fill-opacity='0.36'/><rect x='23' y='46' width='2' height='9' rx='1' fill='white' fill-opacity='0.24'/><rect x='33' y='1' width='2' height='10' rx='1' fill='white' fill-opacity='0.32'/><rect x='33' y='16' width='2' height='6' rx='1' fill='white' fill-opacity='0.44'/><rect x='33' y='28' width='2' height='9' rx='1' fill='white' fill-opacity='0.28'/><rect x='33' y='44' width='2' height='7' rx='1' fill='white' fill-opacity='0.36'/></svg>"); background-size:40px 60px; }
 
         /* Welcome back countdown bar */
-        @keyframes wbCountdown { from { width: 100%; } to { width: 0%; } }
-        .wb-countdown-bar { animation: wbCountdown 4s linear forwards; }
-
         /* Welcome modal name input */
         #welcome-name-input:focus { outline: none; }
     </style>
@@ -839,7 +836,7 @@
         </div>
     </div>
 
-    <!-- Welcome Modal (first-time name prompt + returning welcome-back) -->
+    <!-- Welcome Modal (first-time name prompt) -->
     <div id="welcome-modal" class="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-sm flex flex-col shadow-2xl animate-fade-in relative overflow-hidden">
             <!-- Accent bar -->
@@ -894,52 +891,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Returning: welcome back -->
-            <div id="welcome-back" class="p-8 hidden flex-col items-center text-center gap-4">
-                <div class="text-5xl mb-1">👋</div>
-                <div>
-                    <p class="text-slate-400 text-sm mb-1">Welcome back</p>
-                    <h2 id="welcome-back-name" class="text-2xl font-bold text-white"></h2>
-                    <p class="text-slate-500 text-xs mt-2">Great to see you again. Ready to share?</p>
-                </div>
-                <!-- Feature highlights -->
-                <div class="w-full grid grid-cols-3 gap-1.5 text-center">
-                    <div class="flex flex-col items-center gap-1 px-1.5 py-2 rounded-lg bg-white/5">
-                        <i data-lucide="shield" class="w-3.5 h-3.5" style="color:var(--accent-400,#a5b4fc);"></i>
-                        <span class="text-slate-500 text-[10px]">No login</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-1 px-1.5 py-2 rounded-lg bg-white/5">
-                        <i data-lucide="zap" class="w-3.5 h-3.5" style="color:var(--accent-400,#a5b4fc);"></i>
-                        <span class="text-slate-500 text-[10px]">Real-time</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-1 px-1.5 py-2 rounded-lg bg-white/5">
-                        <i data-lucide="smartphone" class="w-3.5 h-3.5" style="color:var(--accent-400,#a5b4fc);"></i>
-                        <span class="text-slate-500 text-[10px]">Cross-device</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-1 px-1.5 py-2 rounded-lg bg-white/5">
-                        <i data-lucide="clock" class="w-3.5 h-3.5" style="color:var(--accent-400,#a5b4fc);"></i>
-                        <span class="text-slate-500 text-[10px]">Auto-expiry</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-1 px-1.5 py-2 rounded-lg bg-white/5">
-                        <i data-lucide="qr-code" class="w-3.5 h-3.5" style="color:var(--accent-400,#a5b4fc);"></i>
-                        <span class="text-slate-500 text-[10px]">QR codes</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-1 px-1.5 py-2 rounded-lg bg-white/5">
-                        <i data-lucide="eye-off" class="w-3.5 h-3.5" style="color:var(--accent-400,#a5b4fc);"></i>
-                        <span class="text-slate-500 text-[10px]">Encrypted</span>
-                    </div>
-                </div>
-                <button onclick="closeWelcomeModal()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-500/20">
-                    Let's Go! 🚀
-                </button>
-                <!-- Auto-dismiss countdown bar -->
-                <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden -mt-1">
-                    <div id="welcome-countdown" class="wb-countdown-bar h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
-                </div>
-                <p class="text-slate-600 text-[10px] -mt-2">Auto-dismissing in 4 seconds…</p>
-            </div>
-        </div>
     </div>
 
     <!-- User Profile Modal -->
@@ -2233,7 +2184,9 @@
             if (type === 'error') colors = 'bg-rose-500/90 border-rose-400/50';
 
             el.className = `flex items-center gap-3 px-6 py-3 rounded-full text-white backdrop-blur-md shadow-2xl border ${colors} animate-fade-in pointer-events-auto`;
-            el.innerHTML = `<span>${message}</span>`;
+            const span = document.createElement('span');
+            span.textContent = message;
+            el.appendChild(span);
             
             container.appendChild(el);
             setTimeout(() => {
@@ -2675,8 +2628,6 @@
 
             if (stored === null) {
                 // First ever visit — show name prompt
-                document.getElementById('welcome-setup').classList.remove('hidden');
-                document.getElementById('welcome-back').classList.add('hidden');
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
                 lucide.createIcons();
