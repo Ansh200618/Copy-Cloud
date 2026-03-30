@@ -110,10 +110,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5287107562841728"
-         crossorigin="anonymous"></script>
-
     <style>
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; }
@@ -2147,18 +2143,20 @@
                         const item = document.createElement('div');
                         item.className = "flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5 hover:bg-white/10 transition-colors group";
                         
-                        // FIXED: Multi File Download Logic using forceDownload button
+                        const iconName = path.match(/\.(jpg|png|webp)$/i) ? 'image' : 'file';
                         item.innerHTML = `
                             <div class="flex items-center gap-3 overflow-hidden">
                                 <div class="w-8 h-8 bg-indigo-500/20 rounded flex items-center justify-center text-indigo-400 shrink-0">
-                                    <i data-lucide="${path.match(/\.(jpg|png|webp)$/i) ? 'image' : 'file'}" class="w-4 h-4"></i>
+                                    <i data-lucide="${iconName}" class="w-4 h-4"></i>
                                 </div>
-                                <span class="text-sm text-slate-200 truncate font-medium">${displayName}</span>
+                                <span class="text-sm text-slate-200 truncate font-medium"></span>
                             </div>
-                            <button onclick="forceDownload('${url}', '${displayName}')" class="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors opacity-80 group-hover:opacity-100 flex items-center justify-center">
+                            <button class="p-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md transition-colors opacity-80 group-hover:opacity-100 flex items-center justify-center">
                                 <i data-lucide="download" class="w-4 h-4"></i>
                             </button>
                         `;
+                        item.querySelector('span').textContent = displayName;
+                        item.querySelector('button').addEventListener('click', () => forceDownload(url, displayName));
                         listEl.appendChild(item);
                     });
                     
@@ -2193,15 +2191,26 @@
         }
 
         function copyToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification("Copied to Clipboard!", "success");
+                }).catch((err) => {
+                    console.error('Clipboard write failed', err);
+                    showNotification("Copy failed", "error");
+                });
+                return;
+            }
+            // Fallback for older browsers
             const textArea = document.createElement("textarea");
             textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
             document.body.appendChild(textArea);
             textArea.select();
             try {
                 document.execCommand('copy');
                 showNotification("Copied to Clipboard!", "success");
             } catch (err) {
-                console.error('Copy failed', err);
                 showNotification("Copy failed", "error");
             }
             document.body.removeChild(textArea);
@@ -2259,6 +2268,8 @@
             if (e.key === 'Escape') {
                 window.closeComingSoonModal();
                 closeAppearanceModal();
+                closeWelcomeModal();
+                closeProfileModal();
             }
         });
 
@@ -2397,6 +2408,7 @@
         document.getElementById('retrieve-code-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
+                window.handleRetrieve();
             }
         });
 
@@ -2671,23 +2683,9 @@
                 const inp = document.getElementById('welcome-name-input');
                 if (inp) setTimeout(() => inp.focus(), 120);
             } else {
-                // Returning visit
+                // Returning visit – just show the greeting pill, no popup
                 const name = stored || '';
                 showUserGreeting(name);
-                document.getElementById('welcome-setup').classList.add('hidden');
-                const wb = document.getElementById('welcome-back');
-                wb.classList.remove('hidden');
-                wb.classList.add('flex');
-                const nameEl = document.getElementById('welcome-back-name');
-                if (nameEl) nameEl.textContent = name || '';
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                lucide.createIcons();
-                // Restart countdown bar animation
-                const bar = document.getElementById('welcome-countdown');
-                if (bar) { bar.classList.remove('wb-countdown-bar'); void bar.offsetWidth; /* Force reflow to restart CSS animation */ bar.classList.add('wb-countdown-bar'); }
-                // Auto-dismiss after 4 s
-                setTimeout(closeWelcomeModal, 4000);
             }
         }
 
