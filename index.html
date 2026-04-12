@@ -2671,23 +2671,16 @@
                 const inp = document.getElementById('welcome-name-input');
                 if (inp) setTimeout(() => inp.focus(), 120);
             } else {
-                // Returning visit
+                // Returning visit: keep greeting, don't reopen welcome popup
                 const name = stored || '';
                 showUserGreeting(name);
                 document.getElementById('welcome-setup').classList.add('hidden');
                 const wb = document.getElementById('welcome-back');
-                wb.classList.remove('hidden');
-                wb.classList.add('flex');
+                wb.classList.add('hidden');
+                wb.classList.remove('flex');
                 const nameEl = document.getElementById('welcome-back-name');
                 if (nameEl) nameEl.textContent = name || '';
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                lucide.createIcons();
-                // Restart countdown bar animation
-                const bar = document.getElementById('welcome-countdown');
-                if (bar) { bar.classList.remove('wb-countdown-bar'); void bar.offsetWidth; /* Force reflow to restart CSS animation */ bar.classList.add('wb-countdown-bar'); }
-                // Auto-dismiss after 4 s
-                setTimeout(closeWelcomeModal, 4000);
+                closeWelcomeModal();
             }
         }
 
