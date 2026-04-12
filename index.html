@@ -2675,11 +2675,6 @@
                 const name = stored || '';
                 showUserGreeting(name);
                 document.getElementById('welcome-setup').classList.add('hidden');
-                const wb = document.getElementById('welcome-back');
-                wb.classList.add('hidden');
-                wb.classList.remove('flex');
-                const nameEl = document.getElementById('welcome-back-name');
-                if (nameEl) nameEl.textContent = name || '';
                 closeWelcomeModal();
             }
         }
