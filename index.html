@@ -1466,6 +1466,9 @@
 
         // UI STATE FUNCTIONS
         window.switchTab = (tabName) => {
+            const targetTab = document.getElementById(`tab-${tabName}`);
+            if (!targetTab || !targetTab.classList.contains('hidden')) return;
+
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.className = "nav-btn flex-1 md:flex-none justify-center flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white hover:bg-white/5";
             });
@@ -2391,17 +2394,18 @@
         // Render history on load
         renderHistory();
 
-        // --- KEYBOARD EVENT HANDLERS (Prevent Enter from triggering actions) ---
+        // --- KEYBOARD EVENT HANDLERS ---
         document.getElementById('text-input').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.stopPropagation();
-                // Allow default so Enter creates a new line in the textarea
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                window.handleSend();
             }
         });
 
         document.getElementById('retrieve-code-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
+                window.handleRetrieve();
             }
         });
 
