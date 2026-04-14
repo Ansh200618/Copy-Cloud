@@ -21,14 +21,14 @@
 <meta property="og:description" content="Instantly share text and files between devices without logging in.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://copycloud.me/">
-<meta property="og:image" content="https://copycloud.me/og-image.png?v=2">
+<meta property="og:image" content="https://copycloud.me/og-image.png?v=4">
 <meta name="twitter:card" content="summary_large_image">
 
 <!-- FAVICON AREA -->
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" type="image/x-icon" href="/favicon.ico?v=4">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=4">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4">
+<link rel="manifest" href="/site.webmanifest?v=4">
 <meta name="theme-color" content="#f2f2f0" id="meta-theme-color">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -371,7 +371,7 @@ font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; tran
 <header class="nav">
 <div class="brand" onclick="window.scrollTo(0,0)">
 <div class="brand-icon">
-<img src="/apple-touch-icon.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+<img src="/logo.png?v=4" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
 </div>
 Copy Cloud
 </div>
@@ -453,7 +453,7 @@ Copy Cloud
 <header class="nav">
 <div class="brand" style="cursor:pointer;" onclick="switchAppView('landing')">
 <div class="brand-icon">
-<img src="/apple-touch-icon.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+<img src="/logo.png?v=4" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
 </div>
 Copy Cloud
 </div>
@@ -615,7 +615,7 @@ Copy Cloud
 <div id="app-tab-about" class="app-tab-content">
 <div class="tab-hero">
 <div class="hero-icon-wrap">
-<img src="/apple-touch-icon.png" alt="Logo" class="brand-logo" style="width: 28px; height: 28px; border-radius: 6px;" onerror="this.style.display='none'">
+<img src="/logo.png?v=4" alt="Logo" class="brand-logo" style="width: 28px; height: 28px; border-radius: 6px;" onerror="this.style.display='none'">
 </div>
 <h2>Copy Cloud</h2>
 <p>v2.0 Minimal SPA Edition</p>
@@ -1001,7 +1001,7 @@ setTimeout(() => {
 
         const img = new Image();
         img.crossOrigin = "Anonymous";
-        img.src = '/apple-touch-icon.png'; // Uses the official icon from your repo
+        img.src = '/logo.png?v=4'; // Uses logo.png so QR center branding matches the newest site logo
         
         img.onload = () => { ctx.drawImage(img, x, y, logoSize, logoSize); };
         img.onerror = () => {
