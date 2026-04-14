@@ -8,14 +8,14 @@ const PRECACHE_ASSETS = [
   '/',
   '/index.html',
   '/styles.css',
-  '/favicon.svg?v=3',
-  '/favicon.ico?v=3',
-  '/favicon-96x96.png?v=3',
-  '/apple-touch-icon.png?v=3',
+  '/favicon.svg?v=4',
+  '/favicon.ico?v=4',
+  '/favicon-96x96.png?v=4',
+  '/apple-touch-icon.png?v=4',
   '/logo.png?v=4',
-  '/web-app-manifest-192x192.png?v=3',
-  '/web-app-manifest-512x512.png?v=3',
-  '/site.webmanifest?v=3'
+  '/web-app-manifest-192x192.png?v=4',
+  '/web-app-manifest-512x512.png?v=4',
+  '/site.webmanifest?v=4'
 ];
 
 // Install – cache the app shell
