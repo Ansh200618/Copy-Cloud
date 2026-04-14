@@ -21,7 +21,7 @@
 <meta property="og:description" content="Instantly share text and files between devices without logging in.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://copycloud.me/">
-<meta property="og:image" content="https://copycloud.me/og-image.png">
+<meta property="og:image" content="https://copycloud.me/og-image.png?v=2">
 <meta name="twitter:card" content="summary_large_image">
 
 <!-- FAVICON AREA -->
@@ -613,16 +613,33 @@ Copy Cloud
 
 <!-- Tab 4: ABOUT -->
 <div id="app-tab-about" class="app-tab-content">
-<div class="about-header" style="margin-bottom: 24px;">
-<div class="brand-icon" style="justify-content: center; margin-bottom: 12px;">
-<img src="/apple-touch-icon.png" alt="Logo" class="brand-logo" style="width: 56px; height: 56px;" onerror="this.style.display='none'">
+<div class="tab-hero">
+<div class="hero-icon-wrap">
+<img src="/apple-touch-icon.png" alt="Logo" class="brand-logo" style="width: 28px; height: 28px; border-radius: 6px;" onerror="this.style.display='none'">
 </div>
 <h2>Copy Cloud</h2>
 <p>v2.0 Minimal SPA Edition</p>
 </div>
 
+<div style="background: var(--panel); border: 1px solid var(--line-dark); border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px;">
+<h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; display:flex; align-items:center; gap:6px;"><i data-lucide="help-circle" style="width:18px;height:18px;color:var(--text)"></i> What is Copy Cloud?</h3>
+<p style="font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 16px;">
+A frictionless online clipboard. It allows you to instantly share text, links, and files across any of your devices anonymously—no login or app installation required.
+</p>
+<h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; display:flex; align-items:center; gap:6px;"><i data-lucide="settings" style="width:18px;height:18px;color:var(--text)"></i> How it Works</h3>
+<ol style="font-size: 14px; color: var(--muted); line-height: 1.6; margin: 0; padding-left: 20px;">
+<li style="margin-bottom: 4px;"><strong>Upload:</strong> Paste text or drop files into the "Send" tab.</li>
+<li style="margin-bottom: 4px;"><strong>Get Code:</strong> You'll receive a secure, unique 6-digit code.</li>
+<li><strong>Retrieve:</strong> Enter that code on another device to instantly access your data.</li>
+</ol>
+</div>
+
 <div class="about-links">
 <a href="#" class="about-link-btn" onclick="openModal('modal-coming-soon'); return false;">
+<span><i data-lucide="sparkles" style="color:var(--accent);"></i> Coming Soon Features</span>
+<i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--muted)"></i>
+</a>
+<a href="https://instagram.com/anshdeep_officiall" target="_blank" class="about-link-btn">
 <span><i data-lucide="instagram"></i> Instagram (@anshdeep_officiall)</span>
 <i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
 </a>
