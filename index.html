@@ -1001,7 +1001,7 @@ setTimeout(() => {
 
         const img = new Image();
         img.crossOrigin = "Anonymous";
-        img.src = '/logo.png?v=4'; // Uses the official icon from your repo
+        img.src = '/logo.png?v=4'; // Uses the current brand logo from your repo
         
         img.onload = () => { ctx.drawImage(img, x, y, logoSize, logoSize); };
         img.onerror = () => {
