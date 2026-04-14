@@ -122,8 +122,8 @@ transition: background 0.3s, border-color 0.3s;
 }
 
 /* Top Navigation */
-.nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; padding: 4px 0 28px; }
-.brand { display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 18px; color: var(--text); letter-spacing: -.04em; cursor: pointer;}
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0 28px; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; color: var(--text); letter-spacing: -.04em; cursor: pointer; white-space: nowrap;}
 .brand-icon { display: flex; align-items: center; justify-content: center;}
 .brand-logo { width: 30px; height: 30px; border-radius: 6px; object-fit: cover; }
 
@@ -208,7 +208,10 @@ margin-bottom: 16px; color: var(--text); border: 1px solid var(--line-dark);
 .side-card p { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0; }
 
 @media (max-width: 1120px) {
-.workspace-layout { flex-direction: column; gap: 24px; padding-bottom: 24px; }
+.workspace-layout { flex-direction: column; gap: 24px; padding-bottom: 24px; display: flex; }
+.app-workspace { order: 1; }
+.info-left { order: 2; }
+.info-right { order: 3; }
 .workspace-side { max-width: 580px; width: 100%; flex-direction: row; gap: 16px; display: flex; }
 .side-card { flex: 1; opacity: 0.8; padding: 20px; }
 }
@@ -342,9 +345,6 @@ font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; tran
 .stat-label { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;}
 
 @media (max-width: 768px) {
-.nav { flex-direction: column; align-items: stretch; }
-.nav-controls { justify-content: flex-end; }
-.brand { justify-content: center; margin-bottom: 12px;}
 .hero { padding: 60px 0; }
 .grid-3 { grid-template-columns: 1fr; gap: 16px; }
 .bottom-nav { width: calc(100% - 32px); min-width: 0; bottom: 16px; padding: 8px; border-radius: 24px; }
@@ -593,8 +593,12 @@ Copy Cloud
 
 <!-- Tab 3: HISTORY -->
 <div id="app-tab-history" class="app-tab-content">
-<div class="history-header">
-<h3><i data-lucide="history" style="width:20px;height:20px;"></i> Recent Activity</h3>
+<div class="tab-hero">
+<div class="hero-icon-wrap"><i data-lucide="clock" style="width:24px;height:24px;"></i></div>
+<h2>Transfer History</h2>
+<p>Review your past transfers. All data automatically expires and is erased after 24 hours.</p>
+</div>
+<div class="history-header" style="justify-content: flex-end; margin-bottom: 12px; margin-top: -16px;">
 <button class="btn-clear" id="clear-history-btn" onclick="clearHistory()" style="display: none;">Clear All</button>
 </div>
 <div class="history-list" id="history-list">
@@ -602,16 +606,16 @@ Copy Cloud
 <div class="history-empty" id="history-empty">
 <div class="helper-icon" style="background: transparent; border:none; margin-bottom: 8px;"><i data-lucide="inbox" style="width:32px;height:32px;"></i></div>
 <h3 style="font-size:16px; font-weight:700; margin-bottom:6px; color:var(--text);">No transfers yet</h3>
-<p style="font-size:14px;">Your securely sent and retrieved items will appear here for 24 hours.</p>
+<p style="font-size:14px;">You haven't sent or retrieved anything on this device recently.</p>
 </div>
 </div>
 </div>
 
 <!-- Tab 4: ABOUT -->
 <div id="app-tab-about" class="app-tab-content">
-<div class="about-header" style="margin-bottom: 24px;">
-<div class="brand-icon" style="justify-content: center; margin-bottom: 12px;">
-<img src="/apple-touch-icon.png" alt="Logo" class="brand-logo" style="width: 56px; height: 56px;" onerror="this.style.display='none'">
+<div class="tab-hero">
+<div class="hero-icon-wrap">
+<img src="/apple-touch-icon.png" alt="Logo" class="brand-logo" style="width: 28px; height: 28px; border-radius: 6px;" onerror="this.style.display='none'">
 </div>
 <h2>Copy Cloud</h2>
 <p>v2.0 Minimal SPA Edition</p>
@@ -619,23 +623,6 @@ Copy Cloud
 
 <div style="background: var(--panel); border: 1px solid var(--line-dark); border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px;">
 <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; display:flex; align-items:center; gap:6px;"><i data-lucide="help-circle" style="width:18px;height:18px;color:var(--text)"></i> What is Copy Cloud?</h3>
-<p style="font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 16px;">
-A frictionless online clipboard. It allows you to instantly share text, links, and files across any of your devices anonymously—no login or app installation required.
-</p>
-<h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; display:flex; align-items:center; gap:6px;"><i data-lucide="settings" style="width:18px;height:18px;color:var(--text)"></i> How it Works</h3>
-<ol style="font-size: 14px; color: var(--muted); line-height: 1.6; margin: 0; padding-left: 20px;">
-<li style="margin-bottom: 4px;"><strong>Upload:</strong> Paste text or drop files into the "Send" tab.</li>
-<li style="margin-bottom: 4px;"><strong>Get Code:</strong> You'll receive a secure, unique 6-digit code.</li>
-<li><strong>Retrieve:</strong> Enter that code on another device to instantly access your data.</li>
-</ol>
-</div>
-
-<div class="about-links">
-<a href="#" class="about-link-btn" onclick="openModal('modal-coming-soon'); return false;">
-<span><i data-lucide="sparkles" style="color:var(--accent);"></i> Coming Soon Features</span>
-<i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--muted)"></i>
-</a>
-<a href="https://instagram.com/anshdeep_officiall" target="_blank" class="about-link-btn">
 <span><i data-lucide="instagram"></i> Instagram (@anshdeep_officiall)</span>
 <i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
 </a>
