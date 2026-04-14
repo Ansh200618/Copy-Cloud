@@ -208,7 +208,9 @@ margin-bottom: 16px; color: var(--text); border: 1px solid var(--line-dark);
 .side-card p { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0; }
 
 @media (max-width: 1120px) {
-.workspace-side { display: none; }
+.workspace-layout { flex-direction: column; gap: 24px; padding-bottom: 24px; }
+.workspace-side { max-width: 580px; width: 100%; flex-direction: row; gap: 16px; display: flex; }
+.side-card { flex: 1; opacity: 0.8; padding: 20px; }
 }
 
 .app-workspace {
@@ -347,6 +349,8 @@ font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; tran
 .grid-3 { grid-template-columns: 1fr; gap: 16px; }
 .bottom-nav { width: calc(100% - 32px); min-width: 0; bottom: 16px; padding: 8px; border-radius: 24px; }
 .app-workspace { padding: 20px 20px 100px 20px; border-radius: var(--radius-lg); }
+.workspace-side { flex-direction: column; gap: 12px; }
+.side-card { opacity: 0.9; }
 }
 </style>
 </head>
@@ -1214,14 +1218,36 @@ document.getElementById('stat-sent').textContent = sent; document.getElementById
 }
 
 // --- THEME ENGINE ---
-const THEME_KEY = 'copyCloudTheme'; let themeState = { mode: 'auto', accent: '#111111', accentText: '#ffffff', texture: 'none' };
-function loadTheme() { try { const saved = JSON.parse(localStorage.getItem(THEME_KEY) || 'null'); if (saved) themeState = { ...themeState, ...saved }; } catch (e) {} applyTheme(); }
-function applyTheme() {
-const isDark = themeState.mode === 'dark' || (themeState.mode === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-if (isDark) { document.documentElement.classList.add('dark-mode'); document.getElementById('meta-theme-color').content = "#0a0a0a"; if(themeState.accent === '#111111') { document.documentElement.style.setProperty('--accent', '#ffffff'); document.documentElement.style.setProperty('--accent-text', '#111111'); } else { document.documentElement.style.setProperty('--accent', themeState.accent); document.documentElement.style.setProperty('--accent-text', themeState.accentText); } }
-else { document.documentElement.classList.remove('dark-mode'); document.getElementById('meta-theme-color').content = "#f2f2f0"; document.documentElement.style.setProperty('--accent', themeState.accent); document.documentElement.style.setProperty('--accent-text', themeState.accentText); }
-document.documentElement.setAttribute('data-texture', themeState.texture); updateAppearanceUI();
+const THEME_KEY = 'copyCloudTheme'; 
+let themeState = { mode: 'auto' }; // Simplified to ignore old saved colors
+
+function loadTheme() { 
+    try { 
+        const saved = JSON.parse(localStorage.getItem(THEME_KEY) || 'null'); 
+        if (saved && saved.mode) themeState.mode = saved.mode; 
+    } catch (e) {} 
+    applyTheme(); 
 }
+
+function applyTheme() {
+    const isDark = themeState.mode === 'dark' || (themeState.mode === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    
+    // Force Black/White Defaults (Overrides any old purple settings in browser memory)
+    if (isDark) { 
+        document.documentElement.classList.add('dark-mode'); 
+        document.getElementById('meta-theme-color').content = "#0a0a0a"; 
+        document.documentElement.style.setProperty('--accent', '#ffffff'); 
+        document.documentElement.style.setProperty('--accent-text', '#111111'); 
+    } else { 
+        document.documentElement.classList.remove('dark-mode'); 
+        document.getElementById('meta-theme-color').content = "#f2f2f0"; 
+        document.documentElement.style.setProperty('--accent', '#111111'); 
+        document.documentElement.style.setProperty('--accent-text', '#ffffff'); 
+    }
+    
+    updateAppearanceUI();
+}
+
 function setThemeMode(mode) { themeState.mode = mode; localStorage.setItem(THEME_KEY, JSON.stringify(themeState)); applyTheme(); }
 function toggleThemeMode() {
 if (themeState.mode === 'auto') setThemeMode('dark');
