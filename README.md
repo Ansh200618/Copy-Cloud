@@ -108,7 +108,7 @@ A modern, secure, and user-friendly web application for transferring text and fi
 Online-Clipboard/
 │
 ├── index.html          # Main application file (HTML, CSS, JS all-in-one)
-├── favicon.svg         # Site favicon
+├── og-image.png        # Social preview image (also used as icon fallback)
 ├── sitemap.xml         # SEO sitemap
 └── README.md           # Project documentation
 ```

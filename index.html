@@ -25,10 +25,7 @@
 <meta name="twitter:card" content="summary_large_image">
 
 <!-- FAVICON AREA -->
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" type="image/png" href="/og-image.png">
 <meta name="theme-color" content="#f2f2f0" id="meta-theme-color">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -993,7 +990,7 @@ setTimeout(() => {
 
         const img = new Image();
         img.crossOrigin = "Anonymous";
-        img.src = '/apple-touch-icon.png'; // Uses the official icon from your repo
+        img.src = '/og-image.png'; // Uses an icon available in this repo
         
         img.onload = () => { ctx.drawImage(img, x, y, logoSize, logoSize); };
         img.onerror = () => {
