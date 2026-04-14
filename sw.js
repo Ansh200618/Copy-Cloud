@@ -1,7 +1,7 @@
-// Copy Cloud Service Worker – v3
+// Copy Cloud Service Worker – v4
 // Provides offline shell caching and network-first strategy for pages.
 
-const CACHE_NAME = 'copycloud-v3';
+const CACHE_NAME = 'copycloud-v4';
 
 // Core shell assets to pre-cache on install
 const PRECACHE_ASSETS = [
@@ -12,6 +12,7 @@ const PRECACHE_ASSETS = [
   '/favicon.ico?v=3',
   '/favicon-96x96.png?v=3',
   '/apple-touch-icon.png?v=3',
+  '/logo.png?v=4',
   '/web-app-manifest-192x192.png?v=3',
   '/web-app-manifest-512x512.png?v=3',
   '/site.webmanifest?v=3'
