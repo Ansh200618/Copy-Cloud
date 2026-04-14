@@ -120,6 +120,7 @@ margin: 16px auto; background: var(--shell-bg);
 border: 1px solid var(--line); border-radius: var(--radius-md);
 padding: 18px 24px 42px; box-shadow: var(--shadow);
 display: flex; flex-direction: column;
+/* Progressive viewport fallback: vh -> svh -> dvh (latest supported wins) */
 min-height: calc(100vh - 32px);
 min-height: calc(100svh - 32px);
 min-height: calc(100dvh - 32px);
@@ -231,7 +232,7 @@ position: relative; overflow: hidden;
 
 /* Floating Bottom App Navigation */
 .bottom-nav {
-position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+position: fixed; left: 50%; transform: translateX(-50%);
 background: var(--shell-bg); border: 1px solid var(--line-dark);
 border-radius: 999px; display: flex; gap: 8px; padding: 8px 16px;
 box-shadow: var(--shadow-lg); z-index: 50; backdrop-filter: blur(12px);
