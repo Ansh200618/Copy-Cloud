@@ -787,6 +787,7 @@ const PATH_TO_APP_TAB = { '/app': 'send', '/send': 'send', '/retrieve': 'retriev
 // --- VIEW CONTROLLER & ROUTING ---
 function normalizePath(pathname) {
 if (!pathname) return '/';
+if (pathname === '/') return '/';
 if (pathname.length > 1 && pathname.endsWith('/')) return pathname.slice(0, -1);
 return pathname;
 }
@@ -798,7 +799,7 @@ return activeBtn.id.replace('nav-btn-', '') || 'send';
 }
 
 function setRoute(view, tab = 'send', replace = false) {
-const targetPath = view === 'landing' ? '/' : (APP_TAB_PATHS[tab] || APP_TAB_PATHS.send);
+const targetPath = view === 'landing' ? '/' : (APP_TAB_PATHS[tab] || '/send');
 const currentPath = normalizePath(window.location.pathname);
 if (currentPath === targetPath && !window.location.search) return;
 const action = replace ? 'replaceState' : 'pushState';
@@ -1081,7 +1082,7 @@ try {
 await navigator.share({ title: 'Copy Cloud', text: `Use code ${document.getElementById('generated-code').textContent}`, url: lastGeneratedURL });
 return;
 } catch (err) {
-if (err && err.name === 'AbortError') return;
+if (err.name === 'AbortError') return;
 }
 }
 showToast("Sharing app is not available. Use the copy button for the link.", "info");
