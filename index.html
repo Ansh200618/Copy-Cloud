@@ -119,6 +119,7 @@ border: 1px solid var(--line); border-radius: var(--radius-md);
 padding: 18px 24px 42px; box-shadow: var(--shadow);
 min-height: calc(100vh - 32px); display: flex; flex-direction: column;
 transition: background 0.3s, border-color 0.3s;
+position: relative;
 }
 
 /* Top Navigation */
@@ -166,8 +167,9 @@ transition: background 0.3s, border-color 0.3s;
 /* --- PAGE 2: APP VIEW STYLES --- */
 .workspace-layout {
 display: flex; justify-content: center; align-items: center; gap: 32px;
-margin: 24px auto 78px; width: 100%; max-width: 1140px;
+margin: 24px auto 48px; width: 100%; max-width: 1140px;
 position: relative;
+flex: 1 0 auto; /* Added to push the nav-bar to the bottom if container is larger */
 }
 
 /* Ambient UI Glow */
@@ -219,14 +221,18 @@ margin-bottom: 16px; color: var(--text); border: 1px solid var(--line-dark);
 .app-workspace {
 width: 100%; max-width: 580px; background: var(--bg);
 border-radius: var(--radius-xl); border: 1px solid var(--line-dark);
-box-shadow: var(--shadow); padding: 32px 32px 110px 32px; text-align: left;
+box-shadow: var(--shadow); padding: 32px; /* Fixed: Removed 110px padding */
+text-align: left;
 min-height: 480px; transition: background 0.3s, border-color 0.3s; z-index: 10;
 position: relative; overflow: hidden;
 }
 
 /* Floating Bottom App Navigation */
 .bottom-nav {
-position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+position: sticky; /* Fixed: Changed from fixed to sticky so it rests correctly */
+bottom: 32px; 
+align-self: center;
+margin-top: auto; /* Pushes to bottom of layout flexbox safely */
 background: var(--shell-bg); border: 1px solid var(--line-dark);
 border-radius: 999px; display: flex; gap: 8px; padding: 8px 16px;
 box-shadow: var(--shadow-lg); z-index: 50; backdrop-filter: blur(12px);
@@ -347,8 +353,8 @@ font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; tran
 @media (max-width: 768px) {
 .hero { padding: 60px 0; }
 .grid-3 { grid-template-columns: 1fr; gap: 16px; }
-.bottom-nav { width: calc(100% - 32px); min-width: 0; bottom: 16px; padding: 8px; border-radius: 24px; }
-.app-workspace { padding: 20px 20px 100px 20px; border-radius: var(--radius-lg); }
+.bottom-nav { width: calc(100% - 32px); min-width: 0; bottom: 16px; padding: 8px; border-radius: 24px; align-self: center; margin-top: auto; }
+.app-workspace { padding: 24px; border-radius: var(--radius-lg); }
 .workspace-side { flex-direction: column; gap: 12px; }
 .side-card { opacity: 0.9; }
 }
@@ -447,7 +453,7 @@ Copy Cloud
 <!-- ================= PAGE 2: APP VIEW ================= -->
 <div id="view-app" class="view-container">
 <!-- Premium Shell restored for the App View -->
-<div class="shell" style="padding-bottom: 100px;">
+<div class="shell">
 
 <!-- Top Nav -->
 <header class="nav">
@@ -818,7 +824,10 @@ document.getElementById(`app-tab-${tab}`).classList.add('active');
 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 document.getElementById(`nav-btn-${tab}`).classList.add('active');
 
-if (tab === 'send') resetSend();
+// Fixed Bug: Only wipe content if the user is on the success screen
+if (tab === 'send' && document.getElementById('send-success').style.display === 'block') {
+    resetSend();
+}
 }
 
 // --- SUPABASE CONFIGURATION ---
@@ -1117,7 +1126,14 @@ return { fileName, blob };
 const names = {};
 files.forEach(({ fileName, blob }) => {
 let finalName = fileName;
-if (names[fileName]) { names[fileName]++; const parts = fileName.split('.'); finalName = parts.length > 1 ? `${parts.slice(0,-1).join('.')} (${names[fileName]}).${parts.pop()}` : `${fileName} (${names[fileName]})`; } else names[fileName] = 0;
+// Fixed Bug: Check for explicit existence, not truthiness, to avoid overwriting files with the same name.
+if (names[fileName] !== undefined) { 
+    names[fileName]++; 
+    const parts = fileName.split('.'); 
+    finalName = parts.length > 1 ? `${parts.slice(0,-1).join('.')} (${names[fileName]}).${parts.pop()}` : `${fileName} (${names[fileName]})`; 
+} else {
+    names[fileName] = 0;
+}
 zip.file(finalName, blob);
 });
 const content = await zip.generateAsync({ type: "blob" }); const url = window.URL.createObjectURL(content); const a = document.createElement('a'); a.href = url; a.download = `CopyCloud-${code}.zip`; document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
@@ -1293,7 +1309,7 @@ else { toast.className = 'toast show'; toast.innerHTML = `<i data-lucide="info" 
 lucide.createIcons(); clearTimeout(toastTimeout); toastTimeout = setTimeout(() => { toast.className = 'toast'; }, 3000);
 }
 
-document.getElementById('text-input').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
+// Removed the "Enter" keybind on the text-input so multi-line pastes don't accidentally submit!
 document.getElementById('retrieve-code-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); handleRetrieve(); } });
 
 
