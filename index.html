@@ -559,6 +559,10 @@ Copy Cloud
 <button class="btn btn-full btn-outline" style="margin-top: 0;" onclick="copyGeneratedCode()"><i data-lucide="copy" style="width:16px;height:16px;"></i> Copy Code</button>
 <button class="btn btn-full btn-outline" style="margin-top: 0;" onclick="shareGeneratedLink()"><i data-lucide="share-2" style="width:16px;height:16px;"></i> Share</button>
 </div>
+<div style="display:flex; align-items:center; gap:8px; margin-top: 12px; padding: 10px 12px; border:1px solid var(--line); border-radius: 12px; background: var(--bg);">
+<span id="generated-link" style="font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">https://copycloud.me/retrieve?code=------</span>
+<button type="button" class="btn btn-outline" style="margin-top: 0; height: 34px; min-width: 40px; padding: 0 10px;" onclick="copyGeneratedLink()" aria-label="Copy link"><i data-lucide="copy" style="width:14px;height:14px;"></i></button>
+</div>
 <button class="btn btn-full" style="margin-top: 12px;" onclick="resetSend()">Send Another</button>
 </div>
 </div>
@@ -777,22 +781,44 @@ A frictionless online clipboard. It allows you to instantly share text, links, a
 lucide.createIcons();
 const USER_KEY = 'copyCloudUser';
 let hasPromptedProfile = false;
+const APP_TAB_PATHS = { send: '/send', retrieve: '/retrieve', history: '/history', about: '/about' };
+const PATH_TO_APP_TAB = { '/app': 'send', '/send': 'send', '/retrieve': 'retrieve', '/history': 'history', '/about': 'about' };
 
 // --- VIEW CONTROLLER & ROUTING ---
-// New Routing parameter added `skipHistory`
+function normalizePath(pathname) {
+if (!pathname) return '/';
+if (pathname.length > 1 && pathname.endsWith('/')) return pathname.slice(0, -1);
+return pathname;
+}
+
+function getActiveAppTab() {
+const activeBtn = document.querySelector('.nav-item.active');
+if (!activeBtn || !activeBtn.id) return 'send';
+return activeBtn.id.replace('nav-btn-', '') || 'send';
+}
+
+function setRoute(view, tab = 'send', replace = false) {
+const targetPath = view === 'landing' ? '/' : (APP_TAB_PATHS[tab] || APP_TAB_PATHS.send);
+const currentPath = normalizePath(window.location.pathname);
+if (currentPath === targetPath && !window.location.search) return;
+const action = replace ? 'replaceState' : 'pushState';
+history[action](null, '', targetPath);
+}
+
+function resolveRouteFromPath(pathname) {
+const normalized = normalizePath(pathname);
+if (normalized === '/') return { view: 'landing', tab: 'send' };
+if (PATH_TO_APP_TAB[normalized]) return { view: 'app', tab: PATH_TO_APP_TAB[normalized] };
+return { view: 'landing', tab: 'send' };
+}
+
 function switchAppView(view, skipHistory = false) {
 document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
 document.getElementById(`view-${view}`).classList.add('active');
 window.scrollTo(0,0);
 
-// Hash routing logic to remember the user's active page on refresh
 if (!skipHistory) {
-  if (view === 'app') {
-    window.location.hash = 'app';
-  } else {
-    // Safely remove the hash without causing the browser window to jump
-    history.replaceState(null, null, window.location.pathname + window.location.search);
-  }
+setRoute(view, getActiveAppTab());
 }
 
 // Trigger Profile Welcome ONLY when switching to the App for the first time
@@ -807,17 +833,12 @@ hasPromptedProfile = true;
 }
 }
 
-// Allows browser "Back" and "Forward" buttons to seamlessly switch pages
-window.addEventListener('hashchange', () => {
-  if (window.location.hash === '#app') {
-    switchAppView('app', true);
-  } else {
-    switchAppView('landing', true);
-  }
+window.addEventListener('popstate', () => {
+checkURLParameters();
 });
 
 
-function switchAppTab(tab) {
+function switchAppTab(tab, skipHistory = false) {
 // Manage Content
 document.querySelectorAll('.app-tab-content').forEach(el => el.classList.remove('active'));
 document.getElementById(`app-tab-${tab}`).classList.add('active');
@@ -830,6 +851,8 @@ document.getElementById(`nav-btn-${tab}`).classList.add('active');
 if (tab === 'send' && document.getElementById('send-success').style.display === 'block') {
     resetSend();
 }
+
+if (!skipHistory) setRoute('app', tab);
 }
 
 // --- SUPABASE CONFIGURATION ---
@@ -981,7 +1004,8 @@ document.getElementById('upload-progress').style.display = 'none';
 document.getElementById('send-success').style.display = 'block'; document.getElementById('generated-code').textContent = code;
 
 const qrContainer = document.getElementById('qrcode-container'); qrContainer.innerHTML = '';
-lastGeneratedURL = `${window.location.origin}${window.location.pathname}?code=${code}`;
+lastGeneratedURL = `${window.location.origin}/retrieve?code=${code}`;
+document.getElementById('generated-link').textContent = lastGeneratedURL;
 
 // Match QR code color to current theme accent (fallback to dark if in dark mode so it's readable on white)
 let qrColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
@@ -1049,9 +1073,18 @@ document.getElementById('text-input').value = ''; clearFiles(new Event('clear'))
 }
 
 function copyGeneratedCode() { copyToClipboard(document.getElementById('generated-code').textContent); }
+function copyGeneratedLink() { if (lastGeneratedURL) copyToClipboard(lastGeneratedURL); }
 async function shareGeneratedLink() {
-if (navigator.share) { try { await navigator.share({ title: 'Copy Cloud', text: `Use code ${document.getElementById('generated-code').textContent}`, url: lastGeneratedURL }); } catch (err) { if (err.name !== 'AbortError') copyToClipboard(lastGeneratedURL); } }
-else copyToClipboard(lastGeneratedURL);
+if (!lastGeneratedURL) return showToast("No link available yet.", "error");
+if (navigator.share) {
+try {
+await navigator.share({ title: 'Copy Cloud', text: `Use code ${document.getElementById('generated-code').textContent}`, url: lastGeneratedURL });
+return;
+} catch (err) {
+if (err && err.name === 'AbortError') return;
+}
+}
+showToast("Sharing app is not available. Use the copy button for the link.", "info");
 }
 
 // --- RETRIEVE LOGIC ---
@@ -1319,25 +1352,24 @@ document.getElementById('retrieve-code-input').addEventListener('keydown', (e) =
 function checkURLParameters() {
 const urlParams = new URLSearchParams(window.location.search); 
 const codeParam = urlParams.get('code');
+const route = resolveRouteFromPath(window.location.pathname);
 
 if (codeParam && /^[A-Z0-9]{6}$/i.test(codeParam)) {
-  // If URL has a search parameter, go directly to App and look for it
-  window.location.hash = 'app';
-  switchAppView('app', true); 
-  switchAppTab('retrieve');
-  
-  const helper = document.getElementById('retrieve-helper');
-  if(helper) helper.style.display = 'none';
-  
-  document.getElementById('retrieve-code-input').value = codeParam.toUpperCase(); 
-  setTimeout(() => handleRetrieve(), 500);
-  
-} else if (window.location.hash === '#app') {
-  // If the user refreshed the page while in the App view, stay in the App view
-  switchAppView('app', true);
+switchAppView('app', true);
+switchAppTab('retrieve', true);
+setRoute('app', 'retrieve', true);
+
+const helper = document.getElementById('retrieve-helper');
+if(helper) helper.style.display = 'none';
+
+document.getElementById('retrieve-code-input').value = codeParam.toUpperCase(); 
+setTimeout(() => handleRetrieve(), 500);
+} else if (route.view === 'app') {
+switchAppView('app', true);
+switchAppTab(route.tab, true);
 } else {
-  // Only show the landing page if the user visits the root domain directly
-  switchAppView('landing', true);
+switchAppView('landing', true);
+setRoute('landing', 'send', true);
 }
 }
 
