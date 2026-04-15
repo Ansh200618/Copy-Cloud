@@ -48,7 +48,7 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **Icons**: Lucide Icons
 - **Backend**: Supabase PostgreSQL Database
 - **Storage**: Supabase Storage for file uploads
-- **Hosting**: Deployed on Vercel at https://copycloud.vercel.app/
+- **Hosting**: Deployed on Vercel at https://copycloud.me/
 
 ---
 

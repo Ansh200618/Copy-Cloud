@@ -1073,7 +1073,7 @@ document.getElementById('send-success').style.display = 'none'; document.getElem
 document.getElementById('text-input').value = ''; clearFiles(new Event('clear'));
 }
 
-function copyGeneratedCode() { copyToClipboard(document.getElementById('generated-code').textContent); }
+function copyGeneratedCode() { copyGeneratedLink(); }
 function copyGeneratedLink() { if (lastGeneratedURL) copyToClipboard(lastGeneratedURL); }
 async function shareGeneratedLink() {
 if (!lastGeneratedURL) return showToast("No link available yet.", "error");
