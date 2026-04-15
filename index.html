@@ -116,7 +116,7 @@ html[data-texture="topography"] #bg-texture-overlay { opacity:1; background-size
 width: min(calc(100% - 32px), var(--max));
 margin: 16px auto; background: var(--shell-bg);
 border: 1px solid var(--line); border-radius: var(--radius-md);
-padding: 18px 24px 42px; box-shadow: var(--shadow);
+padding: 18px 24px 120px; box-shadow: var(--shadow);
 min-height: calc(100vh - 32px); display: flex; flex-direction: column;
 transition: background 0.3s, border-color 0.3s;
 position: relative;
@@ -229,10 +229,10 @@ position: relative; overflow: hidden;
 
 /* Floating Bottom App Navigation */
 .bottom-nav {
-position: sticky; /* Fixed: Changed from fixed to sticky so it rests correctly */
+position: fixed; 
 bottom: 32px; 
-align-self: center;
-margin-top: auto; /* Pushes to bottom of layout flexbox safely */
+left: 50%;
+transform: translateX(-50%);
 background: var(--shell-bg); border: 1px solid var(--line-dark);
 border-radius: 999px; display: flex; gap: 8px; padding: 8px 16px;
 box-shadow: var(--shadow-lg); z-index: 50; backdrop-filter: blur(12px);
@@ -353,7 +353,7 @@ font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; tran
 @media (max-width: 768px) {
 .hero { padding: 60px 0; }
 .grid-3 { grid-template-columns: 1fr; gap: 16px; }
-.bottom-nav { width: calc(100% - 32px); min-width: 0; bottom: 16px; padding: 8px; border-radius: 24px; align-self: center; margin-top: auto; }
+.bottom-nav { width: calc(100% - 32px); min-width: 0; bottom: 16px; padding: 8px; border-radius: 24px; left: 50%; transform: translateX(-50%); }
 .app-workspace { padding: 24px; border-radius: var(--radius-lg); }
 .workspace-side { flex-direction: column; gap: 12px; }
 .side-card { opacity: 0.9; }
