@@ -116,7 +116,7 @@ html[data-texture="topography"] #bg-texture-overlay { opacity:1; background-size
 width: min(calc(100% - 32px), var(--max));
 margin: 16px auto; background: var(--shell-bg);
 border: 1px solid var(--line); border-radius: var(--radius-md);
-padding: 18px 24px 120px; box-shadow: var(--shadow);
+padding: 18px 24px 42px; box-shadow: var(--shadow);
 min-height: calc(100vh - 32px); display: flex; flex-direction: column;
 transition: background 0.3s, border-color 0.3s;
 position: relative;
@@ -221,7 +221,7 @@ margin-bottom: 16px; color: var(--text); border: 1px solid var(--line-dark);
 .app-workspace {
 width: 100%; max-width: 580px; background: var(--bg);
 border-radius: var(--radius-xl); border: 1px solid var(--line-dark);
-box-shadow: var(--shadow); padding: 32px; /* Fixed: Removed 110px padding */
+box-shadow: var(--shadow); padding: 32px 32px 104px 32px;
 text-align: left;
 min-height: 480px; transition: background 0.3s, border-color 0.3s; z-index: 10;
 position: relative; overflow: hidden;
@@ -229,7 +229,7 @@ position: relative; overflow: hidden;
 
 /* Floating Bottom App Navigation */
 .bottom-nav {
-position: fixed; 
+position: absolute; 
 bottom: 32px; 
 left: 50%;
 transform: translateX(-50%);
@@ -353,8 +353,8 @@ font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; tran
 @media (max-width: 768px) {
 .hero { padding: 60px 0; }
 .grid-3 { grid-template-columns: 1fr; gap: 16px; }
-.bottom-nav { width: calc(100% - 32px); min-width: 0; bottom: 16px; padding: 8px; border-radius: 24px; left: 50%; transform: translateX(-50%); }
-.app-workspace { padding: 24px; border-radius: var(--radius-lg); }
+.bottom-nav { width: calc(100% - 48px); min-width: 0; bottom: 24px; padding: 8px; border-radius: 24px; left: 50%; transform: translateX(-50%); }
+.app-workspace { padding: 24px 24px 96px 24px; border-radius: var(--radius-lg); }
 .workspace-side { flex-direction: column; gap: 12px; }
 .side-card { opacity: 0.9; }
 }
@@ -669,6 +669,22 @@ A frictionless online clipboard. It allows you to instantly share text, links, a
 </div>
 </div>
 
+<!-- Bottom Navigation Bar (Moved INSIDE the app-workspace card) -->
+<nav class="bottom-nav">
+<button class="nav-item active" id="nav-btn-send" onclick="switchAppTab('send')">
+<i data-lucide="upload-cloud" style="width:20px;height:20px;"></i> Send
+</button>
+<button class="nav-item" id="nav-btn-retrieve" onclick="switchAppTab('retrieve')">
+<i data-lucide="download-cloud" style="width:20px;height:20px;"></i> Retrieve
+</button>
+<button class="nav-item" id="nav-btn-history" onclick="switchAppTab('history')">
+<i data-lucide="clock" style="width:20px;height:20px;"></i> History
+</button>
+<button class="nav-item" id="nav-btn-about" onclick="switchAppTab('about')">
+<i data-lucide="info" style="width:20px;height:20px;"></i> About
+</button>
+</nav>
+
 </div>
 
 <!-- RIGHT SIDEBAR -->
@@ -686,22 +702,6 @@ A frictionless online clipboard. It allows you to instantly share text, links, a
 </div>
 
 </div> <!-- End workspace-layout -->
-
-<!-- Bottom Navigation Bar (Now inside the shell for proper layering) -->
-<nav class="bottom-nav">
-<button class="nav-item active" id="nav-btn-send" onclick="switchAppTab('send')">
-<i data-lucide="upload-cloud" style="width:20px;height:20px;"></i> Send
-</button>
-<button class="nav-item" id="nav-btn-retrieve" onclick="switchAppTab('retrieve')">
-<i data-lucide="download-cloud" style="width:20px;height:20px;"></i> Retrieve
-</button>
-<button class="nav-item" id="nav-btn-history" onclick="switchAppTab('history')">
-<i data-lucide="clock" style="width:20px;height:20px;"></i> History
-</button>
-<button class="nav-item" id="nav-btn-about" onclick="switchAppTab('about')">
-<i data-lucide="info" style="width:20px;height:20px;"></i> About
-</button>
-</nav>
 
 </div>
 </div>
