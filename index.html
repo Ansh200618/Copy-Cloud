@@ -57,10 +57,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
 
 <!-- Dependencies -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -290,6 +295,19 @@ font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; tran
 .app-input { width: 100%; border: 1px solid var(--line-dark); border-radius: var(--radius-md); padding: 16px; font-family: "Inter", monospace; font-size: 15px; background: var(--panel); color: var(--text); transition: border 0.2s; resize: vertical; min-height: 160px; }
 .app-input:focus { outline: none; border-color: var(--accent); }
 .code-input { font-size: 24px; text-align: center; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; height: 64px; min-height: auto; margin-bottom: 16px; }
+.field-inline { display:flex; align-items:center; gap:10px; margin-top: 10px; }
+.field-inline input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); }
+.field-inline label { font-size: 13px; color: var(--muted); font-weight: 600; }
+.small-input { width: 100%; border: 1px solid var(--line-dark); border-radius: 12px; padding: 10px 12px; background: var(--panel); color: var(--text); font-size: 13px; margin-top: 10px; }
+.security-panel { margin-top: 14px; padding: 14px; border: 1px solid var(--line-dark); border-radius: var(--radius-md); background: var(--bg); }
+.security-panel h4 { margin: 0 0 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.helper-row { display:flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+.helper-row .btn { height: 36px; font-size: 13px; padding: 0 14px; }
+.preview-card { margin-top: 14px; padding: 14px; border: 1px solid var(--line-dark); border-radius: var(--radius-md); background: var(--bg); }
+.preview-card h4 { margin: 0 0 10px; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.preview-content { border: 1px solid var(--line-dark); border-radius: 12px; background: var(--panel); padding: 12px; font-size: 14px; line-height: 1.6; max-height: 240px; overflow: auto; }
+.preview-content pre { padding: 12px; border-radius: 10px; overflow: auto; }
+.preview-content code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
 .file-drop { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1.5px dashed var(--line-dark); background: var(--panel); border-radius: var(--radius-md); padding: 40px 20px; cursor: pointer; text-align: center; min-height: 160px; transition: all 0.2s; }
 .file-drop:hover { border-color: var(--muted); background: var(--panel-hover); }
@@ -314,6 +332,7 @@ font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; tran
 
 .progress-bar { height: 6px; background: var(--panel); border-radius: 99px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line-dark);}
 .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.2s ease-out; }
+.install-badge { font-size: 11px; color: var(--muted); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
 
 /* History App Section */
 .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
@@ -489,6 +508,10 @@ Copy Cloud
 Copy Cloud
 </div>
 <div class="nav-controls">
+<button id="pwa-install-btn" class="icon-btn" style="display:none;" onclick="installPWA()">
+<i data-lucide="download" style="width:16px;height:16px;"></i>
+<span>Install</span>
+</button>
 <button id="user-greeting-btn" class="icon-btn" onclick="openModal('modal-welcome')" style="display:none;">
 <i data-lucide="user" style="width:16px;height:16px;"></i>
 <span id="user-greeting-text">Name</span>
@@ -540,6 +563,14 @@ Copy Cloud
 
 <div id="area-text">
 <textarea id="text-input" class="app-input" placeholder="Type or paste your content here..."></textarea>
+<div class="helper-row">
+  <button type="button" class="btn btn-outline" style="margin-top:0;" onclick="triggerOcrUpload()"><i data-lucide="scan-text" style="width:14px;height:14px;"></i> Image to Text (OCR)</button>
+  <input type="file" id="ocr-image-input" accept="image/*" hidden onchange="handleOCRUpload(event)">
+</div>
+<div class="preview-card">
+  <h4>Markdown Preview</h4>
+  <div id="markdown-preview" class="preview-content">Live preview will appear here…</div>
+</div>
 </div>
 
 <div id="area-file" style="display: none;">
@@ -556,6 +587,16 @@ Copy Cloud
 <button type="button" class="btn btn-outline" style="margin-top: 16px; height: 32px; font-size: 12px; padding: 0 14px;" onclick="clearFiles(event)">Clear Selection</button>
 </div>
 </label>
+</div>
+
+<div class="security-panel">
+<h4>Security Hardening</h4>
+<div class="field-inline">
+  <input type="checkbox" id="burn-after-read">
+  <label for="burn-after-read">Burn after first successful retrieval</label>
+</div>
+<input type="password" id="send-password" class="small-input" placeholder="Optional E2EE password (text mode only)">
+<input type="text" id="secure-lock-ip" class="small-input" placeholder="Optional Secure Lock IP (e.g., 203.0.113.8)">
 </div>
 
 <button class="btn btn-full" id="btn-send" onclick="handleSend()">
@@ -581,6 +622,7 @@ Copy Cloud
 <div style="display: flex; gap: 12px;">
 <button class="btn btn-full btn-outline" style="margin-top: 0;" onclick="copyGeneratedCode()"><i data-lucide="copy" style="width:16px;height:16px;"></i> Copy Code</button>
 <button class="btn btn-full btn-outline" style="margin-top: 0;" onclick="shareGeneratedLink()"><i data-lucide="share-2" style="width:16px;height:16px;"></i> Share</button>
+<button class="btn btn-full btn-outline" style="margin-top: 0;" onclick="pushGeneratedClipToDevice()"><i data-lucide="send-horizontal" style="width:16px;height:16px;"></i> Push</button>
 </div>
 <div style="display:flex; align-items:center; gap:8px; margin-top: 12px; padding: 10px 12px; border:1px solid var(--line); border-radius: 12px; background: var(--bg);">
 <span id="generated-link" style="font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">https://copycloud.me/retrieve?code=------</span>
@@ -601,9 +643,19 @@ Copy Cloud
 </div>
 
 <input type="text" id="retrieve-code-input" class="app-input code-input" placeholder="ENTER CODE" maxlength="6">
+<input type="password" id="retrieve-password-input" class="small-input" placeholder="Enter E2EE password if required" style="display:none; margin-bottom: 12px;">
 <button class="btn btn-full" id="btn-retrieve" onclick="handleRetrieve()">
 <i data-lucide="search" style="width:18px;height:18px;"></i> Search Content
 </button>
+<div class="security-panel" style="margin-top: 12px;">
+  <h4>Direct-to-Device Push</h4>
+  <input type="text" id="push-channel-key" class="small-input" placeholder="Device channel key (same on both devices)">
+  <div class="helper-row">
+    <button class="btn btn-outline" type="button" onclick="connectPushChannel()" style="margin-top:0;">Connect Channel</button>
+    <button class="btn btn-outline" type="button" onclick="requestNotifyPermission()" style="margin-top:0;">Enable Notifications</button>
+  </div>
+  <div class="install-badge" id="push-status" style="margin-top:8px;">Not connected</div>
+</div>
 
 <div id="retrieve-result" style="display: none; margin-top: 24px; border-top: 1px solid var(--line); padding-top: 24px;">
 <div class="result-header">
@@ -613,6 +665,10 @@ Copy Cloud
 
 <div id="result-text-container" style="display: none;">
 <textarea id="retrieved-text-content" class="app-input" readonly style="background: var(--bg);"></textarea>
+<div class="preview-card">
+  <h4>Rendered Preview</h4>
+  <div id="retrieved-markdown-preview" class="preview-content"></div>
+</div>
 <button class="btn btn-full" onclick="copyRetrievedContent()"><i data-lucide="copy" style="width:16px;height:16px;"></i> Copy Text</button>
 </div>
 
@@ -806,6 +862,20 @@ const USER_KEY = 'copyCloudUser';
 let hasPromptedProfile = false;
 const APP_TAB_PATHS = { send: '/send', retrieve: '/retrieve', history: '/history', about: '/about' };
 const PATH_TO_APP_TAB = { '/app': 'send', '/send': 'send', '/retrieve': 'retrieve', '/history': 'history', '/about': 'about' };
+const FEATURES = {
+  burnAfterRead: true,
+  e2ee: true,
+  ipWhitelist: true,
+  markdownPreview: true,
+  syntaxHighlight: true,
+  ocr: true,
+  push: true,
+  pwaInstall: true
+};
+const API_ENDPOINTS = {
+  createClip: '/api/create-clip',
+  retrieveClip: '/api/retrieve-clip'
+};
 
 // --- VIEW CONTROLLER & ROUTING ---
 function normalizePath(pathname) {
@@ -908,6 +978,175 @@ let selectedFiles = [];
 let currentRetrievedContent = null;
 let qrCodeInstance = null;
 let lastGeneratedURL = '';
+let deferredInstallPrompt = null;
+let pushRealtimeChannel = null;
+
+async function postJSON(url, body) {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  let data = {};
+  try { data = await res.json(); } catch {}
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+function strToBase64(bufferLike) {
+  const bytes = new Uint8Array(bufferLike);
+  let binary = '';
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
+}
+function base64ToBytes(b64) { return Uint8Array.from(atob(b64), c => c.charCodeAt(0)); }
+function utf8ToBytes(str) { return new TextEncoder().encode(str); }
+function bytesToUtf8(bytes) { return new TextDecoder().decode(bytes); }
+
+async function deriveAesKey(password, saltBytes) {
+  const keyMaterial = await crypto.subtle.importKey('raw', utf8ToBytes(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: saltBytes, iterations: 150000, hash: 'SHA-256' },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+
+async function encryptTextClientSide(plainText, password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveAesKey(password, salt);
+  const cipherBuffer = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, utf8ToBytes(plainText));
+  return {
+    ciphertext: strToBase64(cipherBuffer),
+    encryption: {
+      alg: 'AES-GCM',
+      keyBits: 256,
+      kdf: 'PBKDF2-SHA256',
+      iterations: 150000,
+      salt: strToBase64(salt),
+      iv: strToBase64(iv)
+    }
+  };
+}
+
+async function decryptTextClientSide(ciphertextB64, password, encryption) {
+  if (!encryption || !encryption.salt || !encryption.iv) throw new Error('Missing encryption metadata');
+  const salt = base64ToBytes(encryption.salt);
+  const iv = base64ToBytes(encryption.iv);
+  const cipherBytes = base64ToBytes(ciphertextB64);
+  const key = await deriveAesKey(password, salt);
+  const plainBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, cipherBytes);
+  return bytesToUtf8(new Uint8Array(plainBuffer));
+}
+
+function renderMarkdown(containerId, text) {
+  const target = document.getElementById(containerId);
+  if (!target) return;
+  if (!text || !String(text).trim()) {
+    target.textContent = containerId === 'markdown-preview' ? 'Live preview will appear here…' : '';
+    return;
+  }
+  const html = marked.parse(text, { breaks: true, gfm: true });
+  target.innerHTML = window.DOMPurify ? DOMPurify.sanitize(html) : html;
+  if (FEATURES.syntaxHighlight && window.hljs) {
+    target.querySelectorAll('pre code').forEach((block) => hljs.highlightElement(block));
+    if (!target.querySelector('pre') && text.trim().split('\n').length > 1) {
+      const auto = hljs.highlightAuto(text).value;
+      target.innerHTML += `<pre><code class="hljs">${auto}</code></pre>`;
+    }
+  }
+}
+
+window.triggerOcrUpload = function triggerOcrUpload() {
+  if (!FEATURES.ocr) return;
+  document.getElementById('ocr-image-input').click();
+};
+
+window.handleOCRUpload = async function handleOCRUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  try {
+    showToast('OCR in progress...', 'info');
+    const { data } = await Tesseract.recognize(file, 'eng');
+    const text = (data && data.text ? data.text : '').trim();
+    if (!text) return showToast('No readable text detected.', 'error');
+    const input = document.getElementById('text-input');
+    input.value = input.value ? `${input.value}\n${text}` : text;
+    renderMarkdown('markdown-preview', input.value);
+    showToast('OCR complete!', 'success');
+  } catch {
+    showToast('OCR failed. Please try a clearer image.', 'error');
+  } finally {
+    event.target.value = '';
+  }
+};
+
+async function initPWA() {
+  if ('serviceWorker' in navigator) {
+    try { await navigator.serviceWorker.register('/sw.js?v=5'); } catch {}
+  }
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    const btn = document.getElementById('pwa-install-btn');
+    if (btn && FEATURES.pwaInstall) btn.style.display = 'inline-flex';
+  });
+  window.addEventListener('appinstalled', () => {
+    const btn = document.getElementById('pwa-install-btn');
+    if (btn) btn.style.display = 'none';
+    showToast('Copy Cloud installed!', 'success');
+  });
+}
+
+window.installPWA = async function installPWA() {
+  if (!deferredInstallPrompt) return showToast('Install prompt is not available yet.', 'info');
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  const btn = document.getElementById('pwa-install-btn');
+  if (btn) btn.style.display = 'none';
+};
+
+window.requestNotifyPermission = async function requestNotifyPermission() {
+  if (!('Notification' in window)) return showToast('Notifications are not supported.', 'error');
+  const permission = await Notification.requestPermission();
+  showToast(permission === 'granted' ? 'Notifications enabled.' : 'Notification permission denied.', permission === 'granted' ? 'success' : 'error');
+};
+
+window.connectPushChannel = async function connectPushChannel() {
+  const key = (document.getElementById('push-channel-key').value || '').trim();
+  if (!key) return showToast('Enter a channel key first.', 'error');
+  if (pushRealtimeChannel) {
+    try { await db.removeChannel(pushRealtimeChannel); } catch {}
+    pushRealtimeChannel = null;
+  }
+  pushRealtimeChannel = db.channel(`push:${key}`, { config: { broadcast: { self: true } } });
+  pushRealtimeChannel.on('broadcast', { event: 'clip' }, ({ payload }) => {
+    if (!payload || !payload.code) return;
+    document.getElementById('retrieve-code-input').value = payload.code;
+    switchAppTab('retrieve');
+    showToast('Clip pushed to this device.', 'success');
+    if (Notification.permission === 'granted') new Notification('Copy Cloud', { body: `New clip: ${payload.code}` });
+    setTimeout(() => handleRetrieve(), 100);
+  });
+  await pushRealtimeChannel.subscribe((status) => {
+    document.getElementById('push-status').textContent = status === 'SUBSCRIBED' ? 'Connected' : `Status: ${status}`;
+  });
+};
+
+window.pushGeneratedClipToDevice = async function pushGeneratedClipToDevice() {
+  if (!pushRealtimeChannel) return showToast('Connect a push channel first.', 'error');
+  const code = document.getElementById('generated-code').textContent.trim();
+  if (!code || code === '------') return showToast('Generate a clip first.', 'error');
+  await pushRealtimeChannel.send({ type: 'broadcast', event: 'clip', payload: { code, url: lastGeneratedURL } });
+  showToast('Clip pushed to connected device(s).', 'success');
+};
 
 function setSendType(type) {
 currentInputType = type;
@@ -915,6 +1154,8 @@ document.getElementById('type-text').classList.toggle('active', type === 'text')
 document.getElementById('type-file').classList.toggle('active', type === 'file');
 document.getElementById('area-text').style.display = type === 'text' ? 'block' : 'none';
 document.getElementById('area-file').style.display = type === 'file' ? 'block' : 'none';
+const pass = document.getElementById('send-password');
+if (pass) pass.disabled = type !== 'text';
 }
 
 // --- FILE HANDLING ---
@@ -931,6 +1172,7 @@ const dropZone = document.getElementById('file-drop-zone');
 dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.background = 'var(--panel-hover)'; });
 dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.background = 'var(--panel)'; });
 dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.background = 'var(--panel)'; handleFileSelect(e); });
+document.getElementById('text-input').addEventListener('input', (e) => renderMarkdown('markdown-preview', e.target.value));
 
 function updateFileUI() {
 const unselected = document.getElementById('file-unselected');
@@ -984,6 +1226,11 @@ if(badgeHelper) badgeHelper.style.display = 'none';
 
 const code = generateId();
 let contentValue = "";
+const burnAfterRead = FEATURES.burnAfterRead && document.getElementById('burn-after-read').checked;
+const secureLockIp = FEATURES.ipWhitelist ? (document.getElementById('secure-lock-ip').value || '').trim() : '';
+const sendPassword = FEATURES.e2ee ? (document.getElementById('send-password').value || '') : '';
+let encryptionMeta = null;
+let isEncrypted = false;
 
 try {
 if (currentInputType === 'file') {
@@ -1010,12 +1257,28 @@ return uploadFileWithProgress(file, fileName, (loaded) => { loadedBytesArray[ind
 const filePaths = await Promise.all(uploadPromises);
 contentValue = filePaths.length === 1 ? filePaths[0] : JSON.stringify(filePaths);
 } else {
+if (sendPassword) {
+const encrypted = await encryptTextClientSide(textVal, sendPassword);
+contentValue = encrypted.ciphertext;
+encryptionMeta = encrypted.encryption;
+isEncrypted = true;
+} else {
 contentValue = textVal;
 }
+}
 
-const { error } = await db.from('clips').insert([{ code: code, content: contentValue, type: currentInputType, created_at: new Date().toISOString() }]);
-if (error) throw error;
-showSuccessView(code, contentValue);
+await postJSON(API_ENDPOINTS.createClip, {
+code,
+content: contentValue,
+type: currentInputType,
+meta: {
+burnAfterRead,
+allowedIp: secureLockIp,
+encrypted: isEncrypted,
+encryption: encryptionMeta
+}
+});
+showSuccessView(code, textVal || contentValue);
 
 } catch (error) { showToast("Upload failed. Please try again.", "error"); resetSend(); }
 }
@@ -1094,6 +1357,10 @@ if(badgeHelper) badgeHelper.style.display = 'flex';
 lucide.createIcons();
 document.getElementById('send-success').style.display = 'none'; document.getElementById('upload-progress').style.display = 'none';
 document.getElementById('text-input').value = ''; clearFiles(new Event('clear'));
+document.getElementById('send-password').value = '';
+document.getElementById('secure-lock-ip').value = '';
+document.getElementById('burn-after-read').checked = false;
+renderMarkdown('markdown-preview', '');
 }
 
 function copyGeneratedCode() { copyGeneratedLink(); }
@@ -1118,20 +1385,40 @@ if (codeInput.length < 4) return showToast("Enter a valid code.", "error");
 
 const btn = document.getElementById('btn-retrieve');
 const helper = document.getElementById('retrieve-helper');
+const passwordInput = document.getElementById('retrieve-password-input');
 
 btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="lucide-spin" style="width:18px;height:18px;"></i> Searching...'; lucide.createIcons();
 document.getElementById('retrieve-result').style.display = 'none'; document.getElementById('image-preview-area').style.display = 'none';
 
 try {
-const { data, error } = await db.from('clips').select('*').eq('code', codeInput).single();
-if (error || !data) { showToast("Code not found or expired.", "error"); }
+const result = await postJSON(API_ENDPOINTS.retrieveClip, { code: codeInput });
+const clip = result.clip;
+if (!clip) { showToast("Code not found or expired.", "error"); }
 else {
 if(helper) helper.style.display = 'none';
-displayRetrievedContent(data, codeInput); showToast("Content Found!", "success");
-if (data.type === 'text') addToHistory(codeInput, 'retrieve', { preview: data.content.slice(0, 50) });
+let finalContent = clip.content;
+if (clip.meta && clip.meta.encrypted) {
+passwordInput.style.display = 'block';
+const password = (passwordInput.value || '').trim();
+if (!password) {
+showToast("This clip is encrypted. Enter password and retry.", "error");
+return;
+}
+try {
+finalContent = await decryptTextClientSide(clip.content, password, clip.meta.encryption || {});
+} catch {
+showToast("Incorrect password or corrupted encrypted payload.", "error");
+return;
+}
+} else {
+passwordInput.style.display = 'none';
+}
+const normalized = { ...clip, content: finalContent };
+displayRetrievedContent(normalized, codeInput); showToast("Content Found!", "success");
+if (normalized.type === 'text') addToHistory(codeInput, 'retrieve', { preview: String(normalized.content).slice(0, 50) });
 else {
 let rFilePaths = [];
-try { const parsed = JSON.parse(data.content); rFilePaths = Array.isArray(parsed) ? parsed : [data.content]; } catch(e) { rFilePaths = [data.content]; }
+try { const parsed = JSON.parse(normalized.content); rFilePaths = Array.isArray(parsed) ? parsed : [normalized.content]; } catch(e) { rFilePaths = [normalized.content]; }
 addToHistory(codeInput, 'retrieve', { fileNames: rFilePaths.map(p => p.split('-').slice(2).join('-') || p) });
 }
 updateProfileStats();
@@ -1143,7 +1430,7 @@ finally { btn.disabled = false; btn.innerHTML = '<i data-lucide="search" style="
 function displayRetrievedContent(data, code) {
 currentRetrievedContent = data;
 document.getElementById('retrieve-result').style.display = 'block';
-document.getElementById('retrieved-type').textContent = data.type + " file";
+document.getElementById('retrieved-type').textContent = data.type === 'text' ? 'Text' : 'File';
 document.getElementById('retrieved-date').textContent = new Date(data.created_at).toLocaleString();
 
 const textContainer = document.getElementById('result-text-container');
@@ -1154,8 +1441,10 @@ const imageEl = document.getElementById('retrieved-image');
 if (data.type === 'text') {
 textContainer.style.display = 'block'; fileContainer.style.display = 'none';
 document.getElementById('retrieved-text-content').value = data.content;
+renderMarkdown('retrieved-markdown-preview', data.content);
 } else {
 textContainer.style.display = 'none'; fileContainer.style.display = 'block';
+renderMarkdown('retrieved-markdown-preview', '');
 let filePaths = [];
 try { const parsed = JSON.parse(data.content); filePaths = Array.isArray(parsed) ? parsed : [data.content]; } catch (e) { filePaths = [data.content]; }
 
@@ -1225,7 +1514,7 @@ const blobUrl = window.URL.createObjectURL(blob); const a = document.createEleme
 }
 
 // --- HISTORY SYSTEM ---
-const HISTORY_KEY = 'copyCloudHistory'; const MAX_HISTORY = 10;
+const HISTORY_KEY = 'copyCloudHistory'; const MAX_HISTORY = 5;
 function getHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch(e) { return []; } }
 function addToHistory(code, type, extra = {}) {
 const history = getHistory(); const existingIdx = history.findIndex(h => h.code === code && h.type === type);
@@ -1398,7 +1687,7 @@ setRoute('landing', 'send', true);
 }
 
 // Init
-loadTheme(); initProfile(); renderHistory();
+loadTheme(); initProfile(); renderHistory(); initPWA(); renderMarkdown('markdown-preview', '');
 if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', checkURLParameters); } else { checkURLParameters(); }
 </script>
 </body>

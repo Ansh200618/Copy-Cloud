@@ -17,5 +17,8 @@
   ],
   "theme_color": "#000000",
   "background_color": "#000000",
-  "display": "standalone"
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "description": "Secure no-login online clipboard for cross-device text and file transfer."
 }

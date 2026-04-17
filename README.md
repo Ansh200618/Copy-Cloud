@@ -16,6 +16,12 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **📝 Text & Files** - Support for unlimited text and files up to 40MB
 - **🔒 Auto-Expiry** - All content automatically deletes after 24 hours for privacy
 - **📷 QR Code Generation** - Scan QR codes to quickly access shared content
+- **🔥 Burn After Reading** - Optional one-time retrieval mode deletes clips after first successful fetch
+- **🛡️ Optional E2EE (AES-256)** - Client-side password encryption for text clips so plaintext never reaches the server
+- **🔐 Secure Lock (IP Whitelist)** - Optional retrieval lock to a specific recipient IP
+- **📝 Markdown + Syntax Preview** - Live rendered preview with code highlighting for text snippets
+- **🖼️ OCR Image-to-Text** - Extract text from screenshots directly in the Send flow
+- **📲 Direct Device Push (Live Channel)** - Push newly generated clips to connected devices instantly
 - **🎨 Appearance System** - Day/Night/Auto theme modes, 12 accent color presets, 11 background textures — all persisted across sessions
 - **🌐 Real-time Database** - PostgreSQL database with real-time subscriptions
 
@@ -47,6 +53,7 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **Styling**: Tailwind CSS (CDN)
 - **Icons**: Lucide Icons
 - **Backend**: Supabase PostgreSQL Database
+- **Edge API**: Vercel Edge Functions (`/api/create-clip`, `/api/retrieve-clip`)
 - **Storage**: Supabase Storage for file uploads
 - **Hosting**: Deployed on Vercel at https://copycloud.me/
 
@@ -79,11 +86,17 @@ A modern, secure, and user-friendly web application for transferring text and fi
    - Locate the Supabase configuration section (search for `SUPABASE CONFIGURATION`):
    ```javascript
    const SB_URL = 'YOUR_SUPABASE_URL';
-   const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
-   ```
-   - Replace with your Supabase project credentials
+    const SB_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    ```
+    - Replace with your Supabase project credentials
 
-4. **Run Locally**
+4. **Configure Edge Function Environment Variables (Required for secure create/retrieve)**
+   - In Vercel project settings, set:
+     - `SUPABASE_URL`
+     - `SUPABASE_SERVICE_ROLE_KEY`
+   - These are used only by Edge endpoints to enforce expiry, secure lock IP checks, and burn-after-reading.
+
+5. **Run Locally**
    - Simply open `index.html` in a web browser, or
    - Use a local server:
    ```bash
@@ -95,7 +108,7 @@ A modern, secure, and user-friendly web application for transferring text and fi
    ```
    - Navigate to `http://localhost:8000`
 
-5. **Deploy (Optional)**
+6. **Deploy (Optional)**
    - **Vercel** (Recommended): `vercel deploy` or connect GitHub repo
    - **GitHub Pages**: Push to GitHub and enable Pages in repository settings
    - **Netlify**: Drag and drop the folder to Netlify
@@ -108,6 +121,9 @@ A modern, secure, and user-friendly web application for transferring text and fi
 Online-Clipboard/
 │
 ├── index.html          # Main application file (HTML, CSS, JS all-in-one)
+├── api/
+│   ├── create-clip.js  # Edge function for secure clip creation
+│   └── retrieve-clip.js# Edge function for secure retrieval/burn/IP validation
 ├── favicon.svg         # Site favicon
 ├── sitemap.xml         # SEO sitemap
 └── README.md           # Project documentation
@@ -119,6 +135,9 @@ Online-Clipboard/
 
 - **No Authentication Required**: No user accounts or personal data collection
 - **Temporary Storage**: All data expires and is deleted after 24 hours
+- **Burn After Reading**: Optional immediate deletion after first successful retrieval
+- **Optional E2EE**: AES-256 encryption for text clips via browser crypto, password is never sent to backend
+- **IP Secure Lock**: Optional IP match enforcement during retrieval through edge boundary
 - **Secure Storage**: Files are stored securely in Supabase Storage
 - **Database Security**: PostgreSQL database with Row Level Security (RLS)
 - **Unique Codes**: 6-character random codes using alphanumeric characters (excluding confusing characters like 0, O, 1, I)
@@ -131,7 +150,7 @@ Online-Clipboard/
 |---------|-------|
 | Text Length | Unlimited characters |
 | File Size | Max 40MB |
-| Data Expiration | 24 hours |
+| Data Expiration | 24 hours (or first retrieval when Burn After Reading is enabled) |
 | Authentication | None required (no login) |
 
 ---
@@ -232,12 +251,9 @@ Contributions are welcome! Feel free to:
 
 ## 🔮 Future Enhancements
 
-- [ ] End-to-end encryption — client-side crypto before upload
-- [ ] Password-protected clips — lock content with a passphrase
 - [ ] Custom expiration times (1h, 6h, 12h, 7d, or never)
 - [ ] Browser extension for Chrome & Firefox (1-click send/receive)
-- [ ] PWA & offline support — install on home screen, access recent clips offline
-- [ ] Push notifications — get alerted when your clip is retrieved or downloaded
+- [ ] Native Web Push delivery for offline devices
 
 ---
 

@@ -1,7 +1,7 @@
-// Copy Cloud Service Worker – v4
+// Copy Cloud Service Worker – v5
 // Provides offline shell caching and network-first strategy for pages.
 
-const CACHE_NAME = 'copycloud-v4';
+const CACHE_NAME = 'copycloud-v5';
 
 // Core shell assets to pre-cache on install
 const PRECACHE_ASSETS = [
@@ -15,7 +15,9 @@ const PRECACHE_ASSETS = [
   '/logo.png?v=4',
   '/web-app-manifest-192x192.png?v=4',
   '/web-app-manifest-512x512.png?v=4',
-  '/site.webmanifest?v=4'
+  '/site.webmanifest?v=4',
+  '/privacy.html',
+  '/terms.html'
 ];
 
 // Install – cache the app shell
@@ -58,6 +60,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // API requests: network-first, no cache write for sensitive payloads
+  if (request.url.includes('/api/')) {
+    event.respondWith(
+      fetch(request).catch(() => new Response(JSON.stringify({ error: 'Offline' }), {
+        status: 503,
+        headers: { 'content-type': 'application/json; charset=utf-8' }
+      }))
+    );
+    return;
+  }
+
   // Static assets: cache-first with network fallback
   if (request.destination === 'image' || request.url.match(/\.(png|jpg|jpeg|svg|ico|webp|woff2?)$/)) {
     event.respondWith(
@@ -72,4 +85,24 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
+});
+
+// Web Push Notification support
+self.addEventListener('push', (event) => {
+  let payload = {};
+  try { payload = event.data ? event.data.json() : {}; } catch {}
+  const title = payload.title || 'Copy Cloud';
+  const options = {
+    body: payload.body || 'You received a new clip.',
+    icon: '/web-app-manifest-192x192.png?v=4',
+    badge: '/favicon-96x96.png?v=4',
+    data: payload.url || '/retrieve'
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  const targetUrl = (event.notification && event.notification.data) || '/retrieve';
+  event.notification.close();
+  event.waitUntil(clients.openWindow(targetUrl));
 });
