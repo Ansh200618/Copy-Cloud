@@ -34,7 +34,7 @@ async function deleteClip(sbUrl, sbServiceKey, code) {
 function decodeEnvelope(content) {
   try {
     const parsed = JSON.parse(content);
-    if (parsed && parsed.v === 2 && Object.prototype.hasOwnProperty.call(parsed, 'payload')) {
+    if (parsed && parsed.v === 2 && Object.hasOwn(parsed, 'payload')) {
       return {
         payload: parsed.payload,
         meta: parsed.meta && typeof parsed.meta === 'object' ? parsed.meta : {}
@@ -76,7 +76,7 @@ export default async function handler(req) {
   if (!row) return json({ error: 'Code not found or expired' }, 404);
 
   const createdMs = new Date(row.created_at).getTime();
-  if (!createdMs || Date.now() - createdMs > DAY_MS) {
+  if (Number.isNaN(createdMs) || Date.now() - createdMs > DAY_MS) {
     await deleteClip(sbUrl, sbServiceKey, code);
     return json({ error: 'Code not found or expired' }, 404);
   }
@@ -85,7 +85,8 @@ export default async function handler(req) {
   const allowedIp = typeof meta.allowedIp === 'string' ? meta.allowedIp.trim() : '';
   if (allowedIp) {
     const requesterIp = getRequestIp(req);
-    if (!requesterIp || requesterIp !== allowedIp) return json({ error: 'Secure lock denied for this IP' }, 403);
+    if (!requesterIp) return json({ error: 'Secure lock denied: requester IP unavailable' }, 403);
+    if (requesterIp !== allowedIp) return json({ error: 'Secure lock denied for this IP' }, 403);
   }
 
   if (meta.burnAfterRead) await deleteClip(sbUrl, sbServiceKey, code);

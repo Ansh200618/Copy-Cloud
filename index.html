@@ -996,10 +996,7 @@ async function postJSON(url, body) {
 function strToBase64(bufferLike) {
   const bytes = new Uint8Array(bufferLike);
   let binary = '';
-  const chunkSize = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
-  }
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
 }
 function base64ToBytes(b64) { return Uint8Array.from(atob(b64), c => c.charCodeAt(0)); }
@@ -1009,7 +1006,7 @@ function bytesToUtf8(bytes) { return new TextDecoder().decode(bytes); }
 async function deriveAesKey(password, saltBytes) {
   const keyMaterial = await crypto.subtle.importKey('raw', utf8ToBytes(password), 'PBKDF2', false, ['deriveKey']);
   return crypto.subtle.deriveKey(
-    { name: 'PBKDF2', salt: saltBytes, iterations: 150000, hash: 'SHA-256' },
+    { name: 'PBKDF2', salt: saltBytes, iterations: 600000, hash: 'SHA-256' },
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
     false,
@@ -1028,7 +1025,7 @@ async function encryptTextClientSide(plainText, password) {
       alg: 'AES-GCM',
       keyBits: 256,
       kdf: 'PBKDF2-SHA256',
-      iterations: 150000,
+      iterations: 600000,
       salt: strToBase64(salt),
       iv: strToBase64(iv)
     }
@@ -1045,6 +1042,13 @@ async function decryptTextClientSide(ciphertextB64, password, encryption) {
   return bytesToUtf8(new Uint8Array(plainBuffer));
 }
 
+function isValidIpAddress(value) {
+  if (!value) return true;
+  const ipv4 = /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
+  const ipv6 = /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::1|::)$/;
+  return ipv4.test(value) || ipv6.test(value);
+}
+
 function renderMarkdown(containerId, text) {
   const target = document.getElementById(containerId);
   if (!target) return;
@@ -1058,7 +1062,13 @@ function renderMarkdown(containerId, text) {
     target.querySelectorAll('pre code').forEach((block) => hljs.highlightElement(block));
     if (!target.querySelector('pre') && text.trim().split('\n').length > 1) {
       const auto = hljs.highlightAuto(text).value;
-      target.innerHTML += `<pre><code class="hljs">${auto}</code></pre>`;
+      const safeAuto = window.DOMPurify ? DOMPurify.sanitize(auto) : auto;
+      const pre = document.createElement('pre');
+      const code = document.createElement('code');
+      code.className = 'hljs';
+      code.innerHTML = safeAuto;
+      pre.appendChild(code);
+      target.appendChild(pre);
     }
   }
 }
@@ -1080,7 +1090,8 @@ window.handleOCRUpload = async function handleOCRUpload(event) {
     input.value = input.value ? `${input.value}\n${text}` : text;
     renderMarkdown('markdown-preview', input.value);
     showToast('OCR complete!', 'success');
-  } catch {
+  } catch (err) {
+    console.error('OCR error while parsing image text:', err);
     showToast('OCR failed. Please try a clearer image.', 'error');
   } finally {
     event.target.value = '';
@@ -1089,7 +1100,7 @@ window.handleOCRUpload = async function handleOCRUpload(event) {
 
 async function initPWA() {
   if ('serviceWorker' in navigator) {
-    try { await navigator.serviceWorker.register('/sw.js?v=5'); } catch {}
+    try { await navigator.serviceWorker.register('/sw.js?v=5'); } catch (err) { console.warn('Service worker registration failed:', err); }
   }
   window.addEventListener('beforeinstallprompt', (event) => {
     event.preventDefault();
@@ -1123,12 +1134,12 @@ window.connectPushChannel = async function connectPushChannel() {
   const key = (document.getElementById('push-channel-key').value || '').trim();
   if (!key) return showToast('Enter a channel key first.', 'error');
   if (pushRealtimeChannel) {
-    try { await db.removeChannel(pushRealtimeChannel); } catch {}
+    try { await db.removeChannel(pushRealtimeChannel); } catch (err) { console.warn('Failed to remove existing push channel:', err); }
     pushRealtimeChannel = null;
   }
   pushRealtimeChannel = db.channel(`push:${key}`, { config: { broadcast: { self: true } } });
   pushRealtimeChannel.on('broadcast', { event: 'clip' }, ({ payload }) => {
-    if (!payload || !payload.code) return;
+    if (!payload || !payload.code || !/^[A-Z0-9]{6}$/.test(payload.code)) return;
     document.getElementById('retrieve-code-input').value = payload.code;
     switchAppTab('retrieve');
     showToast('Clip pushed to this device.', 'success');
@@ -1155,7 +1166,7 @@ document.getElementById('type-file').classList.toggle('active', type === 'file')
 document.getElementById('area-text').style.display = type === 'text' ? 'block' : 'none';
 document.getElementById('area-file').style.display = type === 'file' ? 'block' : 'none';
 const pass = document.getElementById('send-password');
-if (pass) pass.disabled = type !== 'text';
+if (pass) { pass.disabled = type !== 'text'; if (type !== 'text') pass.value = ''; }
 }
 
 // --- FILE HANDLING ---
@@ -1216,6 +1227,8 @@ async function handleSend() {
 const textVal = document.getElementById('text-input').value;
 if (currentInputType === 'text' && !textVal.trim()) return showToast("Please enter some text.", "error");
 if (currentInputType === 'file' && selectedFiles.length === 0) return showToast("Please select files.", "error");
+const secureLockIpCandidate = FEATURES.ipWhitelist ? (document.getElementById('secure-lock-ip').value || '').trim() : '';
+if (!isValidIpAddress(secureLockIpCandidate)) return showToast("Secure Lock IP format is invalid.", "error");
 
 const btn = document.getElementById('btn-send');
 const progressDiv = document.getElementById('upload-progress');
@@ -1224,10 +1237,10 @@ const badgeHelper = document.getElementById('send-badge-helper');
 btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="lucide-spin" style="width:18px;height:18px;"></i> Processing...'; lucide.createIcons();
 if(badgeHelper) badgeHelper.style.display = 'none';
 
-const code = generateId();
+let code = generateId();
 let contentValue = "";
 const burnAfterRead = FEATURES.burnAfterRead && document.getElementById('burn-after-read').checked;
-const secureLockIp = FEATURES.ipWhitelist ? (document.getElementById('secure-lock-ip').value || '').trim() : '';
+const secureLockIp = secureLockIpCandidate;
 const sendPassword = FEATURES.e2ee ? (document.getElementById('send-password').value || '') : '';
 let encryptionMeta = null;
 let isEncrypted = false;
@@ -1267,6 +1280,9 @@ contentValue = textVal;
 }
 }
 
+let created = false;
+for (let i = 0; i < 3 && !created; i++) {
+try {
 await postJSON(API_ENDPOINTS.createClip, {
 code,
 content: contentValue,
@@ -1278,7 +1294,18 @@ encrypted: isEncrypted,
 encryption: encryptionMeta
 }
 });
-showSuccessView(code, textVal || contentValue);
+created = true;
+} catch (err) {
+const errMsg = ((err && err.message) || '').toLowerCase();
+if (errMsg.includes('already exists') || errMsg.includes('duplicate')) {
+code = generateId();
+continue;
+}
+throw err;
+}
+}
+if (!created) throw new Error('Could not allocate a unique code');
+showSuccessView(code, isEncrypted ? '[Encrypted content]' : (textVal || contentValue));
 
 } catch (error) { showToast("Upload failed. Please try again.", "error"); resetSend(); }
 }
@@ -1415,7 +1442,7 @@ passwordInput.style.display = 'none';
 }
 const normalized = { ...clip, content: finalContent };
 displayRetrievedContent(normalized, codeInput); showToast("Content Found!", "success");
-if (normalized.type === 'text') addToHistory(codeInput, 'retrieve', { preview: String(normalized.content).slice(0, 50) });
+if (normalized.type === 'text') addToHistory(codeInput, 'retrieve', { preview: normalized.meta && normalized.meta.encrypted ? '[Encrypted content]' : String(normalized.content).slice(0, 50) });
 else {
 let rFilePaths = [];
 try { const parsed = JSON.parse(normalized.content); rFilePaths = Array.isArray(parsed) ? parsed : [normalized.content]; } catch(e) { rFilePaths = [normalized.content]; }

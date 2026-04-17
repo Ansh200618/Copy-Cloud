@@ -90,7 +90,7 @@ self.addEventListener('fetch', (event) => {
 // Web Push Notification support
 self.addEventListener('push', (event) => {
   let payload = {};
-  try { payload = event.data ? event.data.json() : {}; } catch {}
+  try { payload = event.data ? event.data.json() : {}; } catch (err) { console.warn('Failed to parse push payload:', err); payload = {}; }
   const title = payload.title || 'Copy Cloud';
   const options = {
     body: payload.body || 'You received a new clip.',

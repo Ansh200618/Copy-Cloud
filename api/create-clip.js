@@ -34,6 +34,7 @@ export default async function handler(req) {
 
   if (!/^[A-Z0-9]{6}$/.test(code)) return json({ error: 'Invalid code' }, 400);
   if (payload === undefined || payload === null) return json({ error: 'Missing content' }, 400);
+  if (type === 'text' && typeof payload === 'string' && !payload.trim()) return json({ error: 'Missing content' }, 400);
 
   const envelope = {
     v: 2,
@@ -53,19 +54,31 @@ export default async function handler(req) {
     created_at: new Date().toISOString()
   };
 
+  const existingRes = await fetch(`${sbUrl}/rest/v1/clips?code=eq.${encodeURIComponent(code)}&select=code&limit=1`, {
+    headers: {
+      apikey: sbServiceKey,
+      authorization: `Bearer ${sbServiceKey}`,
+      accept: 'application/json'
+    }
+  });
+  if (!existingRes.ok) return json({ error: 'Failed to validate code availability' }, 500);
+  const existingRows = await existingRes.json();
+  if (Array.isArray(existingRows) && existingRows.length) return json({ error: 'Code already exists' }, 409);
+
   const res = await fetch(`${sbUrl}/rest/v1/clips`, {
     method: 'POST',
     headers: {
       apikey: sbServiceKey,
       authorization: `Bearer ${sbServiceKey}`,
       'content-type': 'application/json',
-      prefer: 'resolution=merge-duplicates,return=representation'
+      prefer: 'return=representation'
     },
     body: JSON.stringify(insertPayload)
   });
 
   if (!res.ok) {
     const text = await res.text();
+    if (res.status === 409) return json({ error: 'Code already exists' }, 409);
     return json({ error: 'Failed to create clip', details: text }, 500);
   }
 

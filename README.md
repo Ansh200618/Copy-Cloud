@@ -22,6 +22,7 @@ A modern, secure, and user-friendly web application for transferring text and fi
 - **📝 Markdown + Syntax Preview** - Live rendered preview with code highlighting for text snippets
 - **🖼️ OCR Image-to-Text** - Extract text from screenshots directly in the Send flow
 - **📲 Direct Device Push (Live Channel)** - Push newly generated clips to connected devices instantly
+- **🕘 Local Recent History** - Last 5 send/retrieve entries stored only in the browser
 - **🎨 Appearance System** - Day/Night/Auto theme modes, 12 accent color presets, 11 background textures — all persisted across sessions
 - **🌐 Real-time Database** - PostgreSQL database with real-time subscriptions
 
