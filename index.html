@@ -30,27 +30,53 @@
 
 <!-- FAVICON AREA -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="icon" type="image/x-icon" href="/favicon.ico?v=4">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=4">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=4">
-<link rel="manifest" href="/site.webmanifest?v=4">
+<link rel="icon" type="image/x-icon" href="/favicon.ico?v=5">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=5">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=5">
+<link rel="manifest" href="/site.webmanifest?v=5">
 <meta name="theme-color" content="#f2f2f0" id="meta-theme-color">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": "https://copycloud.me/#website",
   "name": "Copy Cloud",
-  "alternateName": ["CopyCloud", "copycloud.me"],
-  "url": "https://copycloud.me/"
+  "alternateName": "CopyCloud",
+  "url": "https://copycloud.me/",
+  "publisher": {
+    "@id": "https://copycloud.me/#organization"
+  },
+  "inLanguage": "en"
 }
 </script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": "https://copycloud.me/#organization",
   "name": "Copy Cloud",
   "url": "https://copycloud.me/",
-  "logo": "https://copycloud.me/logo.png?v=4"
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://copycloud.me/logo.png",
+    "width": 512,
+    "height": 512
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://copycloud.me/#webpage",
+  "url": "https://copycloud.me/",
+  "name": "Copy Cloud - Online Clipboard & No Login Transfer",
+  "isPartOf": {
+    "@id": "https://copycloud.me/#website"
+  },
+  "about": {
+    "@id": "https://copycloud.me/#organization"
+  }
 }
 </script>
 
