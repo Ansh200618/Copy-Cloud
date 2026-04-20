@@ -708,7 +708,7 @@ A frictionless online clipboard. It allows you to instantly share text, links, a
 <span><i data-lucide="briefcase"></i> Developer Portfolio</span>
 <i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
 </a>
-<a href="https://github.com/Ansh200618/Copy-Cloud/releases/download/latest/Copy_Cloud_v1.0.0.APK" target="_blank" class="about-link-btn">
+<a id="apk-download-link" href="https://github.com/Ansh200618/Copy-Cloud/releases/latest" target="_blank" rel="noopener noreferrer" class="about-link-btn">
 <span><i data-lucide="download"></i> Download Android APK</span>
 <i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
 </a>
@@ -836,6 +836,56 @@ const USER_KEY = 'copyCloudUser';
 let hasPromptedProfile = false;
 const APP_TAB_PATHS = { send: '/send', retrieve: '/retrieve', history: '/history', about: '/about' };
 const PATH_TO_APP_TAB = { '/app': 'send', '/send': 'send', '/retrieve': 'retrieve', '/history': 'history', '/about': 'about' };
+const APK_RELEASE_FALLBACK_URL = 'https://github.com/Ansh200618/Copy-Cloud/releases/latest';
+const APK_RELEASE_API_URL = 'https://api.github.com/repos/Ansh200618/Copy-Cloud/releases/latest';
+const APK_RELEASE_CACHE_KEY = 'copyCloudApkDownloadUrl';
+const APK_RELEASE_CACHE_TTL_MS = 1000 * 60 * 60 * 24;
+const APK_NAME_HINT = 'copy';
+function logWarning(message, error) { console.warn(message, error); }
+
+async function hydrateApkDownloadLink() {
+const apkLink = document.getElementById('apk-download-link');
+if (!apkLink) return;
+apkLink.href = APK_RELEASE_FALLBACK_URL;
+try {
+const cached = JSON.parse(localStorage.getItem(APK_RELEASE_CACHE_KEY) || 'null');
+if (
+cached &&
+typeof cached.url === 'string' &&
+typeof cached.fetchedAt === 'number' &&
+Date.now() - cached.fetchedAt < APK_RELEASE_CACHE_TTL_MS
+) {
+apkLink.href = cached.url;
+return;
+}
+} catch (error) { logWarning('Failed to read cached APK download URL.', error); }
+try {
+const response = await fetch(APK_RELEASE_API_URL, { headers: { Accept: 'application/vnd.github+json' } });
+if (!response.ok) {
+const rateLimitRemaining = response.headers.get('X-RateLimit-Remaining');
+if (response.status === 403 && rateLimitRemaining === '0') {
+logWarning('GitHub API rate limit reached while resolving APK URL.', null);
+} else {
+logWarning(`GitHub release API request failed with status ${response.status}.`, null);
+}
+return;
+}
+const release = await response.json();
+const apkAssets = (release.assets || []).filter(asset =>
+asset &&
+typeof asset.name === 'string' &&
+asset.name.toLowerCase().endsWith('.apk') &&
+typeof asset.browser_download_url === 'string'
+);
+const apkAsset = apkAssets.find(asset => asset.name.toLowerCase().includes(APK_NAME_HINT)) || apkAssets[0];
+if (apkAsset) {
+apkLink.href = apkAsset.browser_download_url;
+try {
+localStorage.setItem(APK_RELEASE_CACHE_KEY, JSON.stringify({ url: apkAsset.browser_download_url, fetchedAt: Date.now() }));
+} catch (error) { logWarning('Failed to cache latest APK download URL.', error); }
+}
+} catch (error) { logWarning('Failed to resolve latest APK release link from GitHub API.', error); }
+}
 
 // --- VIEW CONTROLLER & ROUTING ---
 function normalizePath(pathname) {
@@ -1429,6 +1479,7 @@ setRoute('landing', 'send', true);
 
 // Init
 loadTheme(); initProfile(); renderHistory();
+hydrateApkDownloadLink();
 if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', checkURLParameters); } else { checkURLParameters(); }
 </script>
 </body>
