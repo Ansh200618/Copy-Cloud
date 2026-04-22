@@ -112,6 +112,8 @@
 --shadow-lg: 0 24px 60px rgba(0,0,0,.08);
 --max: 1240px;
 --tex-scale: 1;
+--apk-bottom: 24px;
+--apk-bottom-app: 112px;
 }
 
 /* Dark Mode Variables */
@@ -363,6 +365,36 @@ font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; tran
 .about-link-btn { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--panel); border: 1px solid var(--line-dark); border-radius: var(--radius-md); font-weight: 600; color: var(--text); transition: all 0.2s; }
 .about-link-btn:hover { background: var(--bg); border-color: var(--text); }
 .about-link-btn span { display: flex; align-items: center; gap: 12px; }
+.global-apk-download {
+position: fixed;
+left: 50%;
+transform: translateX(-50%);
+bottom: var(--apk-bottom);
+z-index: 56;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+height: 52px;
+padding: 0 24px;
+border-radius: 999px;
+border: 1px solid var(--line-dark);
+background: var(--accent);
+color: var(--accent-text);
+font-size: 14px;
+font-weight: 700;
+box-shadow: 0 16px 36px rgba(0,0,0,.2);
+transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+@supports (border: 1px solid color-mix(in srgb, #000 50%, #fff)) {
+.global-apk-download { border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line-dark)); }
+}
+@supports (background: linear-gradient(135deg, #000, color-mix(in srgb, #000 82%, #5b8cff))) {
+.global-apk-download { background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 82%, #5b8cff)); }
+}
+.global-apk-download:hover { transform: translateX(-50%) translateY(-2px); box-shadow: 0 22px 42px rgba(0,0,0,.26); opacity: .98; }
+.global-apk-download:active { transform: translateX(-50%) scale(0.98); }
+body.app-view-active .global-apk-download { bottom: var(--apk-bottom-app); }
 
 /* Modals & Toasts */
 .toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--text); color: var(--bg); padding: 14px 28px; border-radius: 999px; font-size: 14px; font-weight: 500; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; }
@@ -408,6 +440,10 @@ font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; tran
 .app-workspace { padding: 24px; border-radius: var(--radius-lg); } /* FIX: Reverted to normal 24px padding */
 .workspace-side { flex-direction: column; gap: 12px; }
 .side-card { opacity: 0.9; }
+body { --apk-bottom: 18px; --apk-bottom-app: 106px; }
+}
+@media (max-width: 520px) {
+.global-apk-download { width: calc(100% - 28px); max-width: 340px; }
 }
 </style>
 </head>
@@ -708,6 +744,10 @@ A frictionless online clipboard. It allows you to instantly share text, links, a
 <span><i data-lucide="briefcase"></i> Developer Portfolio</span>
 <i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
 </a>
+<a id="apk-download-link" href="https://github.com/Ansh200618/Copy-Cloud/releases/latest" target="_blank" rel="noopener noreferrer" class="about-link-btn apk-download-link">
+<span><i data-lucide="download"></i> Download Android APK</span>
+<i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
+</a>
 <a href="https://github.com/Ansh200618/Online-Clipboard" target="_blank" class="about-link-btn">
 <span><i data-lucide="github"></i> Source Code</span>
 <i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
@@ -760,6 +800,11 @@ A frictionless online clipboard. It allows you to instantly share text, links, a
 
 </div>
 </div>
+
+<a id="apk-download-link-global" href="https://github.com/Ansh200618/Copy-Cloud/releases/latest" target="_blank" rel="noopener noreferrer" class="global-apk-download apk-download-link" aria-label="Download Copy Cloud Android APK">
+<i data-lucide="download" style="width:18px;height:18px;"></i>
+<span>Download APK</span>
+</a>
 
 <!-- ================= MODALS ================= -->
 
@@ -832,6 +877,76 @@ const USER_KEY = 'copyCloudUser';
 let hasPromptedProfile = false;
 const APP_TAB_PATHS = { send: '/send', retrieve: '/retrieve', history: '/history', about: '/about' };
 const PATH_TO_APP_TAB = { '/app': 'send', '/send': 'send', '/retrieve': 'retrieve', '/history': 'history', '/about': 'about' };
+const APK_RELEASE_FALLBACK_URL = 'https://github.com/Ansh200618/Copy-Cloud/releases/latest';
+const APK_RELEASE_API_URL = 'https://api.github.com/repos/Ansh200618/Copy-Cloud/releases/latest';
+const APK_RELEASE_CACHE_KEY = 'copyCloudApkDownloadUrl';
+const APK_RELEASE_CACHE_TTL_MS = 1000 * 60 * 60 * 24;
+const APK_NAME_HINT = 'copy_cloud';
+const TRUSTED_GITHUB_HOSTS = ['github.com', 'objects.githubusercontent.com'];
+function isTrustedGitHubUrl(url) {
+if (typeof url !== 'string' || !url.trim()) return false;
+try {
+const parsedUrl = new URL(url);
+const host = parsedUrl.hostname.toLowerCase();
+if (parsedUrl.protocol !== 'https:') return false;
+return TRUSTED_GITHUB_HOSTS.includes(host) || host.endsWith('.github.com') || host.endsWith('.githubusercontent.com');
+} catch (error) { return false; }
+}
+
+async function hydrateApkDownloadLink() {
+const apkLinks = document.querySelectorAll('.apk-download-link');
+if (!apkLinks.length) return;
+apkLinks.forEach(link => { link.href = APK_RELEASE_FALLBACK_URL; });
+let cached = null;
+try {
+const cachedRaw = localStorage.getItem(APK_RELEASE_CACHE_KEY);
+if (cachedRaw) {
+try {
+cached = JSON.parse(cachedRaw);
+} catch (error) {
+console.warn(`Corrupt APK cache JSON for key ${APK_RELEASE_CACHE_KEY}.`, error);
+localStorage.removeItem(APK_RELEASE_CACHE_KEY);
+}
+}
+if (
+cached &&
+typeof cached.url === 'string' &&
+isTrustedGitHubUrl(cached.url) &&
+typeof cached.fetchedAt === 'number' &&
+Date.now() - cached.fetchedAt < APK_RELEASE_CACHE_TTL_MS
+) {
+apkLinks.forEach(link => { link.href = cached.url; });
+return;
+}
+} catch (error) { console.warn(`Failed to access cached APK download URL (${APK_RELEASE_CACHE_KEY}).`, error); }
+try {
+const response = await fetch(APK_RELEASE_API_URL, { headers: { Accept: 'application/vnd.github+json' } });
+if (!response.ok) {
+const rateLimitRemaining = response.headers.get('X-RateLimit-Remaining');
+if (response.status === 403 && rateLimitRemaining === '0') {
+console.warn('GitHub API rate limit reached while resolving APK URL.');
+} else {
+console.warn(`GitHub release API request failed with status ${response.status}.`);
+}
+return;
+}
+const release = await response.json();
+const apkAssets = (release.assets || []).filter(asset =>
+asset &&
+typeof asset.name === 'string' &&
+asset.name.toLowerCase().endsWith('.apk') &&
+isTrustedGitHubUrl(asset.browser_download_url)
+);
+if (!apkAssets.length) return;
+const apkAsset = apkAssets.find(asset => asset.name.toLowerCase().includes(APK_NAME_HINT)) || apkAssets[0];
+if (apkAsset) {
+apkLinks.forEach(link => { link.href = apkAsset.browser_download_url; });
+try {
+localStorage.setItem(APK_RELEASE_CACHE_KEY, JSON.stringify({ url: apkAsset.browser_download_url, fetchedAt: Date.now() }));
+} catch (error) { console.warn('Failed to cache latest APK download URL.', error); }
+}
+} catch (error) { console.warn('Failed to resolve latest APK release link from GitHub API.', error); }
+}
 
 // --- VIEW CONTROLLER & ROUTING ---
 function normalizePath(pathname) {
@@ -865,6 +980,7 @@ return { view: 'landing', tab: 'send' };
 function switchAppView(view, skipHistory = false) {
 document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
 document.getElementById(`view-${view}`).classList.add('active');
+document.body.classList.toggle('app-view-active', view === 'app');
 window.scrollTo(0,0);
 
 if (!skipHistory) {
@@ -1425,6 +1541,7 @@ setRoute('landing', 'send', true);
 
 // Init
 loadTheme(); initProfile(); renderHistory();
+hydrateApkDownloadLink();
 if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', checkURLParameters); } else { checkURLParameters(); }
 </script>
 </body>
