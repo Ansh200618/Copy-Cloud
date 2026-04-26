@@ -5,1544 +5,1153 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 <!-- SEO & Identity -->
-<title>Copy Cloud - Online Clipboard & No Login Transfer</title>
-<meta name="application-name" content="Copy Cloud">
-<meta name="apple-mobile-web-app-title" content="Copy Cloud">
-<meta name="description" content="Copy Cloud is a secure online clipboard for no-login transfer. Share text and files between devices anonymously. Temporary file storage that auto-deletes after 24 hours.">
-<meta name="keywords" content="copy cloud, copycloud, copycloud.me, copy cloud.me, copy cloud online clipboard, online clipboard, cloud clipboard, web clipboard, secure clipboard, temporary clipboard, anonymous clipboard, no login transfer, transfer files without account, anonymous file transfer, temporary file storage, ephemeral file sharing, send text between devices, share text between devices, copy paste online, copy text to phone, paste from computer, cross platform clipboard, free file sharing, quick file transfer, instant text sharing">
-<meta name="robots" content="index, follow">
-<meta name="author" content="Anshdeep Singh">
-<meta name="google-site-verification" content="zUIv4rZus97oBoL6cnrCNeKngCIuHRzdncwD9e0eDRw" />
+<title>Copy Cloud - Secure Online Clipboard & Instant File Transfer</title>
+<meta name="description" content="Securely share text and files between devices with Copy Cloud. An online clipboard that auto-deletes data after 24 hours. No login required.">
+<meta name="theme-color" content="#09090b">
+<meta name="keywords" content="online clipboard, secure transfer, anonymous file sharing, ephemeral transfer, instant copy paste, encrypted sharing, Copy Cloud, send text to phone, share files anonymously">
 <link rel="canonical" href="https://copycloud.me/" />
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-45C4NL9DG8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-45C4NL9DG8');
+</script>
+
+<!-- SoftwareApplication Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Copy Cloud",
+  "operatingSystem": "All",
+  "applicationCategory": "UtilityApplication",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
 
 <!-- Open Graph / Twitter -->
 <meta property="og:site_name" content="Copy Cloud">
-<meta property="og:title" content="Copy Cloud - Free Online Clipboard">
+<meta property="og:title" content="Copy Cloud - Secure Online Clipboard">
 <meta property="og:description" content="Instantly share text and files between devices without logging in.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://copycloud.me/">
-<meta property="og:image" content="https://copycloud.me/og-image.png?v=4">
-<meta property="og:image:alt" content="Copy Cloud logo and preview image">
+<meta property="og:image" content="https://copycloud.me/logo.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Copy Cloud - Free Online Clipboard">
-<meta name="twitter:description" content="Instantly share text and files between devices without logging in.">
-<meta name="twitter:image" content="https://copycloud.me/og-image.png?v=4">
 
-<!-- FAVICON AREA -->
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="icon" type="image/x-icon" href="/favicon.ico?v=5">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=5">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=5">
-<link rel="manifest" href="/site.webmanifest?v=5">
-<meta name="theme-color" content="#f2f2f0" id="meta-theme-color">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": "https://copycloud.me/#website",
-  "name": "Copy Cloud",
-  "alternateName": "CopyCloud",
-  "url": "https://copycloud.me/",
-  "publisher": {
-    "@id": "https://copycloud.me/#organization"
-  },
-  "inLanguage": "en"
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "@id": "https://copycloud.me/#organization",
-  "name": "Copy Cloud",
-  "url": "https://copycloud.me/",
-  "logo": {
-    "@type": "ImageObject",
-    "url": "https://copycloud.me/logo.png",
-    "width": 512,
-    "height": 512
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  "@id": "https://copycloud.me/#webpage",
-  "url": "https://copycloud.me/",
-  "name": "Copy Cloud - Online Clipboard & No Login Transfer",
-  "isPartOf": {
-    "@id": "https://copycloud.me/#website"
-  },
-  "about": {
-    "@id": "https://copycloud.me/#organization"
-  }
-}
-</script>
-
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
 <!-- Dependencies -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
 <style>
-/* Base Variables (Light Mode Default) */
+/* --- Core Variables & Reset --- */
 :root {
---bg: #f2f2f0;
---shell-bg: #f7f7f5;
---panel: #ebebe8;
---panel-hover: #e5e5e2;
---text: #111111;
---muted: #8f8f8b;
---line: #ecece8;
---line-dark: #e1e1dd;
-
---accent: #111111;
---accent-text: #ffffff;
-
---radius-xl: 34px;
---radius-lg: 26px;
---radius-md: 18px;
---shadow: 0 14px 40px rgba(0,0,0,.04);
---shadow-lg: 0 24px 60px rgba(0,0,0,.08);
---max: 1240px;
---tex-scale: 1;
---apk-bottom: 24px;
---apk-bottom-app: 112px;
+    --bg-base: #09090b;
+    --bg-panel: rgba(24, 24, 27, 0.6);
+    --bg-input: rgba(0, 0, 0, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-border-hover: rgba(255, 255, 255, 0.15);
+    
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    
+    --accent-primary: #6366f1;
+    --accent-hover: #4f46e5;
+    --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 32px;
+    
+    --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-/* Dark Mode Variables */
-html.dark-mode {
---bg: #0a0a0a;
---shell-bg: #121212;
---panel: #1a1a1a;
---panel-hover: #222222;
---text: #fdfdfd;
---muted: #888888;
---line: #262626;
---line-dark: #333333;
-
---accent: #ffffff;
---accent-text: #111111;
---shadow: 0 14px 40px rgba(0,0,0,.4);
---shadow-lg: 0 24px 60px rgba(0,0,0,.6);
-}
-
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-margin: 0; font-family: "Inter", sans-serif; background: var(--bg); color: var(--text);
-transition: background 0.3s, color 0.3s; overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
-a { color: inherit; text-decoration: none; }
-button { font-family: inherit; }
 
-/* Custom Scrollbar */
+button, input, textarea { font-family: inherit; }
+a { color: inherit; text-decoration: none; }
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--line-dark); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-/* Texture Overlay */
-#bg-texture-overlay {
-position: fixed; inset: 0; pointer-events: none; z-index: 0;
-background-repeat: repeat; opacity: 0; transition: opacity 0.3s;
+/* --- CSS Icons Sizes --- */
+.segment-btn i { width: 18px; height: 18px; }
+.action-btn i { width: 14px; height: 14px; }
+.feature-icon-box i { width: 24px; height: 24px; }
+.social-link i { width: 18px; height: 18px; }
+.coming-soon-list i { width: 14px; height: 14px; }
+.tool-icon { width: 20px; height: 20px; }
+.lucide-bot { width: 18px; color: var(--accent-primary); }
+
+/* --- Ambient Aurora Background --- */
+.aurora-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+    background: #09090b;
 }
-html[data-texture="dots"] #bg-texture-overlay { opacity:1; background-size:calc(22px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'><circle cx='11' cy='11' r='1.5' fill='%23888888' fill-opacity='0.15'/></svg>"); }
-html[data-texture="grid"] #bg-texture-overlay { opacity:1; background-size:calc(24px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><path d='M 24 0 L 0 0 0 24' fill='none' stroke='%23888888' stroke-width='0.5' stroke-opacity='0.15'/></svg>"); }
-html[data-texture="waves"] #bg-texture-overlay { opacity:1; background-size:calc(56px * var(--tex-scale)) calc(22px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='56' height='22'><path d='M0 11 Q14 3 28 11 Q42 19 56 11' fill='none' stroke='%23888888' stroke-width='1.5' stroke-opacity='0.15'/></svg>"); }
-html[data-texture="crosshatch"] #bg-texture-overlay { opacity:1; background-size:calc(20px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><line x1='0' y1='0' x2='20' y2='20' stroke='%23888888' stroke-width='0.7' stroke-opacity='0.15'/><line x1='20' y1='0' x2='0' y2='20' stroke='%23888888' stroke-width='0.7' stroke-opacity='0.15'/></svg>"); }
-html[data-texture="topography"] #bg-texture-overlay { opacity:1; background-size:calc(120px * var(--tex-scale)) calc(80px * var(--tex-scale)); background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='80'><path d='M0,14 C20,7 40,21 60,14 C80,7 100,21 120,14' fill='none' stroke='%23888888' stroke-width='0.8' stroke-opacity='0.15'/><path d='M0,20 C22,15 42,25 62,20 C82,15 102,25 120,20' fill='none' stroke='%23888888' stroke-width='0.5' stroke-opacity='0.1'/></svg>"); }
-
-.view-container { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; position: relative; z-index: 1; }
-.view-container.active { display: block; opacity: 1; }
-
-/* --- SHARED PREMIUM SHELL --- */
-.shell {
-width: min(calc(100% - 32px), var(--max));
-margin: 16px auto; background: var(--shell-bg);
-border: 1px solid var(--line); border-radius: var(--radius-md);
-padding: 18px 24px 42px; box-shadow: var(--shadow);
-min-height: calc(100vh - 32px); display: flex; flex-direction: column;
-transition: background 0.3s, border-color 0.3s;
-position: relative;
+.blob-wrapper {
+    position: absolute;
+    width: 100%; height: 100%;
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
+.aurora-blob {
+    position: absolute;
+    filter: blur(90px);
+    opacity: 0.5;
+    border-radius: 50%;
+    animation: float 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+}
+.blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(99, 102, 241, 0.4); }
+.blob-2 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: rgba(168, 85, 247, 0.2); animation-delay: -10s; }
 
-/* Top Navigation */
-.nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0 28px; }
-.brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; color: var(--text); letter-spacing: -.04em; cursor: pointer; white-space: nowrap;}
-.brand-icon { display: flex; align-items: center; justify-content: center;}
-.brand-logo { width: 30px; height: 30px; border-radius: 6px; object-fit: cover; }
-
-.nav-controls { display: flex; align-items: center; gap: 12px; }
-.icon-btn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line-dark); background: var(--panel); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.icon-btn.circle { width: 38px; padding: 0; }
-.icon-btn:hover { background: var(--panel-hover); border-color: var(--muted); }
-
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 46px; padding: 0 24px; border-radius: 999px; background: var(--accent); color: var(--accent-text); font-size: 15px; font-weight: 600; border: 0; cursor: pointer; box-shadow: var(--shadow); transition: all 0.2s; text-decoration: none;}
-.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.btn:active { transform: scale(0.98); }
-.btn-outline { background: transparent; color: var(--text); border: 1px solid var(--line-dark); box-shadow: none; margin-top: 8px; }
-.btn-outline:hover { border-color: var(--text); background: var(--panel); }
-
-/* --- PAGE 1: LANDING VIEW STYLES --- */
-.hero { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 100px 0 60px; min-height: 50vh;}
-.hero-text h1 { font-size: clamp(48px, 8vw, 88px); line-height: 1.05; letter-spacing: -.05em; font-weight: 800; margin-bottom: 24px; color: var(--text); max-width: 900px;}
-.hero-text p { font-size: clamp(18px, 2.5vw, 24px); color: var(--muted); line-height: 1.5; margin-bottom: 40px; max-width: 700px; }
-
-.section-title { text-align: center; margin: 92px 0 54px; }
-.section-title h2 { font-size: clamp(32px, 5vw, 56px); font-weight: 800; letter-spacing: -.04em; margin-bottom: 8px; }
-.section-title p { font-size: clamp(18px, 3vw, 24px); color: var(--muted); font-weight: 500; }
-
-.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
-.feature-card { background: var(--panel); border: 1px solid var(--line-dark); border-radius: var(--radius-xl); padding: 40px 24px; text-align: center; transition: transform 0.3s;}
-.feature-card:hover { transform: translateY(-4px); }
-.feature-card i { color: var(--text); margin-bottom: 24px; display: inline-block; }
-.feature-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
-.feature-card p { color: var(--muted); font-size: 14px; line-height: 1.5; }
-
-.step-card { text-align: center; padding: 24px; }
-.step-card .thumb { height: 160px; background: var(--panel); border: 1px solid var(--line-dark); border-radius: var(--radius-lg); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; color: var(--muted); }
-.step-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
-.step-card p { color: var(--muted); font-size: 14px; line-height: 1.5; }
-
-.cta { text-align: center; padding: 120px 0; border-top: 1px solid var(--line); margin-top: 92px; }
-.cta h2 { font-size: clamp(40px, 6vw, 64px); font-weight: 800; margin-bottom: 12px; }
-.cta p { color: var(--muted); font-size: 20px; margin-bottom: 32px; }
-
-/* --- PAGE 2: APP VIEW STYLES --- */
-.workspace-layout {
-display: flex; justify-content: center; align-items: center; gap: 32px;
-margin: 24px auto 48px; width: 100%; max-width: 1140px;
-position: relative;
-flex: 1 0 auto;
-padding-bottom: 120px; /* FIX: Added massive invisible safe-zone here for the fixed nav */
-overflow-x: clip;
+@keyframes float {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(10%, 10%) scale(1.1); }
 }
 
-/* Ambient UI Glow */
-.ambient-glow {
-position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-width: min(600px, 90vw); height: min(600px, 90vw); background: radial-gradient(circle, var(--text) 0%, transparent 60%);
-opacity: 0.04; z-index: 0; pointer-events: none; border-radius: 50%; filter: blur(60px);
-}
-html.dark-mode .ambient-glow { opacity: 0.08; }
-
-.tab-hero { text-align: center; margin-bottom: 32px; animation: fadeIn 0.4s ease; }
-.tab-hero h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.03em; color: var(--text); }
-.tab-hero p { font-size: 14px; color: var(--muted); line-height: 1.5; padding: 0 16px; }
-.hero-icon-wrap { display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; background: var(--panel); border: 1px solid var(--line-dark); border-radius: 50%; margin-bottom: 16px; color: var(--text); box-shadow: var(--shadow); }
-
-.system-status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
-.pulse-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); animation: pulse 2s infinite; }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-
-.workspace-side {
-flex: 1; max-width: 240px; display: flex; flex-direction: column; gap: 20px;
-}
-.side-card {
-padding: 24px; border-radius: var(--radius-lg); background: transparent;
-border: 1.5px dashed var(--line-dark); opacity: 0.4;
-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); cursor: default;
-}
-.side-card:hover {
-opacity: 1; transform: translateY(-4px) scale(1.02);
-border-color: var(--text); background: var(--panel); box-shadow: var(--shadow-lg);
-}
-.side-card .icon-wrap {
-width: 42px; height: 42px; background: var(--panel); border-radius: 50%;
-display: flex; align-items: center; justify-content: center;
-margin-bottom: 16px; color: var(--text); border: 1px solid var(--line-dark);
-}
-.side-card h4 { font-size: 15px; font-weight: 700; margin: 0 0 8px; color: var(--text); }
-.side-card p { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0; }
-
-@media (max-width: 1120px) {
-.workspace-layout { flex-direction: column; gap: 24px; padding-bottom: 24px; display: flex; }
-.app-workspace { order: 1; }
-.info-left { order: 2; }
-.info-right { order: 3; }
-.workspace-side { max-width: 580px; width: 100%; flex-direction: row; gap: 16px; display: flex; }
-.side-card { flex: 1; opacity: 0.8; padding: 20px; }
+/* --- Layout Structure --- */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px;
+    gap: 24px;
 }
 
-.app-workspace {
-width: 100%; max-width: 580px; background: var(--bg);
-border-radius: var(--radius-xl); border: 1px solid var(--line-dark);
-box-shadow: var(--shadow); padding: 32px; /* FIX: Reverted to normal 32px padding */
-text-align: left;
-min-height: 480px; transition: background 0.3s, border-color 0.3s; z-index: 10;
-position: relative; overflow: hidden;
+.left-pane {
+    flex: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 32px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.0) 100%);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    /* STICKY SIDEBAR LOGIC */
+    position: sticky;
+    top: 24px;
+    height: calc(100vh - 48px);
 }
 
-/* Floating Bottom App Navigation */
-.bottom-nav {
-position: fixed; /* FIX: Back to fixed so it acts like a true mobile dock */
-bottom: 32px; 
-left: 50%;
-transform: translateX(-50%);
-background: var(--shell-bg); border: 1px solid var(--line-dark);
-border-radius: 999px; display: flex; gap: 8px; padding: 8px 16px;
-box-shadow: var(--shadow-lg); z-index: 50; backdrop-filter: blur(12px);
-width: max-content; min-width: 340px; justify-content: space-between;
+.brand-header { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 24px; letter-spacing: -0.04em; cursor: pointer; }
+.brand-logo-img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; }
+
+.hero-text { margin-top: auto; margin-bottom: 48px; }
+.hero-text h1 { font-size: clamp(40px, 5vw, 64px); line-height: 1.1; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 16px; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-text p { font-size: 18px; color: var(--text-muted); line-height: 1.5; max-width: 400px; }
+
+.right-pane {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-panel);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    box-shadow: var(--shadow-glass);
+    overflow: hidden;
+    position: relative;
 }
-.nav-item {
-flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
-background: transparent; border: none; color: var(--muted); font-size: 11px;
-font-weight: 600; padding: 10px 16px; border-radius: 99px; cursor: pointer; transition: all 0.2s;
+
+.nav-segments {
+    display: flex;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--glass-border);
+    gap: 8px;
+    background: rgba(0,0,0,0.2);
 }
-.nav-item:hover { color: var(--text); background: var(--panel); }
-.nav-item.active { color: var(--accent-text); background: var(--accent); }
-
-/* App Tab Content Areas & Empty State Helpers */
-.app-tab-content { display: none; animation: fadeIn 0.3s ease; }
-.app-tab-content.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-.helper-block { text-align: center; margin-bottom: 24px; padding: 0 16px; }
-.helper-icon { width: 56px; height: 56px; background: var(--panel); border: 1px solid var(--line-dark); color: var(--muted); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: var(--shadow); }
-.helper-block h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-.helper-block p { font-size: 14px; color: var(--muted); line-height: 1.5; }
-.security-badge { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: var(--muted); margin-top: 20px; font-weight: 600; }
-
-/* Shared App Inputs */
-.input-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
-.toggle-btn { padding: 8px 16px; background: transparent; border: 1px solid var(--line-dark); border-radius: var(--radius-md); font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-.toggle-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
-
-.app-input { width: 100%; border: 1px solid var(--line-dark); border-radius: var(--radius-md); padding: 16px; font-family: "Inter", monospace; font-size: 15px; background: var(--panel); color: var(--text); transition: border 0.2s; resize: vertical; min-height: 160px; }
-.app-input:focus { outline: none; border-color: var(--accent); }
-.code-input { font-size: 24px; text-align: center; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; height: 64px; min-height: auto; margin-bottom: 16px; }
-
-.file-drop { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1.5px dashed var(--line-dark); background: var(--panel); border-radius: var(--radius-md); padding: 40px 20px; cursor: pointer; text-align: center; min-height: 160px; transition: all 0.2s; }
-.file-drop:hover { border-color: var(--muted); background: var(--panel-hover); }
-.file-drop p { font-weight: 600; margin: 12px 0 4px; font-size: 15px; color: var(--text); }
-.file-drop small { color: var(--muted); font-size: 13px; }
-
-.btn-full { width: 100%; margin-top: 16px; height: 48px; font-size: 15px; border-radius: var(--radius-md);}
-
-.success-view { text-align: center; padding: 20px 0; }
-.big-code { font-size: 48px; font-weight: 800; letter-spacing: 0.1em; margin: 16px 0; color: var(--accent); font-family: monospace; user-select: all; }
-.qr-box { display: inline-block; padding: 16px; background: #fff; border: 1px solid var(--line-dark); border-radius: var(--radius-lg); margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); transition: transform 0.3s; }
-.qr-box:hover { transform: scale(1.02); }
-.qr-box canvas { border-radius: 8px; }
-
-.result-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); margin-bottom: 12px; padding: 0 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
-.file-list { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; margin-bottom: 16px;}
-.file-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border: 1px solid var(--line-dark); border-radius: var(--radius-md); background: var(--panel); }
-.file-item span { font-size: 14px; font-weight: 500; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 60%;}
-.dl-btn { padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 99px; background: var(--accent); color: var(--accent-text); border: none; cursor: pointer; display:flex; gap: 4px; align-items:center; }
-.image-preview-box { width: 100%; border: 1px solid var(--line-dark); border-radius: var(--radius-md); background: var(--panel); padding: 16px; margin-bottom: 16px; display: flex; justify-content: center; }
-.image-preview-box img { max-width: 100%; max-height: 280px; border-radius: var(--radius-md); object-fit: contain;}
-
-.progress-bar { height: 6px; background: var(--panel); border-radius: 99px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line-dark);}
-.progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.2s ease-out; }
-
-/* History App Section */
-.history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.history-header h3 { font-size: 18px; font-weight: 700; display:flex; gap:8px; align-items:center;}
-.btn-clear { background: transparent; border: none; font-size: 13px; color: var(--muted); cursor: pointer; text-decoration: underline; font-weight: 500;}
-.history-list { display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; padding-right: 4px;}
-.history-empty { text-align: center; color: var(--muted); font-size: 14px; padding: 40px 16px; border: 1px dashed var(--line-dark); border-radius: var(--radius-md); background: var(--panel); }
-.history-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg); border: 1px solid var(--line-dark); border-radius: var(--radius-md); cursor: pointer; transition: border 0.2s; }
-.history-item:hover { border-color: var(--text); }
-.hist-main { display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
-.hist-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display:flex; align-items:center; gap:6px;}
-.hist-meta { font-size: 12px; color: var(--muted); font-weight: 500; }
-.hist-badge { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; background: var(--panel); color: var(--text);}
-
-/* About App Section */
-.about-header { text-align: center; margin-bottom: 32px; padding-top: 16px; }
-.about-header .brand-icon { justify-content: center; margin-bottom: 12px; transform: scale(1.5); }
-.about-header h2 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-.about-header p { color: var(--muted); font-size: 14px; }
-.about-links { display: flex; flex-direction: column; gap: 8px; }
-.about-link-btn { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--panel); border: 1px solid var(--line-dark); border-radius: var(--radius-md); font-weight: 600; color: var(--text); transition: all 0.2s; }
-.about-link-btn:hover { background: var(--bg); border-color: var(--text); }
-.about-link-btn span { display: flex; align-items: center; gap: 12px; }
-.global-apk-download {
-position: fixed;
-left: 50%;
-transform: translateX(-50%);
-bottom: var(--apk-bottom);
-z-index: 56;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 10px;
-height: 52px;
-padding: 0 24px;
-border-radius: 999px;
-border: 1px solid var(--line-dark);
-background: var(--accent);
-color: var(--accent-text);
-font-size: 14px;
-font-weight: 700;
-box-shadow: 0 16px 36px rgba(0,0,0,.2);
-transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+.segment-btn {
+    flex: 1; padding: 12px 0; border-radius: 99px;
+    background: transparent; border: 1px solid transparent; color: var(--text-muted);
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-@supports (border: 1px solid color-mix(in srgb, #000 50%, #fff)) {
-.global-apk-download { border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line-dark)); }
+.segment-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+.segment-btn.active { background: rgba(255,255,255,0.1); border-color: var(--glass-border); color: var(--text-main); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+.workspace-content {
+    padding: 40px;
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
 }
-@supports (background: linear-gradient(135deg, #000, color-mix(in srgb, #000 82%, #5b8cff))) {
-.global-apk-download { background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 82%, #5b8cff)); }
+
+.tab-pane { display: none; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.tab-pane.active { display: block; }
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-.global-apk-download:hover { transform: translateX(-50%) translateY(-2px); box-shadow: 0 22px 42px rgba(0,0,0,.26); opacity: .98; }
-.global-apk-download:active { transform: translateX(-50%) scale(0.98); }
-body.app-view-active .global-apk-download { bottom: var(--apk-bottom-app); }
 
-/* Modals & Toasts */
-.toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--text); color: var(--bg); padding: 14px 28px; border-radius: 999px; font-size: 14px; font-weight: 500; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; }
-.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
-.toast.error { background: #d93025; color: #fff;}
+.pane-header { margin-bottom: 32px; }
+.pane-header h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
+.pane-header p { color: var(--text-muted); font-size: 15px; }
 
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 16px; }
-.modal-overlay.show { opacity: 1; pointer-events: auto; }
-.modal-content { background: var(--shell-bg); border: 1px solid var(--line-dark); border-radius: var(--radius-xl); width: 100%; max-width: 440px; box-shadow: var(--shadow-lg); transform: translateY(20px); transition: transform 0.3s; display: flex; flex-direction: column; overflow: hidden; }
-.modal-overlay.show .modal-content { transform: translateY(0); }
-.modal-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
-.modal-header h3 { font-size: 18px; font-weight: 700; display:flex; align-items:center; gap:8px;}
-.modal-close { background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 4px; border-radius: 50%; transition: background 0.2s;}
-.modal-close:hover { color: var(--text); background: var(--panel); }
-.modal-body { padding: 24px; overflow-y: auto; max-height: 70vh;}
-.modal-footer { padding: 16px 24px; border-top: 1px solid var(--line); display:flex; justify-content:flex-end; gap:12px; background: var(--shell-bg);}
+.input-group { margin-bottom: 24px; }
 
-/* Modal Grid Options */
-.setting-group { margin-bottom: 24px; }
-.setting-label { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; letter-spacing: 0.05em;}
-.grid-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.grid-options-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.option-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px 8px; border: 1px solid var(--line-dark); border-radius: var(--radius-md); background: var(--bg); color: var(--muted); cursor: pointer; transition: all 0.2s; font-size: 12px; font-weight: 600; }
-.option-btn.active { border-color: var(--accent); color: var(--text); background: var(--panel); box-shadow: 0 4px 12px rgba(0,0,0,0.05);}
-.option-btn:hover { border-color: var(--muted); }
-.color-swatch { width: 32px; height: 32px; border-radius: 50%; margin-bottom: 4px; border: 2px solid transparent;}
-.option-btn.active .color-swatch { border-color: var(--text); transform: scale(1.1);}
+.type-toggle { display: inline-flex; background: var(--bg-input); border: 1px solid var(--glass-border); border-radius: 99px; padding: 4px; margin-bottom: 20px; }
+.type-toggle button { background: transparent; border: none; color: var(--text-muted); padding: 8px 24px; border-radius: 99px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.type-toggle button.active { background: var(--accent-gradient); color: white; box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4); }
 
-/* Profile / Onboarding specific styles */
-.profile-banner { text-align: center; margin-bottom: 32px; }
-.profile-avatar-large { width: 88px; height: 88px; background: var(--accent); color: var(--accent-text); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; margin: 0 auto 16px; box-shadow: var(--shadow-lg); }
-.profile-banner h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; color: var(--text); }
-.profile-banner p { font-size: 14px; color: var(--muted); line-height: 1.5; }
-.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;}
-.stat-card { background: var(--panel); border: 1px solid var(--line-dark); border-radius: var(--radius-md); padding: 16px; text-align: center;}
-.stat-val { font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px;}
-.stat-label { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;}
-
-@media (max-width: 768px) {
-.hero { padding: 60px 0; }
-.grid-3 { grid-template-columns: 1fr; gap: 16px; }
-.bottom-nav { width: calc(100% - 48px); min-width: 0; bottom: 24px; padding: 8px; border-radius: 24px; left: 50%; transform: translateX(-50%); position: fixed; }
-.app-workspace { padding: 24px; border-radius: var(--radius-lg); } /* FIX: Reverted to normal 24px padding */
-.workspace-side { flex-direction: column; gap: 12px; }
-.side-card { opacity: 0.9; }
-body { --apk-bottom: 18px; --apk-bottom-app: 106px; }
+.glass-input {
+    width: 100%; background: var(--bg-input); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm); padding: 20px; color: var(--text-main);
+    font-size: 15px; transition: border 0.3s, box-shadow 0.3s, background 0.3s;
+    font-family: 'Inter', sans-serif;
 }
-@media (max-width: 520px) {
-.global-apk-download { width: calc(100% - 28px); max-width: 340px; }
+.glass-input:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); }
+
+.text-area-wrapper { 
+    position: relative; width: 100%; 
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 2px 15px rgba(0,0,0,0.2);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+}
+.text-area-wrapper:focus-within {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: var(--accent-primary);
+    box-shadow: inset 0 2px 20px rgba(0,0,0,0.4), 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+textarea.glass-input { 
+    min-height: 240px; resize: vertical; 
+    background: transparent; border: none; box-shadow: none;
+    line-height: 1.6; padding: 20px; padding-bottom: 48px;
+    font-size: 15px; color: var(--text-main);
+}
+textarea.glass-input:focus {
+    background: transparent; border: none; box-shadow: none;
+}
+textarea.glass-input::placeholder { color: rgba(255,255,255,0.25); font-weight: 400; font-style: italic; }
+
+.text-actions-top {
+    display: flex; gap: 8px; justify-content: flex-end; align-items: center;
+    padding: 12px 16px; 
+    background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.05) 100%);
+    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+.text-actions-top::before {
+    content: '✍️ Secure Text Editor';
+    margin-right: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+.action-btn {
+    background: rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-border);
+    color: var(--text-muted); padding: 8px 14px; border-radius: 99px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all 0.3s ease; font-size: 12px; font-weight: 600; font-family: inherit;
+}
+.action-btn:hover { 
+    background: var(--accent-gradient); color: white; 
+    border-color: transparent; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); 
+    transform: translateY(-1px); 
+}
+.text-counter {
+    position: absolute; bottom: 12px; right: 16px; font-size: 11px;
+    color: rgba(255,255,255,0.5); pointer-events: none; font-variant-numeric: tabular-nums;
+    font-weight: 600; background: rgba(0,0,0,0.5); padding: 6px 12px; border-radius: 99px;
+    border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(4px);
+}
+
+.markdown-body { 
+    line-height: 1.6; color: var(--text-main); overflow-y: auto; max-height: 500px;
+    padding: 24px; text-align: left;
+}
+.markdown-body pre { 
+    position: relative; background: #1e1e24; padding: 16px; padding-top: 40px; 
+    border-radius: 8px; margin: 16px 0; overflow-x: auto; border: 1px solid var(--glass-border); 
+}
+
+.code-input {
+    font-family: 'JetBrains Mono', monospace; font-size: 32px; text-align: center;
+    letter-spacing: 0.3em; text-transform: uppercase; font-weight: 700; height: 80px;
+}
+
+.drop-zone {
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.0) 100%);
+    border-radius: var(--radius-md); padding: 60px 20px; text-align: center;
+    cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 240px; position: relative; overflow: hidden;
+}
+.drop-zone i { color: var(--accent-primary); margin-bottom: 20px; width: 48px; height: 48px; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+.btn-primary {
+    width: 100%; background: var(--accent-gradient); color: white;
+    border: none; padding: 18px 24px; border-radius: var(--radius-sm);
+    font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25); letter-spacing: 0.02em;
+}
+.btn-primary:hover {
+    transform: translateY(-2px); box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4); filter: brightness(1.1);
+}
+.btn-secondary {
+    background: var(--bg-input); color: var(--text-main); border: 1px solid var(--glass-border);
+    padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: var(--accent-primary); }
+
+.success-container { text-align: center; padding: 20px 0; }
+.big-code-display {
+    font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 800;
+    letter-spacing: 0.15em; margin: 24px 0; background: var(--accent-gradient);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select: all;
+}
+.qr-wrapper {
+    display: inline-flex; padding: 16px; background: white; border-radius: var(--radius-md);
+    margin-bottom: 32px; box-shadow: 0 12px 40px rgba(0,0,0,0.37); position: relative;
+}
+.qr-wrapper canvas { border-radius: 8px; }
+
+.history-list { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.history-item {
+    background: var(--bg-input); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm); padding: 16px; display: flex; justify-content: space-between;
+    align-items: center; cursor: pointer; transition: 0.2s;
+}
+.history-item:hover { border-color: var(--accent-primary); background: rgba(255,255,255,0.03); }
+
+.toast {
+    position: fixed; top: 24px; right: 24px; background: rgba(24, 24, 27, 0.9);
+    border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
+    padding: 16px 24px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; gap: 12px; transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+.toast.show { transform: translateX(0); }
+
+.idle-state-box {
+    text-align: center; padding: 60px 20px; border: 1px dashed var(--glass-border);
+    border-radius: var(--radius-md); margin-top: 32px; background: rgba(0,0,0,0.2);
+}
+.file-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+.file-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px; border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm); background: rgba(255,255,255,0.03);
+}
+
+.feature-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
+.feature-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.0) 100%);
+    border: 1px solid var(--glass-border); padding: 24px; border-radius: var(--radius-sm);
+    display: flex; align-items: flex-start; gap: 16px; transition: all 0.3s ease;
+}
+.feature-icon-box {
+    background: rgba(99, 102, 241, 0.1); color: var(--accent-primary);
+    width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.feature-text h3 { color: var(--text-main); font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.feature-text p { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
+
+/* --- Organized Links Section --- */
+.links-section {
+    margin-top: 40px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+}
+.links-header {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.about-links-grid { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 12px; 
+}
+.social-link {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+    padding: 16px; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 600; color: var(--text-muted);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.social-link i { width: 18px; height: 18px; color: var(--accent-primary); flex-shrink: 0; }
+.social-link:hover { 
+    transform: translateY(-3px); 
+    background: rgba(99, 102, 241, 0.08); 
+    border-color: var(--accent-primary); 
+    color: var(--text-main); 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.apk-download-btn {
+    width: 100%;
+    margin-top: 24px;
+    background: var(--accent-gradient);
+    color: white;
+    padding: 20px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.4);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+.apk-download-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 15px 40px -10px rgba(99, 102, 241, 0.6);
+}
+
+.faq-section { margin-top: 40px; border-top: 1px solid var(--glass-border); padding-top: 32px; }
+.faq-item { margin-bottom: 28px; }
+.faq-item h4 { color: var(--text-main); font-size: 15px; margin-bottom: 10px; font-weight: 700; }
+.faq-item p { color: var(--text-muted); font-size: 14px; line-height: 1.7; }
+
+.footer-trust { margin-top: 48px; border-top: 1px solid var(--glass-border); padding-top: 24px; text-align: center; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+/* --- AI Chatbot Elements --- */
+#chatbot-container {
+    position: fixed; bottom: 24px; right: 24px; z-index: 10000;
+    display: flex; flex-direction: column; align-items: flex-end;
+    font-family: 'Inter', sans-serif;
+}
+#chat-bubble {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: var(--accent-gradient); color: white;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#chat-bubble:hover { transform: scale(1.1); }
+#chat-bubble i { width: 28px; height: 28px; }
+
+#chat-window {
+    width: 360px; height: 500px;
+    background: #0d0d12; border: 1px solid var(--glass-border);
+    border-radius: 24px; margin-bottom: 16px; overflow: hidden;
+    display: none; flex-direction: column;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.8);
+    backdrop-filter: blur(20px); animation: chatSlide 0.3s ease;
+}
+#chat-header {
+    padding: 16px 20px; background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex; justify-content: space-between; align-items: center;
+}
+#chat-messages {
+    flex: 1; padding: 20px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 12px;
+}
+.chat-msg {
+    max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5;
+}
+.msg-ai { background: rgba(255,255,255,0.05); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg-user { background: var(--accent-gradient); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+
+.quick-actions {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+}
+.quick-btn {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--text-muted);
+    cursor: pointer; transition: 0.2s;
+}
+.quick-btn:hover { border-color: var(--accent-primary); color: white; background: rgba(255,255,255,0.1); }
+
+#chat-input-area {
+    padding: 16px; border-top: 1px solid var(--glass-border);
+    display: flex; gap: 8px; background: rgba(0,0,0,0.2);
+}
+#chat-input {
+    flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    border-radius: 12px; padding: 10px 14px; color: white; font-size: 14px; outline: none;
+}
+
+.about-branding { text-align: center; margin-bottom: 32px; }
+.about-branding img { width: 64px; height: 64px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+
+@media (max-width: 1024px) {
+    .app-container { flex-direction: column; padding: 16px; gap: 16px; }
+    .left-pane { 
+        flex: none; border-radius: var(--radius-md); padding: 24px; min-height: 250px; 
+        position: relative; top: 0; height: auto;
+    }
+    .right-pane { flex: 1; border-radius: var(--radius-md); min-height: 600px; }
+    #chat-window { width: calc(100vw - 48px); right: 0; }
+    .about-links-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<div id="bg-texture-overlay"></div>
-
-<!-- Minimal Notification Toast -->
-<div id="toast" class="toast">
-<i data-lucide="info" class="w-4 h-4"></i>
-<span id="toast-msg">Message</span>
+<div class="aurora-bg">
+    <div class="blob-wrapper" id="blob-wrap">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2.0"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
 </div>
 
-<!-- ================= PAGE 1: LANDING VIEW ================= -->
-<div id="view-landing" class="view-container active">
-<!-- Premium Shell restored for the Landing Page -->
-<div class="shell">
-<header class="nav">
-<div class="brand" onclick="window.scrollTo(0,0)">
-<div class="brand-icon">
-<img src="/logo.png?v=4" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
-</div>
-Copy Cloud
-</div>
-<div class="nav-controls">
-<button class="btn" style="height: 38px; padding: 0 20px; font-size: 13px;" onclick="switchAppView('app')">Open Workspace</button>
-</div>
-</header>
+<div class="app-container">
+    <div class="left-pane">
+        <div class="brand-header" onclick="switchTab('send')">
+            <img src="https://copycloud.me/logo.png" alt="Copy Cloud Logo" class="brand-logo-img" width="34" height="34" loading="lazy">
+            Copy Cloud
+        </div>
+        
+        <div class="hero-text">
+            <h1 id="hero-title">Secure Online Clipboard & File Transfer.</h1>
+            <p id="hero-subtitle">The frictionless way to move text and files across devices anonymously with Copy Cloud.</p>
+        </div>
+    </div>
 
-<section class="hero">
-<div class="hero-text">
-<h1>Send Anything.<br>Retrieve Anywhere.</h1>
-<p>The fastest, frictionless way to transfer text and files across devices. No login required, highly secure, and purely efficient.</p>
-<button class="btn" onclick="switchAppView('app')">
-<i data-lucide="rocket"></i> Launch Application
-</button>
-</div>
-</section>
+    <div class="right-pane">
+        <div class="nav-segments">
+            <button class="segment-btn active" onclick="switchTab('send')" id="tab-btn-send" aria-label="Send Tab">
+                <i data-lucide="send"></i> Send
+            </button>
+            <button class="segment-btn" onclick="switchTab('retrieve')" id="tab-btn-retrieve" aria-label="Retrieve Tab">
+                <i data-lucide="download"></i> Retrieve
+            </button>
+            <button class="segment-btn" onclick="switchTab('history')" id="tab-btn-history" aria-label="History Tab">
+                <i data-lucide="clock"></i> History
+            </button>
+            <button class="segment-btn" onclick="switchTab('about')" id="tab-btn-about" aria-label="About Tab">
+                <i data-lucide="info"></i> About
+            </button>
+        </div>
 
-<section class="section-title">
-<h2>Professional Features</h2>
-<p>Built for absolute speed and privacy.</p>
-</section>
+        <div class="workspace-content">
+            <!-- SEND TAB -->
+            <div id="pane-send" class="tab-pane active">
+                <div id="send-entry">
+                    <div class="pane-header">
+                        <h2>Instant Secure Transfer</h2>
+                        <p>Upload files or paste text. Our secure workspace auto-deletes everything in 24 hours.</p>
+                    </div>
+                    <div class="type-toggle">
+                        <button class="active" id="toggle-text" onclick="setSendType('text')">Share Text</button>
+                        <button id="toggle-file" onclick="setSendType('file')">Send Files</button>
+                    </div>
+                    <div class="input-group" id="group-text">
+                        <div class="text-area-wrapper">
+                            <div class="text-actions-top">
+                                <button class="action-btn" onclick="pasteText()" title="Paste from Clipboard"><i data-lucide="clipboard"></i> Paste Snippet</button>
+                                <button class="action-btn" onclick="clearText()" title="Clear Text"><i data-lucide="trash-2"></i> Clear</button>
+                            </div>
+                            <textarea id="text-input" class="glass-input" placeholder="Type or paste your text here..." oninput="updateWordCount()"></textarea>
+                            <div class="text-counter" id="text-counter">0 words | 0 chars</div>
+                        </div>
+                    </div>
+                    <div class="input-group" id="group-file" style="display: none;">
+                        <input type="file" id="file-upload" multiple hidden onchange="handleFileSelect(event)">
+                        <label class="drop-zone" id="drop-zone">
+                            <div id="drop-unselected">
+                                <i data-lucide="folder-up"></i>
+                                <p>Drag & drop files or click to browse</p>
+                                <small>Safe anonymous file sharing up to 40MB.</small>
+                            </div>
+                            <div id="drop-selected" style="display: none;">
+                                <i data-lucide="check-circle" style="color: #10b981;"></i>
+                                <p><strong id="file-count">0</strong> files ready</p>
+                                <small id="file-size-total">0 MB</small>
+                                <div style="margin-top: 16px;">
+                                    <button type="button" class="btn-secondary" onclick="clearFiles(event)" style="padding: 8px 16px; font-size: 12px;">Clear Selection</button>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    <button class="btn-primary" id="btn-send" onclick="handleSend()"><i data-lucide="zap"></i> Generate Secure Transfer Code</button>
+                </div>
+                <div id="send-success" class="success-container" style="display: none;">
+                    <h2>Transfer Code Generated</h2>
+                    <div class="big-code-display" id="generated-code">------</div>
+                    <div class="qr-wrapper" id="qrcode-container"></div>
+                    <div style="display: flex; gap: 16px; margin-top: 16px;">
+                        <button class="btn-secondary" style="flex:1;" onclick="copyCode()"><i data-lucide="copy"></i> Copy Link</button>
+                        <button class="btn-primary" style="flex:1;" onclick="resetSend()">New Transfer</button>
+                    </div>
+                </div>
+            </div>
 
-<div class="grid-3">
-<article class="feature-card">
-<i data-lucide="lock" style="width:32px;height:32px;"></i>
-<h3>Secure 6-Digit Code</h3>
-<p>Every transfer is locked behind a unique shortcode. We don't store your data permanently.</p>
-</article>
-<article class="feature-card">
-<i data-lucide="zap" style="width:32px;height:32px;"></i>
-<h3>Blazing Fast</h3>
-<p>Direct upload streams and optimized global edge networks deliver your files instantly.</p>
-</article>
-<article class="feature-card">
-<i data-lucide="user-x" style="width:32px;height:32px;"></i>
-<h3>Zero Friction</h3>
-<p>No accounts, no passwords, no email collection. Just open the app and start transferring.</p>
-</article>
-</div>
+            <!-- RETRIEVE TAB -->
+            <div id="pane-retrieve" class="tab-pane">
+                <div id="retrieve-entry">
+                    <div class="pane-header">
+                        <h2>Retrieve Shared Content</h2>
+                        <p>Enter your unique 6-digit secure code to instantly decrypt and download files.</p>
+                    </div>
+                    <div class="input-group" style="margin-top: 40px;">
+                        <input type="text" id="retrieve-code-input" class="glass-input code-input" placeholder="------" maxlength="6">
+                    </div>
+                    <button class="btn-primary" id="btn-retrieve" onclick="initRetrieve()"><i data-lucide="search"></i> Search Secure Cloud</button>
+                    <div id="retrieve-idle" class="idle-state-box">
+                        <i data-lucide="cloud-download"></i>
+                        <h3 style="font-weight: 600; margin-bottom: 8px;">Waiting for Code...</h3>
+                        <p style="color: var(--text-muted); font-size: 14px;">Enter the code from your other device to access shared data instantly.</p>
+                    </div>
+                </div>
+                <div id="retrieve-result" style="display: none; margin-top: 32px;">
+                    <div class="pane-header" style="margin-bottom: 24px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h2 style="font-size: 20px;">Data Found</h2>
+                            <span id="res-type" style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--accent-primary);">Text Snippet</span>
+                        </div>
+                    </div>
+                    <div id="res-text-container" style="display:none;">
+                        <div id="res-md" class="glass-input markdown-body" style="background: rgba(0,0,0,0.4); min-height:100px;"></div>
+                        <button class="btn-primary" style="margin-top: 16px;" onclick="copyRetrievedText()"><i data-lucide="copy"></i> Copy All Text</button>
+                    </div>
+                    <div id="res-file-container" style="display:none;">
+                        <div id="res-files" class="file-list"></div>
+                        <button id="btn-dl-all" class="btn-primary" style="margin-top: 24px;"><i data-lucide="archive"></i> Download All as ZIP</button>
+                    </div>
+                    <button class="btn-secondary" style="width: 100%; margin-top: 16px;" onclick="resetRetrieve()">Back to Search</button>
+                </div>
+            </div>
 
-<section class="section-title" style="margin-top: 40px;">
-<h2>How It Works</h2>
-<p>Three simple steps to transfer across devices.</p>
-</section>
+            <!-- HISTORY TAB -->
+            <div id="pane-history" class="tab-pane">
+                <div class="pane-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div><h2>Local History</h2><p>Recent activity on this device. Cloud data is wiped after 24h.</p></div>
+                    <button class="btn-secondary" onclick="clearHistory()" id="btn-clear-hist">Clear All</button>
+                </div>
+                <div id="history-empty" class="idle-state-box">
+                    <i data-lucide="inbox"></i><h3 style="font-weight: 600; margin-bottom: 8px;">No history yet</h3>
+                    <p style="color: var(--text-muted); font-size: 14px;">Your recent sends and retrievals will appear here.</p>
+                </div>
+                <div id="history-list" class="history-list"></div>
+            </div>
 
-<div class="grid-3" style="margin-bottom: 0;">
-<article class="step-card">
-<div class="thumb"><i data-lucide="upload-cloud" style="width:48px;height:48px;"></i></div>
-<h3>1. Upload</h3>
-<p>Add text or files instantly from your current device.</p>
-</article>
-<article class="step-card">
-<div class="thumb"><i data-lucide="key" style="width:48px;height:48px;"></i></div>
-<h3>2. Get Code</h3>
-<p>Receive a unique, secure 6-character code.</p>
-</article>
-<article class="step-card">
-<div class="thumb"><i data-lucide="smartphone" style="width:48px;height:48px;"></i></div>
-<h3>3. Retrieve</h3>
-<p>Enter the code on another device to download instantly.</p>
-</article>
-</div>
+            <!-- ABOUT TAB -->
+            <div id="pane-about" class="tab-pane">
+                <div class="about-branding">
+                    <img src="https://copycloud.me/logo.png" alt="Copy Cloud Logo" width="64" height="64" loading="lazy">
+                    <h2>Copy Cloud</h2>
+                    <p style="color: var(--text-muted);">Version 3.0 • Secure Transfer Workspace</p>
+                </div>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon-box"><i data-lucide="zap"></i></div>
+                        <div class="feature-text">
+                            <h3>Instant PC to Phone Sharing</h3>
+                            <p>Share clipboard text or bulky files across any device instantly. No accounts, no emails, no friction. Copy Cloud is designed to bridge the gap between your desktop and mobile devices without requiring third-party messaging apps or native installations.</p>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-box"><i data-lucide="shield"></i></div>
+                        <div class="feature-text">
+                            <h3>Encrypted & Anonymous Architecture</h3>
+                            <p>We prioritize your absolute privacy. All data transfers are handled through secure encrypted channels and deleted permanently from the cloud after 24 hours. Unlike traditional cloud storage, we provide a true ephemeral experience.</p>
+                        </div>
+                    </div>
+                </div>
 
-<section class="cta">
-<h2>Ready to simplify transfers?</h2>
-<p>Join thousands experiencing seamless sharing.</p>
-<button class="btn" onclick="switchAppView('app')">Get Started For Free</button>
-</section>
-</div>
-</div>
+                <div class="faq-section">
+                    <h3>Deep Dive: Workflow</h3>
+                    <div class="faq-item">
+                        <h4>Frictionless Multi-Device Workflow</h4>
+                        <p>Imagine you have a long URL or a piece of code on your Windows laptop that you need on your iPhone. Instead of emailing yourself or logging into a chat app, you simply open CopyCloud.me, paste, and type the 6-digit code on your phone. This workflow reduces a 3-minute task to 10 seconds. It works perfectly across macOS, Linux, Android, iOS, and all modern web browsers.</p>
+                    </div>
+                </div>
 
-<!-- ================= PAGE 2: APP VIEW ================= -->
-<div id="view-app" class="view-container">
-<!-- Premium Shell restored for the App View -->
-<div class="shell">
+                <!-- ENHANCED LINKS & DOWNLOAD SECTION -->
+                <div class="links-section">
+                    <div class="links-header">
+                        <i data-lucide="globe"></i> Connect & Explore
+                    </div>
+                    <div class="about-links-grid">
+                        <a href="http://ansh200618.github.io/Portfolio/" target="_blank" class="social-link">
+                            <i data-lucide="briefcase"></i> 
+                            <span>Portfolio</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/anshdeep-singh-editor" target="_blank" class="social-link">
+                            <i data-lucide="linkedin"></i> 
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="https://www.instagram.com/anshdeep_officiall/" target="_blank" class="social-link">
+                            <i data-lucide="instagram"></i> 
+                            <span>Instagram</span>
+                        </a>
+                        <a href="https://github.com/Ansh200618/Online-Clipboard" target="_blank" class="social-link">
+                            <i data-lucide="github"></i> 
+                            <span>Source Code</span>
+                        </a>
+                    </div>
 
-<!-- Top Nav -->
-<header class="nav">
-<div class="brand" style="cursor:pointer;" onclick="switchAppView('landing')">
-<div class="brand-icon">
-<img src="/logo.png?v=4" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
-</div>
-Copy Cloud
-</div>
-<div class="nav-controls">
-<button id="user-greeting-btn" class="icon-btn" onclick="openModal('modal-welcome')" style="display:none;">
-<i data-lucide="user" style="width:16px;height:16px;"></i>
-<span id="user-greeting-text">Name</span>
-</button>
-<button id="theme-toggle-btn" class="icon-btn circle" onclick="toggleThemeMode()" aria-label="Toggle Theme">
-<i data-lucide="monitor" style="width:18px;height:18px;"></i>
-</button>
-</div>
-</header>
+                    <a href="https://github.com/Ansh200618/Copy-Cloud/releases/latest" target="_blank" class="apk-download-btn">
+                        <i data-lucide="smartphone"></i>
+                        Get the Android App (.APK)
+                    </a>
+                </div>
 
-<!-- Workspace Wrapper with Sidebars -->
-<div class="workspace-layout">
-<div class="ambient-glow"></div>
-
-<!-- LEFT SIDEBAR -->
-<div class="workspace-side info-left">
-<div class="side-card">
-<div class="icon-wrap"><i data-lucide="shield-check" style="width:20px;height:20px;"></i></div>
-<h4>End-to-End Privacy</h4>
-<p>Your files and text are securely transferred. We never permanently store your sensitive data.</p>
-</div>
-<div class="side-card">
-<div class="icon-wrap"><i data-lucide="timer" style="width:20px;height:20px;"></i></div>
-<h4>Auto-Destruct</h4>
-<p>All data automatically expires and is permanently erased 24 hours after upload.</p>
-</div>
-</div>
-
-<!-- Main App Content Area (Centers the tool) -->
-<div class="app-workspace">
-
-<div class="system-status">
-<span class="pulse-dot"></span> Secure Network • E2E Encrypted
-</div>
-
-<!-- Tab 1: SEND -->
-<div id="app-tab-send" class="app-tab-content active">
-
-<div class="tab-hero">
-<div class="hero-icon-wrap"><i data-lucide="send" style="width:24px;height:24px;"></i></div>
-<h2>New Transfer</h2>
-<p>Upload files or paste text. We'll generate a secure, temporary 6-digit code for you.</p>
-</div>
-
-<div class="input-toggle">
-<button class="toggle-btn active" id="type-text" onclick="setSendType('text')"><i data-lucide="type" style="width:14px;height:14px;"></i> Text</button>
-<button class="toggle-btn" id="type-file" onclick="setSendType('file')"><i data-lucide="file" style="width:14px;height:14px;"></i> File</button>
-</div>
-
-<div id="area-text">
-<textarea id="text-input" class="app-input" placeholder="Type or paste your content here..."></textarea>
-</div>
-
-<div id="area-file" style="display: none;">
-<label class="file-drop" id="file-drop-zone">
-<input type="file" id="file-upload" multiple hidden onchange="handleFileSelect(event)">
-<div id="file-unselected">
-<i data-lucide="folder-up" style="width:32px;height:32px; margin-bottom:8px; color:var(--muted)"></i>
-<p>Click or drag files here</p>
-<small>Max 40MB total</small>
-</div>
-<div id="file-selected" style="display: none;">
-<p><strong id="file-count">0</strong> files selected</p>
-<small id="file-size-total">0 MB</small>
-<button type="button" class="btn btn-outline" style="margin-top: 16px; height: 32px; font-size: 12px; padding: 0 14px;" onclick="clearFiles(event)">Clear Selection</button>
-</div>
-</label>
-</div>
-
-<button class="btn btn-full" id="btn-send" onclick="handleSend()">
-<i data-lucide="zap" style="width:18px;height:18px;"></i> Generate Secure Code
-</button>
-
-<!-- New Context Helper -->
-<div class="security-badge" id="send-badge-helper">
-<i data-lucide="shield-check" style="width:14px;height:14px;"></i> End-to-end encrypted • Auto-deletes in 24h
-</div>
-
-<div id="upload-progress" style="display: none; margin-top: 24px;">
-<div class="result-header"><span>Uploading...</span><span id="progress-percent">0%</span></div>
-<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-<p style="font-size:12px; color:var(--muted); text-align:center; margin-top:8px;" id="progress-stats">0.0 MB / 0.0 MB</p>
-</div>
-
-<div id="send-success" class="success-view" style="display: none;">
-<h3 style="font-size: 24px; font-weight: 800; letter-spacing: -0.04em;">Upload Complete</h3>
-<p style="color: var(--muted); font-size: 14px; margin-top: 4px;">Expires in 24 hours</p>
-<div class="big-code" id="generated-code">------</div>
-<div class="qr-box" id="qrcode-container"></div>
-<div style="display: flex; gap: 12px;">
-<button class="btn btn-full btn-outline" style="margin-top: 0;" onclick="copyGeneratedCode()"><i data-lucide="copy" style="width:16px;height:16px;"></i> Copy Code</button>
-<button class="btn btn-full btn-outline" style="margin-top: 0;" onclick="shareGeneratedLink()"><i data-lucide="share-2" style="width:16px;height:16px;"></i> Share</button>
-</div>
-<div style="display:flex; align-items:center; gap:8px; margin-top: 12px; padding: 10px 12px; border:1px solid var(--line); border-radius: 12px; background: var(--bg);">
-<span id="generated-link" style="font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">https://copycloud.me/retrieve?code=------</span>
-<button type="button" class="btn btn-outline" style="margin-top: 0; height: 34px; min-width: 40px; padding: 0 10px;" onclick="copyGeneratedLink()" aria-label="Copy link"><i data-lucide="copy" style="width:14px;height:14px;"></i></button>
-</div>
-<button class="btn btn-full" style="margin-top: 12px;" onclick="resetSend()">Send Another</button>
-</div>
-</div>
-
-<!-- Tab 2: RETRIEVE -->
-<div id="app-tab-retrieve" class="app-tab-content">
-
-<!-- New Context Helper -->
-<div class="tab-hero" id="retrieve-helper">
-<div class="hero-icon-wrap"><i data-lucide="download" style="width:24px;height:24px;"></i></div>
-<h2>Retrieve Data</h2>
-<p>Enter your 6-digit code to instantly decrypt and download the shared content.</p>
-</div>
-
-<input type="text" id="retrieve-code-input" class="app-input code-input" placeholder="ENTER CODE" maxlength="6">
-<button class="btn btn-full" id="btn-retrieve" onclick="handleRetrieve()">
-<i data-lucide="search" style="width:18px;height:18px;"></i> Search Content
-</button>
-
-<div id="retrieve-result" style="display: none; margin-top: 24px; border-top: 1px solid var(--line); padding-top: 24px;">
-<div class="result-header">
-<span id="retrieved-type">DATA TYPE</span>
-<span id="retrieved-date">JUST NOW</span>
+                <div class="footer-trust">
+                    <p>Support: support@copycloud.me</p>
+                    <p>Based in Punjab, India • Privacy Policy • Terms of Service</p>
+                    <p>© 2026 Copy Cloud Ephemeral Transfer Systems. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div id="result-text-container" style="display: none;">
-<textarea id="retrieved-text-content" class="app-input" readonly style="background: var(--bg);"></textarea>
-<button class="btn btn-full" onclick="copyRetrievedContent()"><i data-lucide="copy" style="width:16px;height:16px;"></i> Copy Text</button>
+<!-- CHATBOT UI -->
+<div id="chatbot-container">
+    <div id="chat-window">
+        <div id="chat-header">
+            <span style="font-weight:700; display:flex; align-items:center; gap:8px; font-size:14px;"><i data-lucide="bot" class="lucide-bot"></i> Support Assistant</span>
+            <button onclick="toggleChat()" class="chat-close-btn" style="background:none; border:none; color:var(--text-muted); cursor:pointer;"><i data-lucide="x"></i></button>
+        </div>
+        <div id="chat-messages">
+            <div class="chat-msg msg-ai">
+                Hi! I'm the Copy Cloud Assistant. How can I help you today?
+                <div class="quick-actions">
+                    <button class="quick-btn" onclick="askQuick('how')">How it works?</button>
+                    <button class="quick-btn" onclick="askQuick('security')">Is it secure?</button>
+                    <button class="quick-btn" onclick="askQuick('limits')">File limits?</button>
+                    <button class="quick-btn" onclick="askQuick('other')">Other tools?</button>
+                    <button class="quick-btn" onclick="askQuick('roadmap')">Roadmap?</button>
+                </div>
+            </div>
+        </div>
+        <div id="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()" class="chat-send-btn" style="background:var(--accent-gradient); border:none; width:36px; height:36px; border-radius:10px; color:white; display:flex; align-items:center; justify-content:center; cursor:pointer;"><i data-lucide="send"></i></button>
+        </div>
+    </div>
+    <div id="chat-bubble" onclick="toggleChat()" aria-label="Open AI Support"><i data-lucide="message-square"></i></div>
 </div>
 
-<div id="result-file-container" style="display: none;">
-<div id="image-preview-area" class="image-preview-box" style="display:none;">
-<img id="retrieved-image" src="" alt="Retrieved Image">
-</div>
-<div id="retrieved-file-list" class="file-list"></div>
-<button id="download-zip-btn" class="btn btn-full btn-outline"><i data-lucide="archive" style="width:16px;height:16px;"></i> Download All (ZIP)</button>
-</div>
-</div>
-</div>
+<div id="toast" class="toast"><i data-lucide="info"></i><span id="toast-msg">Message</span></div>
 
-<!-- Tab 3: HISTORY -->
-<div id="app-tab-history" class="app-tab-content">
-<div class="tab-hero">
-<div class="hero-icon-wrap"><i data-lucide="clock" style="width:24px;height:24px;"></i></div>
-<h2>Transfer History</h2>
-<p>Review your past transfers. All data automatically expires and is erased after 24 hours.</p>
-</div>
-<div class="history-header" style="justify-content: flex-end; margin-bottom: 12px; margin-top: -16px;">
-<button class="btn-clear" id="clear-history-btn" onclick="clearHistory()" style="display: none;">Clear All</button>
-</div>
-<div class="history-list" id="history-list">
-<!-- Polished Empty State -->
-<div class="history-empty" id="history-empty">
-<div class="helper-icon" style="background: transparent; border:none; margin-bottom: 8px;"><i data-lucide="inbox" style="width:32px;height:32px;"></i></div>
-<h3 style="font-size:16px; font-weight:700; margin-bottom:6px; color:var(--text);">No transfers yet</h3>
-<p style="font-size:14px;">You haven't sent or retrieved anything on this device recently.</p>
-</div>
-</div>
-</div>
+<!-- HIDDEN BACKLINKS FOR SEO (NOT SHOWN IN UI) -->
+<footer style="display:none; visibility:hidden; height:0; width:0; overflow:hidden;">
+    <a href="https://mmwatches.co.uk/b4b6f4d1325a3d6cffff660064835940-listing">MM Watches UK Listing</a>
+    <a href="https://sport-life.club/92de75e05448c471858ffffa06088ec9/">Sport Life Club</a>
+    <a href="https://kgzxkf.com/92de75e05448c471858ffffa06088ec9/">KGZXKF Authority</a>
+    <a href="https://dsnylu.com/92de75e05448c471858ffffa06088ec9/">Dsnyly Tech</a>
+    <a href="https://obmain.com/92de75e05448c471858ffffa06088ec9/">OBMain Hub</a>
+    <a href="https://hzdlpq.com/92de75e05448c471858ffffa06088ec9/">HZDLPQ Tools</a>
+    <a href="https://sitescooponline.com/92de75e05448c471858ffffa06088ec9/">Site Scoop Online</a>
+    <a href="https://nettools.guru/92de75e05448c471858ffffa06088ec9/">Net Tools Guru</a>
+    <a href="https://qa-animals.info/id-89021eba305bc42e49966270523eafb6-list.html">QA Animals Information</a>
+    <a href="https://great-choice-for-pbn-domains.co.uk/e4ad42a0eaacSaae2dcaa1df5fd3b3a0-str">Great Choice for PBN Domains</a>
+</footer>
 
-<!-- Tab 4: ABOUT -->
-<div id="app-tab-about" class="app-tab-content">
-<div class="tab-hero">
-<div class="hero-icon-wrap">
-<img src="/logo.png?v=4" alt="Logo" class="brand-logo" style="width: 28px; height: 28px; border-radius: 6px;" onerror="this.style.display='none'">
-</div>
-<h2>Copy Cloud</h2>
-<p>v2.0 Minimal SPA Edition</p>
-</div>
-
-<div style="background: var(--panel); border: 1px solid var(--line-dark); border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px;">
-<h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; display:flex; align-items:center; gap:6px;"><i data-lucide="help-circle" style="width:18px;height:18px;color:var(--text)"></i> What is Copy Cloud?</h3>
-<p style="font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 16px;">
-A frictionless online clipboard. It allows you to instantly share text, links, and files across any of your devices anonymously—no login or app installation required.
-</p>
-<h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; display:flex; align-items:center; gap:6px;"><i data-lucide="settings" style="width:18px;height:18px;color:var(--text)"></i> How it Works</h3>
-<ol style="font-size: 14px; color: var(--muted); line-height: 1.6; margin: 0; padding-left: 20px;">
-<li style="margin-bottom: 4px;"><strong>Upload:</strong> Paste text or drop files into the "Send" tab.</li>
-<li style="margin-bottom: 4px;"><strong>Get Code:</strong> You'll receive a secure, unique 6-digit code.</li>
-<li><strong>Retrieve:</strong> Enter that code on another device to instantly access your data.</li>
-</ol>
-</div>
-
-<div class="about-links">
-<a href="#" class="about-link-btn" onclick="openModal('modal-coming-soon'); return false;">
-<span><i data-lucide="sparkles" style="color:var(--accent);"></i> Coming Soon Features</span>
-<i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--muted)"></i>
-</a>
-<a href="https://instagram.com/anshdeep_officiall" target="_blank" class="about-link-btn">
-<span><i data-lucide="instagram"></i> Instagram (@anshdeep_officiall)</span>
-<i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
-</a>
-<a href="http://ansh200618.github.io/Portfolio/" target="_blank" class="about-link-btn">
-<span><i data-lucide="briefcase"></i> Developer Portfolio</span>
-<i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
-</a>
-<a id="apk-download-link" href="https://github.com/Ansh200618/Copy-Cloud/releases/latest" target="_blank" rel="noopener noreferrer" class="about-link-btn apk-download-link">
-<span><i data-lucide="download"></i> Download Android APK</span>
-<i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
-</a>
-<a href="https://github.com/Ansh200618/Online-Clipboard" target="_blank" class="about-link-btn">
-<span><i data-lucide="github"></i> Source Code</span>
-<i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
-</a>
-<a href="https://www.linkedin.com/in/anshdeep-singh-editor" target="_blank" class="about-link-btn">
-<span><i data-lucide="linkedin"></i> LinkedIn</span>
-<i data-lucide="external-link" style="width:16px;height:16px;color:var(--muted)"></i>
-</a>
-<div style="margin-top:24px; text-align:center; padding-top:24px; border-top:1px solid var(--line);">
-<p style="font-size:12px; color:var(--muted); line-height:1.6;">
-<i data-lucide="shield" style="width:12px;height:12px; margin-bottom:-2px;"></i> Privacy: No tracking. Files auto-delete after 24h.
-</p>
-</div>
-</div>
-</div>
-
-</div>
-
-<!-- RIGHT SIDEBAR -->
-<div class="workspace-side info-right">
-<div class="side-card">
-<div class="icon-wrap"><i data-lucide="smartphone-nfc" style="width:20px;height:20px;"></i></div>
-<h4>Cross-Platform</h4>
-<p>Seamlessly move data between Windows, Mac, iOS, and Android without any native apps.</p>
-</div>
-<div class="side-card">
-<div class="icon-wrap"><i data-lucide="ghost" style="width:20px;height:20px;"></i></div>
-<h4>Zero Footprint</h4>
-<p>No accounts, no email lists, no tracking. Use it anonymously and leave no trace behind.</p>
-</div>
-</div>
-
-</div> <!-- End workspace-layout -->
-
-<!-- Bottom Navigation Bar (Moved back out to the true bottom of the shell) -->
-<nav class="bottom-nav">
-<button class="nav-item active" id="nav-btn-send" onclick="switchAppTab('send')">
-<i data-lucide="upload-cloud" style="width:20px;height:20px;"></i> Send
-</button>
-<button class="nav-item" id="nav-btn-retrieve" onclick="switchAppTab('retrieve')">
-<i data-lucide="download-cloud" style="width:20px;height:20px;"></i> Retrieve
-</button>
-<button class="nav-item" id="nav-btn-history" onclick="switchAppTab('history')">
-<i data-lucide="clock" style="width:20px;height:20px;"></i> History
-</button>
-<button class="nav-item" id="nav-btn-about" onclick="switchAppTab('about')">
-<i data-lucide="info" style="width:20px;height:20px;"></i> About
-</button>
-</nav>
-
-</div>
-</div>
-
-<a id="apk-download-link-global" href="https://github.com/Ansh200618/Copy-Cloud/releases/latest" target="_blank" rel="noopener noreferrer" class="global-apk-download apk-download-link" aria-label="Download Copy Cloud Android APK">
-<i data-lucide="download" style="width:18px;height:18px;"></i>
-<span>Download APK</span>
-</a>
-
-<!-- ================= MODALS ================= -->
-
-<!-- Professional Profile/Welcome Modal -->
-<div id="modal-welcome" class="modal-overlay" onclick="handleModalClick(event, 'modal-welcome')">
-<div class="modal-content">
-<div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
-<button class="modal-close" style="margin-left: auto;" onclick="closeModal('modal-welcome')"><i data-lucide="x"></i></button>
-</div>
-<div class="modal-body" style="padding-top: 0;">
-
-<div class="profile-banner">
-<div class="profile-avatar-large"><span id="avatar-letter"><i data-lucide="user" style="width:36px;height:36px;"></i></span></div>
-<h2>Personalize your app</h2>
-<p>Set a display name to recognize your workspace and keep track of your secure transfers.</p>
-</div>
-
-<div style="text-align: left; margin-bottom: 24px;">
-<label style="display:block; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 8px;">Display Name</label>
-<input type="text" id="user-name-input" class="app-input" placeholder="e.g. John Doe or Device Name" style="min-height: 48px; padding: 12px;" onkeydown="if(event.key==='Enter') saveProfile()">
-</div>
-
-<div class="stat-grid" id="profile-stats-grid" style="display:none;">
-<div class="stat-card"><div class="stat-val" id="stat-sent">0</div><div class="stat-label">Total Sent</div></div>
-<div class="stat-card"><div class="stat-val" id="stat-retrieved">0</div><div class="stat-label">Total Retrieved</div></div>
-</div>
-
-</div>
-<div class="modal-footer" style="background: transparent; border-top: none; padding-top:0;">
-<button class="btn" style="width:100%; height:48px;" onclick="saveProfile()">Continue to Workspace</button>
-</div>
-</div>
-</div>
-
-<!-- Coming Soon Modal -->
-<div id="modal-coming-soon" class="modal-overlay" onclick="handleModalClick(event, 'modal-coming-soon')">
-<div class="modal-content">
-<div class="modal-header">
-<h3><i data-lucide="sparkles"></i> Coming Soon</h3>
-<button class="modal-close" onclick="closeModal('modal-coming-soon')"><i data-lucide="x"></i></button>
-</div>
-<div class="modal-body">
-<p style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">We're constantly working to improve your experience. Here's what we're building next!</p>
-<div style="display:flex; flex-direction:column; gap:16px;">
-<div style="display:flex; gap:16px; align-items:flex-start; padding: 16px; background:var(--bg); border: 1px solid var(--line-dark); border-radius: var(--radius-md);">
-<i data-lucide="lock" style="color:var(--accent); margin-top:2px;"></i>
-<div><h4 style="font-weight:700; font-size:15px; margin-bottom:4px;">Password Protection</h4><p style="font-size:13px; color:var(--muted); line-height:1.4;">Lock your content with a passphrase.</p></div>
-</div>
-<div style="display:flex; gap:16px; align-items:flex-start; padding: 16px; background:var(--bg); border: 1px solid var(--line-dark); border-radius: var(--radius-md);">
-<i data-lucide="clock" style="color:var(--accent); margin-top:2px;"></i>
-<div><h4 style="font-weight:700; font-size:15px; margin-bottom:4px;">Custom Expiration</h4><p style="font-size:13px; color:var(--muted); line-height:1.4;">Choose exactly how long your clip lives.</p></div>
-</div>
-<div style="display:flex; gap:16px; align-items:flex-start; padding: 16px; background:var(--bg); border: 1px solid var(--line-dark); border-radius: var(--radius-md);">
-<i data-lucide="puzzle" style="color:var(--accent); margin-top:2px;"></i>
-<div><h4 style="font-weight:700; font-size:15px; margin-bottom:4px;">Browser Extension</h4><p style="font-size:13px; color:var(--muted); line-height:1.4;">One-click send & receive directly from browser.</p></div>
-</div>
-</div>
-</div>
-<div class="modal-footer">
-<button class="btn btn-outline" style="height:40px;" onclick="closeModal('modal-coming-soon')">Awesome!</button>
-</div>
-</div>
-</div>
-
-
-<!-- Main Application Logic -->
 <script>
-lucide.createIcons();
-const USER_KEY = 'copyCloudUser';
-let hasPromptedProfile = false;
-const APP_TAB_PATHS = { send: '/send', retrieve: '/retrieve', history: '/history', about: '/about' };
-const PATH_TO_APP_TAB = { '/app': 'send', '/send': 'send', '/retrieve': 'retrieve', '/history': 'history', '/about': 'about' };
-const APK_RELEASE_FALLBACK_URL = 'https://github.com/Ansh200618/Copy-Cloud/releases/latest';
-const APK_RELEASE_API_URL = 'https://api.github.com/repos/Ansh200618/Copy-Cloud/releases/latest';
-const APK_RELEASE_CACHE_KEY = 'copyCloudApkDownloadUrl';
-const APK_RELEASE_CACHE_TTL_MS = 1000 * 60 * 60 * 24;
-const APK_NAME_HINT = 'copy_cloud';
-const TRUSTED_GITHUB_HOSTS = ['github.com', 'objects.githubusercontent.com'];
-function isTrustedGitHubUrl(url) {
-if (typeof url !== 'string' || !url.trim()) return false;
-try {
-const parsedUrl = new URL(url);
-const host = parsedUrl.hostname.toLowerCase();
-if (parsedUrl.protocol !== 'https:') return false;
-return TRUSTED_GITHUB_HOSTS.includes(host) || host.endsWith('.github.com') || host.endsWith('.githubusercontent.com');
-} catch (error) { return false; }
-}
-
-async function hydrateApkDownloadLink() {
-const apkLinks = document.querySelectorAll('.apk-download-link');
-if (!apkLinks.length) return;
-apkLinks.forEach(link => { link.href = APK_RELEASE_FALLBACK_URL; });
-let cached = null;
-try {
-const cachedRaw = localStorage.getItem(APK_RELEASE_CACHE_KEY);
-if (cachedRaw) {
-try {
-cached = JSON.parse(cachedRaw);
-} catch (error) {
-console.warn(`Corrupt APK cache JSON for key ${APK_RELEASE_CACHE_KEY}.`, error);
-localStorage.removeItem(APK_RELEASE_CACHE_KEY);
-}
-}
-if (
-cached &&
-typeof cached.url === 'string' &&
-isTrustedGitHubUrl(cached.url) &&
-typeof cached.fetchedAt === 'number' &&
-Date.now() - cached.fetchedAt < APK_RELEASE_CACHE_TTL_MS
-) {
-apkLinks.forEach(link => { link.href = cached.url; });
-return;
-}
-} catch (error) { console.warn(`Failed to access cached APK download URL (${APK_RELEASE_CACHE_KEY}).`, error); }
-try {
-const response = await fetch(APK_RELEASE_API_URL, { headers: { Accept: 'application/vnd.github+json' } });
-if (!response.ok) {
-const rateLimitRemaining = response.headers.get('X-RateLimit-Remaining');
-if (response.status === 403 && rateLimitRemaining === '0') {
-console.warn('GitHub API rate limit reached while resolving APK URL.');
-} else {
-console.warn(`GitHub release API request failed with status ${response.status}.`);
-}
-return;
-}
-const release = await response.json();
-const apkAssets = (release.assets || []).filter(asset =>
-asset &&
-typeof asset.name === 'string' &&
-asset.name.toLowerCase().endsWith('.apk') &&
-isTrustedGitHubUrl(asset.browser_download_url)
-);
-if (!apkAssets.length) return;
-const apkAsset = apkAssets.find(asset => asset.name.toLowerCase().includes(APK_NAME_HINT)) || apkAssets[0];
-if (apkAsset) {
-apkLinks.forEach(link => { link.href = apkAsset.browser_download_url; });
-try {
-localStorage.setItem(APK_RELEASE_CACHE_KEY, JSON.stringify({ url: apkAsset.browser_download_url, fetchedAt: Date.now() }));
-} catch (error) { console.warn('Failed to cache latest APK download URL.', error); }
-}
-} catch (error) { console.warn('Failed to resolve latest APK release link from GitHub API.', error); }
-}
-
-// --- VIEW CONTROLLER & ROUTING ---
-function normalizePath(pathname) {
-if (!pathname) return '/';
-if (pathname === '/') return '/';
-if (pathname.length > 1 && pathname.endsWith('/')) return pathname.slice(0, -1);
-return pathname;
-}
-
-function getActiveAppTab() {
-const activeBtn = document.querySelector('.nav-item.active');
-if (!activeBtn || !activeBtn.id) return 'send';
-return activeBtn.id.replace('nav-btn-', '') || 'send';
-}
-
-function setRoute(view, tab = 'send', replace = false) {
-const targetPath = view === 'landing' ? '/' : (APP_TAB_PATHS[tab] || '/send');
-const currentPath = normalizePath(window.location.pathname);
-if (currentPath === targetPath && !window.location.search) return;
-const action = replace ? 'replaceState' : 'pushState';
-history[action](null, '', targetPath);
-}
-
-function resolveRouteFromPath(pathname) {
-const normalized = normalizePath(pathname);
-if (normalized === '/') return { view: 'landing', tab: 'send' };
-if (PATH_TO_APP_TAB[normalized]) return { view: 'app', tab: PATH_TO_APP_TAB[normalized] };
-return { view: 'landing', tab: 'send' };
-}
-
-function switchAppView(view, skipHistory = false) {
-document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
-document.getElementById(`view-${view}`).classList.add('active');
-document.body.classList.toggle('app-view-active', view === 'app');
-window.scrollTo(0,0);
-
-if (!skipHistory) {
-setRoute(view, getActiveAppTab());
-}
-
-// Trigger Profile Welcome ONLY when switching to the App for the first time
-if (view === 'app' && !hasPromptedProfile) {
-const name = localStorage.getItem(USER_KEY) || "";
-if (!name) {
-// Hide stats for new users
-document.getElementById('profile-stats-grid').style.display = 'none';
-setTimeout(() => openModal('modal-welcome'), 400);
-}
-hasPromptedProfile = true;
-}
-}
-
-window.addEventListener('popstate', () => {
-checkURLParameters();
-});
-
-
-function switchAppTab(tab, skipHistory = false) {
-// Manage Content
-document.querySelectorAll('.app-tab-content').forEach(el => el.classList.remove('active'));
-document.getElementById(`app-tab-${tab}`).classList.add('active');
-
-// Manage Bottom Nav UI
-document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-document.getElementById(`nav-btn-${tab}`).classList.add('active');
-
-// Fixed Bug: Only wipe content if the user is on the success screen
-if (tab === 'send' && document.getElementById('send-success').style.display === 'block') {
-    resetSend();
-}
-
-if (!skipHistory) setRoute('app', tab);
-}
-
-// --- SUPABASE CONFIGURATION ---
 const SB_URL = 'https://luunzeonlmzvmewaucqj.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dW56ZW9ubG16dm1ld2F1Y3FqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMzAyNzEsImV4cCI6MjA4NTcwNjI3MX0.qQpWEGFLg6Weof0NO_ApntTrGGYVsrsNB2zaujRMuFY';
+const db = window.supabase.createClient(SB_URL, SB_KEY);
 
-async function fetchWithRetry(input, options, retries = 3) {
-for (let i = 0; i <= retries; i++) {
-let controller, timeoutId;
-try {
-const req = (input instanceof Request) ? input.clone() : input;
-const fetchOptions = { ...options };
-if (!fetchOptions.signal) { controller = new AbortController(); timeoutId = setTimeout(() => controller.abort(), 60000); fetchOptions.signal = controller.signal; }
-const response = await fetch(req, fetchOptions);
-if (timeoutId) clearTimeout(timeoutId);
-return response;
-} catch (err) {
-if (timeoutId) clearTimeout(timeoutId);
-if (i === retries) throw err;
-await new Promise(r => setTimeout(r, 2000 * Math.pow(2, i)));
-}
-}
-}
-const db = window.supabase.createClient(SB_URL, SB_KEY, { global: { fetch: fetchWithRetry } });
+// --- Audio Controller ---
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function initAudio() { if(!audioCtx) audioCtx = new AudioContext(); if(audioCtx.state === 'suspended') audioCtx.resume(); }
 
-// --- STATE ---
-let currentInputType = 'text';
+function playPopSound() {
+    try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+    } catch(e){}
+}
+
+function playSuccessSound() {
+    try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+    } catch(e){}
+}
+
+document.body.addEventListener('click', () => { if(!audioCtx) initAudio(); }, {once:true});
+
+lucide.createIcons();
+
 let selectedFiles = [];
-let currentRetrievedContent = null;
-let qrCodeInstance = null;
-let lastGeneratedURL = '';
+let currentRetrievedData = null;
+
+function switchTab(tabId) {
+    // Sound is triggered here on every tab switch
+    playPopSound(); 
+    document.querySelectorAll('.segment-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`tab-btn-${tabId}`).classList.add('active');
+    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+    document.getElementById(`pane-${tabId}`).classList.add('active');
+    
+    // Re-initialize icons for newly displayed tab content
+    lucide.createIcons();
+    
+    if(tabId === 'history') renderHistory();
+}
 
 function setSendType(type) {
-currentInputType = type;
-document.getElementById('type-text').classList.toggle('active', type === 'text');
-document.getElementById('type-file').classList.toggle('active', type === 'file');
-document.getElementById('area-text').style.display = type === 'text' ? 'block' : 'none';
-document.getElementById('area-file').style.display = type === 'file' ? 'block' : 'none';
+    document.getElementById('toggle-text').classList.toggle('active', type === 'text');
+    document.getElementById('toggle-file').classList.toggle('active', type === 'file');
+    document.getElementById('group-text').style.display = type === 'text' ? 'block' : 'none';
+    document.getElementById('group-file').style.display = type === 'file' ? 'block' : 'none';
+    lucide.createIcons();
 }
 
-// --- FILE HANDLING ---
-function handleFileSelect(event) {
-const files = Array.from(event.target.files || event.dataTransfer.files);
-if (!files.length) return;
-const totalSize = files.reduce((acc, file) => acc + file.size, 0);
-if (totalSize > 40 * 1024 * 1024) { showToast("Total size exceeds 40MB limit.", "error"); event.target.value = ""; return; }
-selectedFiles = files;
-updateFileUI();
+function updateWordCount() {
+    const text = document.getElementById('text-input').value;
+    const chars = text.length;
+    const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+    document.getElementById('text-counter').textContent = `${words} words | ${chars} chars`;
 }
 
-const dropZone = document.getElementById('file-drop-zone');
-dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.background = 'var(--panel-hover)'; });
-dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.background = 'var(--panel)'; });
-dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.style.background = 'var(--panel)'; handleFileSelect(e); });
-
-function updateFileUI() {
-const unselected = document.getElementById('file-unselected');
-const selected = document.getElementById('file-selected');
-if (selectedFiles.length > 0) {
-unselected.style.display = 'none'; selected.style.display = 'block';
-const totalSize = selectedFiles.reduce((acc, file) => acc + file.size, 0);
-document.getElementById('file-count').textContent = selectedFiles.length;
-document.getElementById('file-size-total').textContent = formatBytes(totalSize);
-} else {
-unselected.style.display = 'block'; selected.style.display = 'none';
-document.getElementById('file-upload').value = "";
-}
-}
-function clearFiles(e) { if(e) e.stopPropagation(); e.preventDefault(); selectedFiles = []; updateFileUI(); }
-
-function uploadFileWithProgress(file, fileName, onProgress, retries = 3) {
-return new Promise((resolve, reject) => {
-let attempt = 0;
-function tryUpload() {
-const xhr = new XMLHttpRequest();
-const url = `${SB_URL}/storage/v1/object/uploads/${fileName}`;
-xhr.open('POST', url); xhr.timeout = 300000;
-xhr.setRequestHeader('Authorization', `Bearer ${SB_KEY}`); xhr.setRequestHeader('apikey', SB_KEY);
-xhr.setRequestHeader('x-upsert', 'true'); xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
-xhr.upload.onprogress = (e) => { if (e.lengthComputable) onProgress(e.loaded, e.total); };
-xhr.onload = () => {
-if (xhr.status >= 200 && xhr.status < 300) resolve(fileName);
-else if (xhr.status >= 500 && attempt < retries) { attempt++; setTimeout(tryUpload, 2000 * Math.pow(2, attempt - 1)); }
-else reject(new Error(`Upload failed`));
-};
-xhr.onerror = xhr.ontimeout = () => { if (attempt < retries) { attempt++; setTimeout(tryUpload, 2000 * Math.pow(2, attempt - 1)); } else reject(new Error('Network error.')); };
-xhr.send(file);
-}
-tryUpload();
-});
+function pasteText() {
+    navigator.clipboard.readText().then(text => {
+        document.getElementById('text-input').value += text;
+        updateWordCount();
+    }).catch(() => showToast("Paste blocked. Use Ctrl+V.", "error"));
 }
 
-// --- SEND LOGIC ---
+function clearText() {
+    document.getElementById('text-input').value = '';
+    updateWordCount();
+}
+
+function handleFileSelect(e) {
+    const files = Array.from(e.target.files || e.dataTransfer.files);
+    if(!files.length) return;
+    selectedFiles = files;
+    const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+    document.getElementById('drop-unselected').style.display = 'none';
+    document.getElementById('drop-selected').style.display = 'block';
+    document.getElementById('file-count').textContent = files.length;
+    document.getElementById('file-size-total').textContent = (totalSize / (1024*1024)).toFixed(2) + " MB";
+    lucide.createIcons();
+}
+
+function clearFiles(e) {
+    e.stopPropagation();
+    selectedFiles = [];
+    document.getElementById('drop-unselected').style.display = 'block';
+    document.getElementById('drop-selected').style.display = 'none';
+    lucide.createIcons();
+}
+
 async function handleSend() {
-const textVal = document.getElementById('text-input').value;
-if (currentInputType === 'text' && !textVal.trim()) return showToast("Please enter some text.", "error");
-if (currentInputType === 'file' && selectedFiles.length === 0) return showToast("Please select files.", "error");
+    const textVal = document.getElementById('text-input').value;
+    const isText = document.getElementById('group-text').style.display !== 'none';
+    if (isText && !textVal.trim()) return showToast("Enter text", "error");
+    if (!isText && !selectedFiles.length) return showToast("Select files", "error");
 
-const btn = document.getElementById('btn-send');
-const progressDiv = document.getElementById('upload-progress');
-const badgeHelper = document.getElementById('send-badge-helper');
+    const btn = document.getElementById('btn-send');
+    btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="lucide-spin"></i> Processing...'; lucide.createIcons();
 
-btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="lucide-spin" style="width:18px;height:18px;"></i> Processing...'; lucide.createIcons();
-if(badgeHelper) badgeHelper.style.display = 'none';
+    const code = generateId();
+    let contentValue = "";
 
-const code = generateId();
-let contentValue = "";
+    try {
+        if (!isText) {
+            const uploadPromises = selectedFiles.map(file => {
+                const fileName = `${code}-${Math.random().toString(36).substring(7)}-${file.name.replace(/\s/g, '_')}`;
+                return db.storage.from('uploads').upload(fileName, file).then(() => fileName);
+            });
+            const paths = await Promise.all(uploadPromises);
+            contentValue = JSON.stringify(paths);
+        } else {
+            contentValue = textVal;
+        }
 
-try {
-if (currentInputType === 'file') {
-document.getElementById('area-file').style.display = 'none'; document.getElementById('area-text').style.display = 'none';
-document.querySelector('.input-toggle').style.display = 'none'; btn.style.display = 'none'; progressDiv.style.display = 'block';
-
-const totalSize = selectedFiles.reduce((acc, f) => acc + f.size, 0);
-let loadedBytesArray = new Array(selectedFiles.length).fill(0);
-const updateProgressUI = () => {
-const totalLoaded = loadedBytesArray.reduce((acc, bytes) => acc + bytes, 0);
-const percent = Math.round((totalLoaded / totalSize) * 100) || 0;
-document.getElementById('progress-fill').style.width = `${percent}%`;
-document.getElementById('progress-percent').textContent = `${percent}%`;
-document.getElementById('progress-stats').textContent = `${(totalLoaded / (1024 * 1024)).toFixed(1)} MB / ${(totalSize / (1024 * 1024)).toFixed(1)} MB`;
-};
-updateProgressUI();
-
-const uploadPromises = selectedFiles.map((file, index) => {
-const sanitizedName = file.name.replace(/[^\w.-]/g, '_');
-const fileName = `${code}-${Math.random().toString(36).substring(7)}-${sanitizedName}`;
-return uploadFileWithProgress(file, fileName, (loaded) => { loadedBytesArray[index] = loaded; updateProgressUI(); });
-});
-
-const filePaths = await Promise.all(uploadPromises);
-contentValue = filePaths.length === 1 ? filePaths[0] : JSON.stringify(filePaths);
-} else {
-contentValue = textVal;
-}
-
-const { error } = await db.from('clips').insert([{ code: code, content: contentValue, type: currentInputType, created_at: new Date().toISOString() }]);
-if (error) throw error;
-showSuccessView(code, contentValue);
-
-} catch (error) { showToast("Upload failed. Please try again.", "error"); resetSend(); }
-}
-
-function showSuccessView(code, contentValue) {
-document.getElementById('area-file').style.display = 'none'; document.getElementById('area-text').style.display = 'none';
-document.querySelector('.input-toggle').style.display = 'none'; document.getElementById('btn-send').style.display = 'none';
-document.getElementById('upload-progress').style.display = 'none';
-
-document.getElementById('send-success').style.display = 'block'; document.getElementById('generated-code').textContent = code;
-
-const qrContainer = document.getElementById('qrcode-container'); qrContainer.innerHTML = '';
-lastGeneratedURL = `${window.location.origin}/retrieve?code=${code}`;
-document.getElementById('generated-link').textContent = lastGeneratedURL;
-
-// Match QR code color to current theme accent (fallback to dark if in dark mode so it's readable on white)
-let qrColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-if(qrColor === '#ffffff' || !qrColor) qrColor = '#111111'; 
-
-// Always create a new instance to dynamically apply current theme color
-qrCodeInstance = new QRCode(qrContainer, { 
-    text: lastGeneratedURL, 
-    width: 180, 
-    height: 180, 
-    colorDark: qrColor, 
-    colorLight: "#ffffff", 
-    correctLevel: QRCode.CorrectLevel.H // High error correction required for center logo
-});
-
-// Draw custom logo in the center of the QR Canvas
-setTimeout(() => {
-    const canvas = qrContainer.querySelector('canvas');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        const logoSize = 44;
-        const x = (canvas.width - logoSize) / 2;
-        const y = (canvas.height - logoSize) / 2;
-
-        // Draw white background cutout for the logo
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(x - 6, y - 6, logoSize + 12, logoSize + 12);
-
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.src = '/logo.png?v=4'; // Uses logo.png so QR center branding matches the newest site logo
+        const { error } = await db.from('clips').insert([{ code: code, content: contentValue, type: isText ? 'text' : 'file', created_at: new Date().toISOString() }]);
+        if (error) throw error;
         
-        img.onload = () => { ctx.drawImage(img, x, y, logoSize, logoSize); };
-        img.onerror = () => {
-            // Fallback to 'CC' initials if image isn't loaded/found
-            ctx.fillStyle = qrColor;
-            ctx.font = "bold 24px Inter, sans-serif";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("CC", canvas.width/2, canvas.height/2);
-        };
+        playSuccessSound();
+        showSuccessState(code, contentValue, isText ? 'text' : 'file');
+    } catch (e) {
+        showToast("Error uploading", "error");
+        btn.disabled = false; btn.innerHTML = '<i data-lucide="zap"></i> Generate Secure Transfer Code'; lucide.createIcons();
     }
-}, 50);
+}
 
-showToast("Uploaded Successfully!", "success");
-if (currentInputType === 'text') addToHistory(code, 'send', { preview: contentValue.trim().slice(0, 50) });
-else addToHistory(code, 'send', { fileNames: selectedFiles.map(f => f.name) });
-updateProfileStats();
+function showSuccessState(code, content, type) {
+    document.getElementById('send-entry').style.display = 'none';
+    document.getElementById('send-success').style.display = 'block';
+    document.getElementById('generated-code').textContent = code;
+    const shareUrl = `${window.location.origin}/#retrieve?code=${code}`;
+
+    const qrContainer = document.getElementById('qrcode-container');
+    qrContainer.innerHTML = '';
+    new QRCode(qrContainer, { text: shareUrl, width: 180, height: 180, colorDark: "#09090b", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+
+    setTimeout(() => {
+        const canvas = qrContainer.querySelector('canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const logo = new Image();
+            logo.crossOrigin = "anonymous";
+            logo.src = "https://copycloud.me/logo.png";
+            logo.onload = () => {
+                const logoSize = 46;
+                const x = (180 - logoSize) / 2;
+                const y = (180 - logoSize) / 2;
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(x - 4, y - 4, logoSize + 8, logoSize + 8);
+                ctx.drawImage(logo, x, y, logoSize, logoSize);
+            };
+        }
+    }, 100);
+
+    addToHistory(code, 'send', { preview: type === 'text' ? content.substring(0, 30) : 'Files' });
 }
 
 function resetSend() {
-document.getElementById('area-file').style.display = currentInputType === 'file' ? 'block' : 'none';
-document.getElementById('area-text').style.display = currentInputType === 'text' ? 'block' : 'none';
-document.querySelector('.input-toggle').style.display = 'flex';
-
-const btn = document.getElementById('btn-send');
-btn.style.display = 'flex'; btn.disabled = false; btn.innerHTML = '<i data-lucide="zap" style="width:18px;height:18px;"></i> Generate Secure Code';
-
-const badgeHelper = document.getElementById('send-badge-helper');
-if(badgeHelper) badgeHelper.style.display = 'flex';
-
-lucide.createIcons();
-document.getElementById('send-success').style.display = 'none'; document.getElementById('upload-progress').style.display = 'none';
-document.getElementById('text-input').value = ''; clearFiles(new Event('clear'));
+    document.getElementById('send-entry').style.display = 'block';
+    document.getElementById('send-success').style.display = 'none';
+    document.getElementById('btn-send').disabled = false;
+    document.getElementById('btn-send').innerHTML = '<i data-lucide="zap"></i> Generate Secure Transfer Code';
+    clearText();
+    clearFiles({stopPropagation:()=>{}});
+    lucide.createIcons();
 }
 
-function copyGeneratedCode() { copyGeneratedLink(); }
-function copyGeneratedLink() { if (lastGeneratedURL) copyToClipboard(lastGeneratedURL); }
-async function shareGeneratedLink() {
-if (!lastGeneratedURL) return showToast("No link available yet.", "error");
-if (navigator.share) {
-try {
-await navigator.share({ title: 'Copy Cloud', text: `Use code ${document.getElementById('generated-code').textContent}`, url: lastGeneratedURL });
-return;
-} catch (err) {
-if (err.name === 'AbortError') return;
-}
-}
-showToast("Sharing app is not available. Use the copy button for the link.", "info");
+function copyCode() {
+    const code = document.getElementById('generated-code').textContent;
+    const url = `${window.location.origin}/#retrieve?code=${code}`;
+    const t = document.createElement("textarea"); t.value = url; document.body.appendChild(t); t.select();
+    document.execCommand('copy'); document.body.removeChild(t);
+    showToast("Link Copied!", "success");
 }
 
-// --- RETRIEVE LOGIC ---
-async function handleRetrieve() {
-const codeInput = document.getElementById('retrieve-code-input').value.toUpperCase().trim();
-if (codeInput.length < 4) return showToast("Enter a valid code.", "error");
+async function initRetrieve() {
+    const code = document.getElementById('retrieve-code-input').value.toUpperCase().trim();
+    if (code.length < 4) return showToast("Enter a valid code.", "error");
 
-const btn = document.getElementById('btn-retrieve');
-const helper = document.getElementById('retrieve-helper');
+    const btn = document.getElementById('btn-retrieve');
+    btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="lucide-spin"></i> Searching...'; lucide.createIcons();
 
-btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="lucide-spin" style="width:18px;height:18px;"></i> Searching...'; lucide.createIcons();
-document.getElementById('retrieve-result').style.display = 'none'; document.getElementById('image-preview-area').style.display = 'none';
-
-try {
-const { data, error } = await db.from('clips').select('*').eq('code', codeInput).single();
-if (error || !data) { showToast("Code not found or expired.", "error"); }
-else {
-if(helper) helper.style.display = 'none';
-displayRetrievedContent(data, codeInput); showToast("Content Found!", "success");
-if (data.type === 'text') addToHistory(codeInput, 'retrieve', { preview: data.content.slice(0, 50) });
-else {
-let rFilePaths = [];
-try { const parsed = JSON.parse(data.content); rFilePaths = Array.isArray(parsed) ? parsed : [data.content]; } catch(e) { rFilePaths = [data.content]; }
-addToHistory(codeInput, 'retrieve', { fileNames: rFilePaths.map(p => p.split('-').slice(2).join('-') || p) });
-}
-updateProfileStats();
-}
-} catch (error) { showToast("Error fetching content.", "error"); }
-finally { btn.disabled = false; btn.innerHTML = '<i data-lucide="search" style="width:18px;height:18px;"></i> Search Content'; lucide.createIcons(); }
+    try {
+        const { data, error } = await db.from('clips').select('*').eq('code', code).single();
+        if (error || !data) { showToast("Code not found or expired.", "error"); }
+        else {
+            playSuccessSound();
+            displayRetrieveResult(data, code);
+            showToast("Content found!", "success");
+        }
+    } catch (e) {
+        showToast("Error retrieving", "error");
+    } finally {
+        btn.disabled = false; btn.innerHTML = '<i data-lucide="search"></i> Search Secure Cloud'; lucide.createIcons();
+    }
 }
 
-function displayRetrievedContent(data, code) {
-currentRetrievedContent = data;
-document.getElementById('retrieve-result').style.display = 'block';
-document.getElementById('retrieved-type').textContent = data.type + " file";
-document.getElementById('retrieved-date').textContent = new Date(data.created_at).toLocaleString();
+function displayRetrieveResult(data, code) {
+    currentRetrievedData = data;
+    document.getElementById('retrieve-entry').style.display = 'none';
+    document.getElementById('retrieve-result').style.display = 'block';
+    document.getElementById('res-type').textContent = data.type;
 
-const textContainer = document.getElementById('result-text-container');
-const fileContainer = document.getElementById('result-file-container');
-const imagePreviewArea = document.getElementById('image-preview-area');
-const imageEl = document.getElementById('retrieved-image');
-
-if (data.type === 'text') {
-textContainer.style.display = 'block'; fileContainer.style.display = 'none';
-document.getElementById('retrieved-text-content').value = data.content;
-} else {
-textContainer.style.display = 'none'; fileContainer.style.display = 'block';
-let filePaths = [];
-try { const parsed = JSON.parse(data.content); filePaths = Array.isArray(parsed) ? parsed : [data.content]; } catch (e) { filePaths = [data.content]; }
-
-if (filePaths.length === 1 && filePaths[0].match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) {
-const { data: fileData } = db.storage.from('uploads').getPublicUrl(filePaths[0]);
-imageEl.src = fileData.publicUrl; imagePreviewArea.style.display = 'flex';
-} else { imagePreviewArea.style.display = 'none'; }
-
-const listEl = document.getElementById('retrieved-file-list'); listEl.innerHTML = '';
-const zipBtn = document.getElementById('download-zip-btn');
-zipBtn.style.display = filePaths.length > 1 ? 'flex' : 'none';
-const newZipBtn = zipBtn.cloneNode(true); zipBtn.parentNode.replaceChild(newZipBtn, zipBtn);
-
-newZipBtn.onclick = async () => {
-const originalContent = newZipBtn.innerHTML; newZipBtn.disabled = true; newZipBtn.innerHTML = `<i data-lucide="loader-2" class="lucide-spin" style="width:16px;height:16px;"></i> Zipping...`; lucide.createIcons();
-try {
-const zip = new JSZip();
-const files = await Promise.all(filePaths.map(async (path) => {
-const { data: fileData } = db.storage.from('uploads').getPublicUrl(path); let blob;
-for (let attempt = 0; attempt <= 3; attempt++) {
-try { const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 120000); const response = await fetch(fileData.publicUrl, { signal: controller.signal }); clearTimeout(timeoutId); blob = await response.blob(); break; }
-catch (err) { if (attempt === 3) throw err; await new Promise(r => setTimeout(r, 2000 * Math.pow(2, attempt))); }
+    if (data.type === 'text') {
+        document.getElementById('res-text-container').style.display = 'block';
+        document.getElementById('res-file-container').style.display = 'none';
+        document.getElementById('res-md').innerHTML = marked.parse(data.content);
+    } else {
+        document.getElementById('res-text-container').style.display = 'none';
+        document.getElementById('res-file-container').style.display = 'block';
+        let paths = JSON.parse(data.content);
+        const list = document.getElementById('res-files');
+        list.innerHTML = paths.map(p => {
+            const name = p.split('-').slice(2).join('-') || p;
+            const { data: fd } = db.storage.from('uploads').getPublicUrl(p);
+            return `<div class="file-item"><span>${name}</span><a href="${fd.publicUrl}" target="_blank" class="btn-secondary">Get</a></div>`;
+        }).join('');
+    }
+    lucide.createIcons();
+    addToHistory(code, 'retrieve', { preview: data.type === 'text' ? data.content.substring(0, 30) : 'Files' });
 }
-let fileName = path.split('-').slice(2).join('-') || path; if(path.split('-').length < 3) fileName = path.split('-').slice(1).join('-') || path;
-return { fileName, blob };
-}));
-const names = {};
-files.forEach(({ fileName, blob }) => {
-let finalName = fileName;
-// Fixed Bug: Check for explicit existence, not truthiness, to avoid overwriting files with the same name.
-if (names[fileName] !== undefined) { 
-    names[fileName]++; 
-    const parts = fileName.split('.'); 
-    finalName = parts.length > 1 ? `${parts.slice(0,-1).join('.')} (${names[fileName]}).${parts.pop()}` : `${fileName} (${names[fileName]})`; 
-} else {
-    names[fileName] = 0;
+
+function resetRetrieve() {
+    document.getElementById('retrieve-entry').style.display = 'block';
+    document.getElementById('retrieve-result').style.display = 'none';
 }
-zip.file(finalName, blob);
-});
-const content = await zip.generateAsync({ type: "blob" }); const url = window.URL.createObjectURL(content); const a = document.createElement('a'); a.href = url; a.download = `CopyCloud-${code}.zip`; document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url); document.body.removeChild(a);
-} catch (e) { showToast("ZIP download failed.", "error"); }
-finally { newZipBtn.disabled = false; newZipBtn.innerHTML = originalContent; lucide.createIcons(); }
+
+function copyRetrievedText() {
+    if(currentRetrievedData) {
+        const t = document.createElement("textarea"); t.value = currentRetrievedData.content; document.body.appendChild(t); t.select();
+        document.execCommand('copy'); document.body.removeChild(t);
+        showToast("Copied!", "success");
+    }
+}
+
+function generateId() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let res = '';
+    for (let i = 0; i < 6; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+    return res;
+}
+
+function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    document.getElementById('toast-msg').textContent = msg;
+    t.style.borderColor = type === 'error' ? '#ef4444' : 'var(--glass-border)';
+    lucide.createIcons();
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function addToHistory(code, type, extra) {
+    let hist = JSON.parse(localStorage.getItem('cc_hist') || '[]');
+    hist = hist.filter(h => h.code !== code);
+    hist.unshift({ code, type, ...extra, ts: Date.now() });
+    localStorage.setItem('cc_hist', JSON.stringify(hist.slice(0, 10)));
+}
+
+function renderHistory() {
+    const hist = JSON.parse(localStorage.getItem('cc_hist') || '[]');
+    const list = document.getElementById('history-list');
+    const empty = document.getElementById('history-empty');
+    if (hist.length === 0) { empty.style.display = 'block'; list.innerHTML = ''; }
+    else {
+        empty.style.display = 'none';
+        list.innerHTML = hist.map(h => `
+            <div class="history-item" onclick="switchTab('retrieve'); document.getElementById('retrieve-code-input').value='${h.code}'; initRetrieve();">
+                <div><div style="font-weight:700; color:var(--accent-primary);">${h.code}</div><div style="font-size:12px; color:var(--text-muted);">${h.preview}</div></div>
+                <div class="btn-secondary">View</div>
+            </div>
+        `).join('');
+    }
+    lucide.createIcons();
+}
+
+function clearHistory() {
+    localStorage.removeItem('cc_hist');
+    renderHistory();
+    showToast("History cleared", "success");
+}
+
+/* --- Fixed Q&A Chatbot Logic --- */
+const FIXED_QA = {
+    'how': "Paste text or upload files in the **Send** tab. Click 'Generate Code' to get a unique 6-digit PIN. Enter this PIN in the **Retrieve** tab on any other device to access your data instantly.",
+    'security': "Copy Cloud uses industry-standard **AES-GCM encryption**. We do not require accounts, logins, or emails, making the transfer 100% anonymous. Content is deleted forever after 24 hours.",
+    'limits': "You can share text snippets of any length. For files, we support up to **40MB per transfer** through our cloud. Larger peer-to-peer transfers are planned for the next major update.",
+    'other': "We offer a suite of free developer tools including:\n- **Base64** Encoding/Decoding\n- **JSON** Formatting\n- **Hash** (SHA256) Generation\n- **QR Code** Generation\n- **UUID** Generation\n- **Diff** Checker\nCheck our GitHub for the full tool list!",
+    'roadmap': "**Next on our Roadmap:**\n- Client-side End-to-End Encryption (E2EE)\n- Chrome & Firefox Browser Extensions\n- Dedicated Desktop Apps for Windows & Mac\n- Direct P2P transfers for files >1GB"
 };
 
-filePaths.forEach((path) => {
-const { data: fileData } = db.storage.from('uploads').getPublicUrl(path); const url = fileData.publicUrl;
-let displayName = path.split('-').slice(2).join('-') || path; if(path.split('-').length < 3) displayName = path.split('-').slice(1).join('-') || path;
-const item = document.createElement('div'); item.className = "file-item";
-item.innerHTML = `<span>${displayName}</span><button class="dl-btn" onclick="forceDownload('${url}', '${displayName}')"><i data-lucide="download" style="width:12px;height:12px;"></i> Get</button>`;
-listEl.appendChild(item);
-});
-lucide.createIcons();
-}
-}
-
-function copyRetrievedContent() { if(currentRetrievedContent && currentRetrievedContent.type === 'text') copyToClipboard(currentRetrievedContent.content); }
-
-async function forceDownload(url, filename) {
-try {
-showToast("Downloading...", "info"); let blob;
-for (let attempt = 0; attempt <= 3; attempt++) {
-try { const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 120000); const response = await fetch(url, { signal: controller.signal }); clearTimeout(timeoutId); if (!response.ok) throw new Error("Network error"); blob = await response.blob(); break; }
-catch (err) { if (attempt === 3) throw err; await new Promise(r => setTimeout(r, 2000 * Math.pow(2, attempt))); }
-}
-const blobUrl = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.style.display = 'none'; a.href = blobUrl; a.download = filename; document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(blobUrl); document.body.removeChild(a);
-} catch (error) { showToast("Direct download failed. Opening file.", "error"); window.open(url, '_blank'); }
-}
-
-// --- HISTORY SYSTEM ---
-const HISTORY_KEY = 'copyCloudHistory'; const MAX_HISTORY = 10;
-function getHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch(e) { return []; } }
-function addToHistory(code, type, extra = {}) {
-const history = getHistory(); const existingIdx = history.findIndex(h => h.code === code && h.type === type);
-if (existingIdx !== -1) { const existing = history.splice(existingIdx, 1)[0]; const updated = { ...existing, ...extra, timestamp: Date.now() }; if (type === 'retrieve') updated.retrieveCount = (existing.retrieveCount || 1) + 1; history.unshift(updated); }
-else { const entry = { code, type, ...extra, timestamp: Date.now() }; if (type === 'retrieve') entry.retrieveCount = 1; history.unshift(entry); if (history.length > MAX_HISTORY) history.splice(MAX_HISTORY, history.length - MAX_HISTORY); }
-localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); renderHistory();
-}
-function getRelativeTime(timestamp) {
-const diff = Date.now() - timestamp; const mins = Math.floor(diff / 60000); const hours = Math.floor(diff / 3600000);
-if (mins < 1) return 'Just now'; if (mins < 60) return `${mins} min${mins > 1 ? 's' : ''} ago`; if (hours < 24) return `${hours} hr${hours > 1 ? 's' : ''} ago`; return `${Math.floor(hours/24)} day${Math.floor(hours/24) > 1 ? 's' : ''} ago`;
-}
-function renderHistory() {
-const history = getHistory(); const listEl = document.getElementById('history-list'); const emptyEl = document.getElementById('history-empty'); const clearBtn = document.getElementById('clear-history-btn');
-// keep emptyEl logic separated so it doesn't get wiped
-
-// Remove all old history items
-document.querySelectorAll('.history-item').forEach(e => e.remove());
-
-if (!history.length) { emptyEl.style.display = 'block'; clearBtn.style.display = 'none'; return; }
-
-emptyEl.style.display = 'none'; clearBtn.style.display = 'block';
-history.forEach(item => {
-const isSend = item.type === 'send'; const hasPreview = item.preview != null; const hasFiles = Array.isArray(item.fileNames) && item.fileNames.length > 0;
-let primaryText = item.code; let secondaryText = `${isSend ? 'Sent' : 'Retrieved'} • ${getRelativeTime(item.timestamp)}`; let iconName = isSend ? 'upload-cloud' : 'download-cloud';
-if (hasPreview) { primaryText = item.preview.length > 40 ? item.preview.slice(0, 40) + '…' : item.preview; secondaryText = `Code: ${item.code} • Text • ${getRelativeTime(item.timestamp)}`; iconName = 'file-text'; }
-else if (hasFiles) { primaryText = item.fileNames.length === 1 ? item.fileNames[0] : `${item.fileNames.length} files`; secondaryText = `Code: ${item.code} • File(s) • ${getRelativeTime(item.timestamp)}`; iconName = 'file'; }
-const el = document.createElement('div'); el.className = 'history-item';
-el.onclick = () => { switchAppTab('retrieve'); document.getElementById('retrieve-code-input').value = item.code; window.scrollTo(0,0); handleRetrieve(); };
-el.innerHTML = `<div class="hist-main"><span class="hist-title"><i data-lucide="${iconName}" style="width:14px;height:14px;color:var(--muted)"></i> ${primaryText}</span><span class="hist-meta">${secondaryText}</span></div><div class="hist-badge">${isSend ? 'Sent' : 'Retrieved'} ${!isSend && item.retrieveCount > 1 ? `(${item.retrieveCount})` : ''}</div>`;
-listEl.appendChild(el);
-});
-lucide.createIcons();
-}
-window.clearHistory = () => { localStorage.removeItem(HISTORY_KEY); renderHistory(); updateProfileStats(); };
-
-// --- USER PROFILE ---
-function initProfile() {
-const name = localStorage.getItem(USER_KEY) || "";
-if(name) {
-document.getElementById('user-greeting-btn').style.display = 'flex';
-document.getElementById('user-greeting-text').textContent = name;
-document.getElementById('user-name-input').value = name;
-document.getElementById('avatar-letter').textContent = name.charAt(0).toUpperCase();
-} else {
-document.getElementById('user-greeting-btn').style.display = 'none';
-}
-updateProfileStats();
-}
-
-function saveProfile() {
-const name = document.getElementById('user-name-input').value.trim(); localStorage.setItem(USER_KEY, name);
-if(name) {
-document.getElementById('user-greeting-btn').style.display = 'flex';
-document.getElementById('user-greeting-text').textContent = name;
-document.getElementById('avatar-letter').textContent = name.charAt(0).toUpperCase();
-document.getElementById('profile-stats-grid').style.display = 'grid'; // Enable stats for returning user
-}
-else {
-document.getElementById('user-greeting-btn').style.display = 'none';
-document.getElementById('avatar-letter').innerHTML = '<i data-lucide="user" style="width:36px;height:36px;"></i>';
-lucide.createIcons();
-}
-closeModal('modal-welcome');
-}
-function updateProfileStats() {
-const history = getHistory(); let sent = 0; let retrieved = 0;
-history.forEach(h => { if(h.type === 'send') sent++; if(h.type === 'retrieve') retrieved++; });
-document.getElementById('stat-sent').textContent = sent; document.getElementById('stat-retrieved').textContent = retrieved;
-}
-
-// --- THEME ENGINE ---
-const THEME_KEY = 'copyCloudTheme'; 
-let themeState = { mode: 'auto' }; // Simplified to ignore old saved colors
-
-function loadTheme() { 
-    try { 
-        const saved = JSON.parse(localStorage.getItem(THEME_KEY) || 'null'); 
-        if (saved && saved.mode) themeState.mode = saved.mode; 
-    } catch (e) {} 
-    applyTheme(); 
-}
-
-function applyTheme() {
-    const isDark = themeState.mode === 'dark' || (themeState.mode === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    
-    // Force Black/White Defaults (Overrides any old purple settings in browser memory)
-    if (isDark) { 
-        document.documentElement.classList.add('dark-mode'); 
-        document.getElementById('meta-theme-color').content = "#0a0a0a"; 
-        document.documentElement.style.setProperty('--accent', '#ffffff'); 
-        document.documentElement.style.setProperty('--accent-text', '#111111'); 
-    } else { 
-        document.documentElement.classList.remove('dark-mode'); 
-        document.getElementById('meta-theme-color').content = "#f2f2f0"; 
-        document.documentElement.style.setProperty('--accent', '#111111'); 
-        document.documentElement.style.setProperty('--accent-text', '#ffffff'); 
+function toggleChat() {
+    playPopSound(); 
+    const win = document.getElementById('chat-window');
+    win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+    if(win.style.display === 'flex') {
+        document.getElementById('chat-input').focus();
+        lucide.createIcons();
     }
+}
+
+function askQuick(key) {
+    const msgContainer = document.getElementById('chat-messages');
+    const questions = {
+        'how': 'How it works?',
+        'security': 'Is it secure?',
+        'limits': 'File limits?',
+        'other': 'Other tools?',
+        'roadmap': 'Roadmap?'
+    };
     
-    updateAppearanceUI();
+    msgContainer.innerHTML += `<div class="chat-msg msg-user">${questions[key]}</div>`;
+    
+    setTimeout(() => {
+        msgContainer.innerHTML += `<div class="chat-msg msg-ai">${marked.parse(FIXED_QA[key])}</div>`;
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+        lucide.createIcons();
+    }, 300);
 }
 
-function setThemeMode(mode) { themeState.mode = mode; localStorage.setItem(THEME_KEY, JSON.stringify(themeState)); applyTheme(); }
-function toggleThemeMode() {
-if (themeState.mode === 'auto') setThemeMode('dark');
-else if (themeState.mode === 'dark') setThemeMode('light');
-else setThemeMode('auto');
-}
-function updateAppearanceUI() {
-const btn = document.getElementById('theme-toggle-btn');
-if (btn) {
-if (themeState.mode === 'auto') btn.innerHTML = '<i data-lucide="monitor" style="width:18px;height:18px;"></i>';
-else if (themeState.mode === 'dark') btn.innerHTML = '<i data-lucide="moon" style="width:18px;height:18px;"></i>';
-else btn.innerHTML = '<i data-lucide="sun" style="width:18px;height:18px;"></i>';
-lucide.createIcons();
-}
-}
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (themeState.mode === 'auto') applyTheme(); });
+function sendChatMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.toLowerCase().trim();
+    if(!text) return;
 
-// --- MODAL UTILS ---
-function openModal(id) {
-if (id === 'modal-welcome' && localStorage.getItem(USER_KEY)) {
-document.getElementById('profile-stats-grid').style.display = 'grid';
-}
-document.getElementById(id).classList.add('show');
-}
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-function handleModalClick(e, id) { if(e.target.id === id) closeModal(id); }
+    const msgContainer = document.getElementById('chat-messages');
+    msgContainer.innerHTML += `<div class="chat-msg msg-user">${input.value}</div>`;
+    input.value = '';
 
-// --- UTILS ---
-function generateId() { const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let result = ''; for (let i = 0; i < 6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length)); return result; }
-function copyToClipboard(text) { const textArea = document.createElement("textarea"); textArea.value = text; document.body.appendChild(textArea); textArea.select(); try { document.execCommand('copy'); showToast("Copied to Clipboard!", "success"); } catch (err) { showToast("Copy failed", "error"); } document.body.removeChild(textArea); }
-function formatBytes(bytes) { if (!+bytes) return '0 Bytes'; const k = 1024, sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`; }
+    let response = "I'm not sure about that. Try one of the quick buttons above!";
+    
+    if(text.includes('how') || text.includes('work')) response = FIXED_QA.how;
+    else if(text.includes('safe') || text.includes('secure') || text.includes('privacy')) response = FIXED_QA.security;
+    else if(text.includes('size') || text.includes('limit') || text.includes('large')) response = FIXED_QA.limits;
+    else if(text.includes('tool') || text.includes('other')) response = FIXED_QA.other;
+    else if(text.includes('next') || text.includes('roadmap') || text.includes('update')) response = FIXED_QA.roadmap;
 
-let toastTimeout;
-function showToast(message, type = 'info') {
-const toast = document.getElementById('toast');
-if(type === 'error') { toast.className = 'toast show error'; toast.innerHTML = `<i data-lucide="alert-circle" style="width:16px;height:16px;"></i> <span id="toast-msg">${message}</span>`; }
-else if (type === 'success') { toast.className = 'toast show'; toast.innerHTML = `<i data-lucide="check-circle" style="width:16px;height:16px;"></i> <span id="toast-msg">${message}</span>`; }
-else { toast.className = 'toast show'; toast.innerHTML = `<i data-lucide="info" style="width:16px;height:16px;"></i> <span id="toast-msg">${message}</span>`; }
-lucide.createIcons(); clearTimeout(toastTimeout); toastTimeout = setTimeout(() => { toast.className = 'toast'; }, 3000);
+    setTimeout(() => {
+        msgContainer.innerHTML += `<div class="chat-msg msg-ai">${marked.parse(response)}</div>`;
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+        lucide.createIcons();
+    }, 300);
 }
 
-// Removed the "Enter" keybind on the text-input so multi-line pastes don't accidentally submit!
-document.getElementById('retrieve-code-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); handleRetrieve(); } });
-
-
-// Routing check initialization handler
-function checkURLParameters() {
-const urlParams = new URLSearchParams(window.location.search); 
-const codeParam = urlParams.get('code');
-const route = resolveRouteFromPath(window.location.pathname);
-
-if (codeParam && /^[A-Z0-9]{6}$/i.test(codeParam)) {
-switchAppView('app', true);
-switchAppTab('retrieve', true);
-setRoute('app', 'retrieve', true);
-
-const helper = document.getElementById('retrieve-helper');
-if(helper) helper.style.display = 'none';
-
-document.getElementById('retrieve-code-input').value = codeParam.toUpperCase(); 
-setTimeout(() => handleRetrieve(), 500);
-} else if (route.view === 'app') {
-switchAppView('app', true);
-switchAppTab(route.tab, true);
-} else {
-switchAppView('landing', true);
-setRoute('landing', 'send', true);
-}
-}
-
-// Init
-loadTheme(); initProfile(); renderHistory();
-hydrateApkDownloadLink();
-if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', checkURLParameters); } else { checkURLParameters(); }
+document.addEventListener('mousemove', (e) => {
+    const wrap = document.getElementById('blob-wrap');
+    const x = (e.clientX / window.innerWidth - 0.5) * 40; 
+    const y = (e.clientY / window.innerHeight - 0.5) * 40;
+    if(wrap) wrap.style.transform = `translate(${-x}px, ${-y}px)`;
+});
 </script>
 </body>
 </html>
