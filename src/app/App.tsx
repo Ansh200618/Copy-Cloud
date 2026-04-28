@@ -102,17 +102,7 @@ export default function App() {
       >
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => handleTabChange("send")}>
-          <div
-            style={{
-              width: 32, height: 32, borderRadius: 10,
-              background: "linear-gradient(135deg, rgba(99,102,241,0.3), rgba(168,85,247,0.3))",
-              border: "1px solid rgba(99,102,241,0.4)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              boxShadow: "0 0 16px rgba(99,102,241,0.25)",
-            }}
-          >
-            <Zap size={16} color="#a5b4fc" />
-          </div>
+        <img src="/logo.png" alt="CopyCloud Logo" className="h-8 w-auto" />
           <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.03em", color: "#f1f5f9" }}>
             Copy<span style={{ color: "#818cf8" }}>Cloud</span>
           </span>
