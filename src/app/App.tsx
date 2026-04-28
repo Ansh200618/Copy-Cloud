@@ -85,21 +85,7 @@ export default function App() {
       />
 
       {/* ─── TOP NAV ─── */}
-      <header
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 32px",
-          height: 60,
-          background: "rgba(3, 3, 7, 0.85)",
-          borderBottom: "1px solid rgba(255,255,255,0.04)",
-          backdropFilter: "blur(24px)",
-        }}
-      >
+   <header className="sticky top-0 z-50 flex items-center justify-between px-4 md:px-8 h-16 bg-[#030307]/85 border-b border-white/5 backdrop-blur-md">
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }} onClick={() => handleTabChange("send")}>
         <img src="/logo.png" alt="CopyCloud Logo" className="h-8 w-auto" />
@@ -109,7 +95,7 @@ export default function App() {
         </div>
 
         {/* Tabs */}
-        <nav style={{ display: "flex", gap: 2, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, padding: 4 }}>
+        <nav className="hidden md:flex gap-1 bg-white/5 border border-white/10 rounded-xl p-1">
           {TABS.map((t) => {
             const active = tab === t.id;
             return (
@@ -142,10 +128,7 @@ export default function App() {
             <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 6px #22c55e", animation: "pulse 2s infinite" }} />
             <span style={{ color: "#22c55e", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'JetBrains Mono', monospace" }}>SECURE</span>
           </div>
-          <div style={{
-            display: "flex", alignItems: "center", gap: 5, padding: "5px 12px", borderRadius: 99,
-            background: "rgba(99,102,241,0.06)", border: "1px solid rgba(99,102,241,0.12)",
-          }}>
+          <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20">
             <Timer size={11} color="#6366f1" />
             <span style={{ color: "#6366f1", fontSize: "0.7rem", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>24H WIPE</span>
           </div>
@@ -245,7 +228,7 @@ export default function App() {
           zIndex: 1,
         }}
       >
-        <div style={{ width: "100%", maxWidth: 660 }}>
+        <div className="w-full max-w-[660px] px-4 md:px-0">
           <WorkspaceCard>
             {/* Tab indicator bar inside card */}
             <div
