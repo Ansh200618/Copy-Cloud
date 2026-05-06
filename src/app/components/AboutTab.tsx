@@ -15,7 +15,7 @@ const faq = [
 ];
 
 const links = [
-  { icon: Briefcase, label: "Portfolio", href: "http://ansh200618.github.io/Portfolio/" },
+  { icon: Briefcase, label: "Portfolio", href: "https://ansh200618.github.io/Portfolio/" },
   { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/anshdeep-singh-editor" },
   { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/anshdeep_officiall/" },
   { icon: Github, label: "GitHub", href: "https://github.com/Ansh200618/Online-Clipboard" },
