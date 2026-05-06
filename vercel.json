@@ -1,4 +1,18 @@
 {
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.copycloud.me"
+        }
+      ],
+      "destination": "https://copycloud.me/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/app",
