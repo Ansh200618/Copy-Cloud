@@ -21,7 +21,7 @@
       "destination": "/index.html"
     },
     {
-      "source": "/admin",
+      "source": "/admin-approval",
       "destination": "/index.html"
     }
   ],
