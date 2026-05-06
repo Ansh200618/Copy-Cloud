@@ -1,7 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL = "https://luunzeonlmzvmewaucqj.supabase.co";
-const ADMIN_EMAIL = "wipeprotocol@copycloud.me";
+const SUPABASE_URL =
+  process.env.SUPABASE_URL || "https://luunzeonlmzvmewaucqj.supabase.co";
+const ADMIN_EMAIL =
+  process.env.ADMIN_EMAIL || "wipeprotocol@copycloud.me";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
