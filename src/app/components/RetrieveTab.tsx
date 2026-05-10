@@ -9,6 +9,17 @@ type Stage = "input" | "loading" | "result";
 interface ClipData { code: string; content: string; type: "text" | "file"; }
 interface FileEntry { name: string; url: string; }
 
+function parseHttpUrl(value: string): string | null {
+  const raw = value.trim();
+  if (!raw) return null;
+  try {
+    const parsed = new URL(raw);
+    return parsed.protocol === "http:" || parsed.protocol === "https:" ? raw : null;
+  } catch {
+    return null;
+  }
+}
+
 export function RetrieveTab({ prefillCode }: { prefillCode?: string }) {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [stage, setStage] = useState<Stage>("input");
@@ -87,19 +98,7 @@ export function RetrieveTab({ prefillCode }: { prefillCode?: string }) {
     } catch { toast.error("ZIP failed."); } finally { setZipping(false); }
   };
 
-  const resolvedLink =
-    result?.type === "text"
-      ? (() => {
-          const raw = result.content.trim();
-          if (!raw) return null;
-          try {
-            const parsed = new URL(raw);
-            return parsed.protocol === "http:" || parsed.protocol === "https:" ? parsed.toString() : null;
-          } catch {
-            return null;
-          }
-        })()
-      : null;
+  const resolvedLink = result?.type === "text" ? parseHttpUrl(result.content) : null;
 
   const reset = () => { setStage("input"); setCode(["", "", "", "", "", ""]); setResult(null); setFiles([]); setTimeout(() => refs.current[0]?.focus(), 100); };
 
