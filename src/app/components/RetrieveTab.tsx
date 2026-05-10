@@ -1,13 +1,24 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
-import { Search, Copy, Download, Archive, ArrowLeft, FileText, FileUp } from "lucide-react";
+import { Search, Copy, Download, Archive, ArrowLeft, FileText, FileUp, ExternalLink } from "lucide-react";
 import JSZip from "jszip";
 import { supabase, addToHistory } from "../../lib/supabase";
 
 type Stage = "input" | "loading" | "result";
 interface ClipData { code: string; content: string; type: "text" | "file"; }
 interface FileEntry { name: string; url: string; }
+
+function parseHttpUrl(value: string): string | null {
+  const raw = value.trim();
+  if (!raw) return null;
+  try {
+    const parsed = new URL(raw);
+    return parsed.protocol === "http:" || parsed.protocol === "https:" ? raw : null;
+  } catch {
+    return null;
+  }
+}
 
 export function RetrieveTab({ prefillCode }: { prefillCode?: string }) {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -86,6 +97,11 @@ export function RetrieveTab({ prefillCode }: { prefillCode?: string }) {
       toast.success("Downloaded!");
     } catch { toast.error("ZIP failed."); } finally { setZipping(false); }
   };
+
+  const resolvedLink = useMemo(
+    () => (result?.type === "text" ? parseHttpUrl(result.content) : null),
+    [result]
+  );
 
   const reset = () => { setStage("input"); setCode(["", "", "", "", "", ""]); setResult(null); setFiles([]); setTimeout(() => refs.current[0]?.focus(), 100); };
 
@@ -193,17 +209,44 @@ export function RetrieveTab({ prefillCode }: { prefillCode?: string }) {
                   </pre>
                 </div>
               </div>
-              <button onClick={handleCopy} style={{
-                width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                padding: "14px 0", borderRadius: 14, cursor: "pointer",
-                background: copied ? "rgba(99,102,241,0.15)" : "linear-gradient(135deg, #6366f1, #a855f7)",
-                border: copied ? "1px solid rgba(99,102,241,0.3)" : "none",
-                color: copied ? "#a5b4fc" : "#fff",
-                fontFamily: "'Inter', sans-serif", fontSize: "0.9rem", fontWeight: 700,
-                boxShadow: copied ? "none" : "0 8px 24px rgba(99,102,241,0.3)",
-              }}>
-                <Copy size={16} /> {copied ? "Copied!" : "Copy All Text"}
-              </button>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={handleCopy} style={{
+                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                  padding: "14px 0", borderRadius: 14, cursor: "pointer",
+                  background: copied ? "rgba(99,102,241,0.15)" : "linear-gradient(135deg, #6366f1, #a855f7)",
+                  border: copied ? "1px solid rgba(99,102,241,0.3)" : "none",
+                  color: copied ? "#a5b4fc" : "#fff",
+                  fontFamily: "'Inter', sans-serif", fontSize: "0.9rem", fontWeight: 700,
+                  boxShadow: copied ? "none" : "0 8px 24px rgba(99,102,241,0.3)",
+                }}>
+                  <Copy size={16} /> {copied ? "Copied!" : "Copy All Text"}
+                </button>
+                {resolvedLink && (
+                  <a
+                    href={resolvedLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                      padding: "14px 16px",
+                      borderRadius: 14,
+                      background: "rgba(99,102,241,0.1)",
+                      border: "1px solid rgba(99,102,241,0.3)",
+                      color: "#a5b4fc",
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      textDecoration: "none",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <ExternalLink size={15} /> Open Link
+                  </a>
+                )}
+              </div>
             </>
           )}
 
