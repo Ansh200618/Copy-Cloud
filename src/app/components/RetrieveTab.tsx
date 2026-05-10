@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { Search, Copy, Download, Archive, ArrowLeft, FileText, FileUp, ExternalLink } from "lucide-react";
@@ -98,7 +98,10 @@ export function RetrieveTab({ prefillCode }: { prefillCode?: string }) {
     } catch { toast.error("ZIP failed."); } finally { setZipping(false); }
   };
 
-  const resolvedLink = result?.type === "text" ? parseHttpUrl(result.content) : null;
+  const resolvedLink = useMemo(
+    () => (result?.type === "text" ? parseHttpUrl(result.content) : null),
+    [result]
+  );
 
   const reset = () => { setStage("input"); setCode(["", "", "", "", "", ""]); setResult(null); setFiles([]); setTimeout(() => refs.current[0]?.focus(), 100); };
 
