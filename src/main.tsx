@@ -8,23 +8,26 @@ import AdminPage from "./app/pages/AdminPage.tsx";
 import "./styles/index.css";
 
 const BASE_URL = "https://copycloud.me";
-const ROOT_CANONICAL_PATHS = new Set([
-  "/",
-  "/app",
-  "/send",
-  "/retrieve",
-  "/history",
-  "/about",
-  "/index",
-  "/index.html",
-]);
+const CANONICAL_PATH_OVERRIDES: Record<string, string> = {
+  "/app": "/",
+  "/send": "/",
+  "/retrieve": "/",
+  "/history": "/",
+  "/about": "/",
+  "/index": "/",
+  "/index.html": "/",
+};
+
+function removeTrailingSlash(pathname: string): string {
+  if (pathname === "/") {
+    return pathname;
+  }
+  return pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+}
 
 function getCanonicalPath(pathname: string): string {
-  const normalized = pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
-  if (ROOT_CANONICAL_PATHS.has(normalized)) {
-    return "/";
-  }
-  return normalized || "/";
+  const normalized = removeTrailingSlash(pathname) || "/";
+  return CANONICAL_PATH_OVERRIDES[normalized] ?? normalized;
 }
 
 function CanonicalUpdater() {
